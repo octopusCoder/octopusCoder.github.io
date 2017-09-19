@@ -527,14 +527,60 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 </tr>
 <tr>
 <td>APN[2]</td>
-<td style="text-align:center">基本S模型无法获得两路输入的联合表示。</td>
+<td style="text-align:center">基本模型无法获得两路输入的联合表示。</td>
 <td style="text-align:right">双向Attention。</td>
 </tr>
 </tbody>
 </table>
-<h2 id="各模型损失函数及额外特征选取"><a href="#各模型损失函数及额外特征选取" class="headerlink" title="各模型损失函数及额外特征选取"></a>各模型损失函数及额外特征选取</h2><p>下表中<em>，表示不明确，论文中未明确说明。此外部分论文针对不同的数据集使用了相应的损失函数。<br>| Model  | 损失函数 | 额外特征|<br>| - | :-: | -: |<br>| CAM[13] | </em> | 未使用 |<br>| IARNN[10] | max-margin hinge loss| 未使用 |<br>| BiMPM[12] | Cross-Entropy| 未使用，但可扩展使用POS,NER特征。|<br>| PWIM[11]| hinge loss, KL-divergence | 未使用 |<br>| LDC[14] | <em> | 未使用 |<br>| ABCNN[7] | </em> | sentence lengths、WordCnt and WgtWordCnt |<br>| APN[2] | hinge loss| 未使用 |</p>
+<h2 id="各模型损失函数及额外特征选取"><a href="#各模型损失函数及额外特征选取" class="headerlink" title="各模型损失函数及额外特征选取"></a>各模型损失函数及额外特征选取</h2><p>部分论文针对不同的数据集使用了相应的损失函数。</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th style="text-align:center">损失函数</th>
+<th style="text-align:right">额外特征</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CAM[13]</td>
+<td style="text-align:center">不明确</td>
+<td style="text-align:right">未使用</td>
+</tr>
+<tr>
+<td>IARNN[10]</td>
+<td style="text-align:center">max-margin hinge loss</td>
+<td style="text-align:right">未使用</td>
+</tr>
+<tr>
+<td>BiMPM[12]</td>
+<td style="text-align:center">Cross-Entropy</td>
+<td style="text-align:right">未使用，但可扩展使用POS,NER特征。</td>
+</tr>
+<tr>
+<td>PWIM[11]</td>
+<td style="text-align:center">hinge loss, KL-divergence</td>
+<td style="text-align:right">未使用</td>
+</tr>
+<tr>
+<td>LDC[14]</td>
+<td style="text-align:center">不明确</td>
+<td style="text-align:right">未使用</td>
+</tr>
+<tr>
+<td>ABCNN[7]</td>
+<td style="text-align:center">不明确</td>
+<td style="text-align:right">sentence lengths、WordCnt and WgtWordCnt</td>
+</tr>
+<tr>
+<td>APN[2]</td>
+<td style="text-align:center">hinge loss</td>
+<td style="text-align:right">未使用</td>
+</tr>
+</tbody>
+</table>
 <blockquote>
-<p>本文中错误和不明确之处欢迎指出，一定积极改正，谢谢！</p>
+<p>本文中错误和不明确之处欢迎指出，谢谢！</p>
 </blockquote>
 <p>引用：<br>[1] Bromley J, Guyon I, LeCun Y, et al. Signature verification using a” siamese” time delay neural network[C]//Advances in Neural Information Processing Systems. 1994: 737-744.<br>[2] dos Santos C N, Tan M, Xiang B, et al. Attentive pooling networks[J]. CoRR, abs/1602.03609, 2016.<br>[3] He H, Gimpel K, Lin J J. Multi-Perspective Sentence Similarity Modeling with Convolutional Neural Networks[C]//EMNLP. 2015: 1576-1586.<br>[4] Tan M, Santos C, Xiang B, et al. Lstm-based deep learning models for non-factoid answer selection[J]. arXiv preprint arXiv:1511.04108, 2015.<br>[5] Severyn A, Moschitti A. Learning to rank short text pairs with convolutional deep neural networks[C]//Proceedings of the 38th International ACM SIGIR Conference on Research and Development in Information Retrieval. ACM, 2015: 373-382.<br>[6] Bahdanau D, Cho K, Bengio Y. Neural machine translation by jointly learning to align and translate[J]. arXiv preprint arXiv:1409.0473, 2014.<br>[7] Yin W, Schütze H, Xiang B, et al. Abcnn: Attention-based convolutional neural network for modeling sentence pairs[J]. arXiv preprint arXiv:1512.05193, 2015.<br>[8] He H, Wieting J, Gimpel K, et al. UMD-TTIC-UW at SemEval-2016 Task 1: Attention-Based Multi-Perspective Convolutional Neural Networks for Textual Similarity Measurement[C]//SemEval@ NAACL-HLT. 2016: 1103-1108.<br>[9] Wieting J, Bansal M, Gimpel K, et al. Towards universal paraphrastic sentence embeddings[J]. arXiv preprint arXiv:1511.08198, 2015.<br>[10] Wang B, Liu K, Zhao J. Inner Attention based Recurrent Neural Networks for Answer Selection[C]//ACL (1). 2016.<br>[11] He H, Lin J J. Pairwise Word Interaction Modeling with Deep Neural Networks for Semantic Similarity Measurement[C]//HLT-NAACL. 2016: 937-948.<br>[12] Wang Z, Hamza W, Florian R. Bilateral multi-perspective matching for natural language sentences[J]. arXiv preprint arXiv:1702.03814, 2017.<br>[13] Wang S, Jiang J. A Compare-Aggregate Model for Matching Text Sequences[J]. arXiv preprint arXiv:1611.01747, 2016.<br>[14] Wang Z, Mi H, Ittycheriah A. Sentence similarity learning by lexical decomposition and composition[J]. arXiv preprint arXiv:1602.07019, 2016.</p>
 
