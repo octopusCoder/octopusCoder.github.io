@@ -126,7 +126,7 @@
 <meta property="og:image" content="http://yoursite.com/images/camttcmp.png">
 <meta property="og:image" content="http://yoursite.com/images/camtttest.png">
 <meta property="og:image" content="http://yoursite.com/images/LDCMODEL.png">
-<meta property="og:updated_time" content="2017-09-19T16:17:17.000Z">
+<meta property="og:updated_time" content="2017-09-20T02:24:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="问答系统模型总结">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      简介机器问答是自然语言处理领域的核心任务，一个典型的开放式问答系统分为三个部分：(1) 问题分析和候选篇章检索；(2) 候选篇章排序；（3）答案选择。本文主要关注答案选择部分，传统的模型大多基于特征工程实现，使用词法、句法和语法等特征，需">
@@ -459,7 +459,7 @@ s_i^- = (1- \alpha)s_i\\$$</span><!-- Has MathJax --><br><strong>orthogonal deco
 s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 <h4 id="Composition"><a href="#Composition" class="headerlink" title="Composition"></a>Composition</h4><p>组合部分利用CNN将相似部分<span>$s_{i}^{+}$</span><!-- Has MathJax -->和不相似部<span>$s_{i}^{-}$</span><!-- Has MathJax -->组合为最终S的特征向量<span>$\overrightarrow {s}$</span><!-- Has MathJax -->，公式为：<span>$c_{o,i} = f(w_o * S_{[i:i+h]}^+ + w_o * S_{[i:i+h]}^- + b_o)$</span><!-- Has MathJax -->。其中<span>$w_o$</span><!-- Has MathJax -->表示CNN中的一系列filters，<span>$S_{\left[ i:i+h\right] }^{+}$</span><!-- Has MathJax -->和<span>$S_{\left[ i:i+h\right] }^{-}$</span><!-- Has MathJax -->表示<span>$S^+$</span><!-- Has MathJax -->和<span>$S^-$</span><!-- Has MathJax -->中的一部分。一个filter对<span>$S^+$</span><!-- Has MathJax -->和<span>$S^-$</span><!-- Has MathJax -->处理后会产生一系列特征<span>$\overrightarrow {c_{o}}=[c_{o,1},c_{o,2},...,c_{o,O}$</span><!-- Has MathJax -->，利用max-pooling选择最大值，则全部的filters最终输出S和T对应的特征向量<span>$\overrightarrow {S}$</span><!-- Has MathJax -->和<span>$\overrightarrow {T}$</span><!-- Has MathJax -->。</p>
 <h4 id="Similarity-assessing"><a href="#Similarity-assessing" class="headerlink" title="Similarity assessing"></a>Similarity assessing</h4><p>计算S和T特征向量$\overrightarrow {S}$和$\overrightarrow {T}$的相似度：<span>$sim(S,T) = f_{sim}(\overrightarrow {S},\overrightarrow {T})$</span><!-- Has MathJax -->，$f_{sim}$使用sigmod函数。</p>
-<h2 id="WikiQA数据集测试结果"><a href="#WikiQA数据集测试结果" class="headerlink" title="WikiQA数据集测试结果"></a>WikiQA数据集测试结果</h2><p>为方便的比较上述各模型，这里对各模型在WikiQA数据集上的实验结果（取最好）进行收集和整理，见下表：</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><h3 id="WikiQA数据集测试结果"><a href="#WikiQA数据集测试结果" class="headerlink" title="WikiQA数据集测试结果"></a>WikiQA数据集测试结果</h3><p>为方便的比较上述各模型，这里对各模型在WikiQA数据集上的实验结果（取最好）进行收集和整理，见下表：</p>
 <table>
 <thead>
 <tr>
@@ -507,7 +507,7 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 </tbody>
 </table>
 <p>表中ABCNN、APN和LDC模型属于Attention Network，CAM、IARNN、BiMPM和PWIM模型属于Compare-Aggregate Network。WikiQA数据集上的实验结果表明Compare-Aggregate Network优于Attention Network。<br><strong>结果分析</strong><br>基本模型Siamense Network单独的对两个输入句子进行特征提取，Attention Network除了获得两个句子各自特征外，还使用句子间的相关特征。Attention Network依然遵循Siamense Network思想，一般将句子表示为一个特征向量用于预测，最后的降维过程不可避免的损失一些相关性信息，Compare-Aggregate Network则直接利用句子间相关特征进行预测。模型的测试结果表明，在计算句子相似度时，如何有效的利用句子间的相关特征是模型的关键。</p>
-<h2 id="各模型主要针对的问题及解决方法"><a href="#各模型主要针对的问题及解决方法" class="headerlink" title="各模型主要针对的问题及解决方法"></a>各模型主要针对的问题及解决方法</h2><table>
+<h3 id="各模型针对的问题及解决方法"><a href="#各模型针对的问题及解决方法" class="headerlink" title="各模型针对的问题及解决方法"></a>各模型针对的问题及解决方法</h3><table>
 <thead>
 <tr>
 <th>Model</th>
@@ -523,37 +523,37 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 </tr>
 <tr>
 <td>IARNN[10]</td>
-<td style="text-align:center">传统的Attention-based RNN模型使用“Attention after represention”，在生成单词表示时存在不足。</td>
-<td style="text-align:right">“Attention before represention”，在使用LSTM处理之前进行Attention。</td>
+<td style="text-align:center">传统的Attention-based RNN模型使用“Attention after represention”，在生成单词表示时存在不足</td>
+<td style="text-align:right">“Attention before represention”，在使用LSTM处理之前进行Attention</td>
 </tr>
 <tr>
 <td>BiMPM[12]</td>
-<td style="text-align:center">传统的模型只在一个方向上应用Attention，匹配时只在词级别或句子级别进行匹配。</td>
-<td style="text-align:right">双向Attention，multi-perspective匹配函数，四种匹配策略。</td>
+<td style="text-align:center">传统的模型只在一个方向上应用Attention，匹配时只在词级别或句子级别进行匹配</td>
+<td style="text-align:right">双向Attention，multi-perspective匹配函数，四种匹配策略</td>
 </tr>
 <tr>
 <td>PWIM[11]</td>
-<td style="text-align:center">一般的神经网络模型主要利用句子粗粒度信息，无法捕获细粒度词级别的信息。</td>
-<td style="text-align:right">pairwise word interaction modeling，捕获跨句子的词关联信息。</td>
+<td style="text-align:center">一般的神经网络模型主要利用句子粗粒度信息，无法捕获细粒度词级别的信息</td>
+<td style="text-align:right">pairwise word interaction modeling，捕获跨句子的词关联信息</td>
 </tr>
 <tr>
 <td>LDC[14]</td>
-<td style="text-align:center">当要比较的句子结构非常相似时，如何利用不相似的部分进行区分。</td>
+<td style="text-align:center">当要比较的句子结构非常相似时，如何利用不相似的部分进行区分</td>
 <td style="text-align:right">Lexical Decomposition and Composition</td>
 </tr>
 <tr>
 <td>ABCNN[7]</td>
-<td style="text-align:center">基本模型单独处理两个句子，没有充分考虑句子间的联系。</td>
+<td style="text-align:center">基本模型单独处理两个句子，没有充分考虑句子间的联系</td>
 <td style="text-align:right">双向Attention。</td>
 </tr>
 <tr>
 <td>APN[2]</td>
-<td style="text-align:center">基本模型无法获得两路输入的联合表示。</td>
-<td style="text-align:right">双向Attention。</td>
+<td style="text-align:center">基本模型无法获得两路输入的联合表示</td>
+<td style="text-align:right">双向Attention</td>
 </tr>
 </tbody>
 </table>
-<h2 id="各模型损失函数及额外特征选取"><a href="#各模型损失函数及额外特征选取" class="headerlink" title="各模型损失函数及额外特征选取"></a>各模型损失函数及额外特征选取</h2><p>部分论文针对不同的数据集使用了相应的损失函数。</p>
+<h3 id="各模型损失函数及额外特征选取"><a href="#各模型损失函数及额外特征选取" class="headerlink" title="各模型损失函数及额外特征选取"></a>各模型损失函数及额外特征选取</h3><p>注：部分论文针对不同的数据集使用了相应的损失函数。</p>
 <table>
 <thead>
 <tr>
@@ -576,7 +576,7 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 <tr>
 <td>BiMPM[12]</td>
 <td style="text-align:center">Cross-Entropy</td>
-<td style="text-align:right">未使用，但可扩展使用POS,NER特征。</td>
+<td style="text-align:right">未使用，但可扩展使用POS，NER特征</td>
 </tr>
 <tr>
 <td>PWIM[11]</td>
@@ -591,7 +591,7 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 <tr>
 <td>ABCNN[7]</td>
 <td style="text-align:center">不明确</td>
-<td style="text-align:right">sentence lengths、WordCnt and WgtWordCnt</td>
+<td style="text-align:right">sentence lengths, WordCnt and WgtWordCnt</td>
 </tr>
 <tr>
 <td>APN[2]</td>
@@ -755,7 +755,7 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本模型Siamense-Network"><span class="nav-number">2.</span> <span class="nav-text">基本模型Siamense Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Attentive-pooling-networks"><span class="nav-number">2.1.</span> <span class="nav-text">Attentive pooling networks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Perspective-Sentence-Similarity-Modeling-with-Convolutional-Neural-Networks"><span class="nav-number">2.2.</span> <span class="nav-text">Multi-Perspective Sentence Similarity Modeling with Convolutional Neural Networks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM-BASED-DEEP-LEARNING-MODELS-FOR-NON-FACTOID-ANSWER-SELECTION"><span class="nav-number">2.3.</span> <span class="nav-text">LSTM-BASED DEEP LEARNING MODELS FOR NON FACTOID ANSWER SELECTION</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Learning-to-rank-short-text-pairs-with-convolutional-deep-neural-networks"><span class="nav-number">2.4.</span> <span class="nav-text">Learning to rank short text pairs with convolutional deep neural networks</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进一-Attention-Network"><span class="nav-number">3.</span> <span class="nav-text">改进一 Attention Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#双向Attention-Network"><span class="nav-number">3.1.</span> <span class="nav-text">双向Attention Network</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Attention-Based-Convolutional-Neural-Network-for-Modeling-Sentence-Pairs"><span class="nav-number">3.1.1.</span> <span class="nav-text">Attention-Based Convolutional Neural Network for Modeling Sentence Pairs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Attention-Based-Multi-Perspective-Convolutional-Neural-Networks-for-Textual-Similarity-Measurement"><span class="nav-number">3.1.2.</span> <span class="nav-text">Attention-Based Multi-Perspective Convolutional Neural Networks for Textual Similarity Measurement</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单向Attention-Network"><span class="nav-number">3.2.</span> <span class="nav-text">单向Attention Network</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LSTM-BASED-DEEP-LEARNING-MODELS-FOR-NON-FACTOID-ANSWER-SELECTION-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">LSTM-BASED DEEP LEARNING MODELS FOR NON- FACTOID ANSWER SELECTION</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Inner-Attention-based-Recurrent-Neural-Networks-for-Answer-Selection"><span class="nav-number">3.2.2.</span> <span class="nav-text">Inner Attention based Recurrent Neural Networks for Answer Selection</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进二-Compare-Aggregate-Network"><span class="nav-number">4.</span> <span class="nav-text">改进二 Compare-Aggregate Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pairwise-Word-Interaction-Modeling-with-Deep-Neural-Networks-for-Semantic-Similarity-Measurement"><span class="nav-number">4.1.</span> <span class="nav-text">Pairwise Word Interaction Modeling with Deep Neural Networks for Semantic Similarity Measurement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences"><span class="nav-number">4.2.</span> <span class="nav-text">Bilateral Multi-Perspective Matching for Natural Language Sentences</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A-COMPARE-AGGREGATE-MODEL-FOR-MATCHING-TEXT-SEQUENCES"><span class="nav-number">4.3.</span> <span class="nav-text">A COMPARE-AGGREGATE MODEL FOR MATCHING TEXT SEQUENCES</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#One-more-thing"><span class="nav-number">5.</span> <span class="nav-text">One more thing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选择什么匹配函数"><span class="nav-number">5.1.</span> <span class="nav-text">选择什么匹配函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何利用句子不相似的部分"><span class="nav-number">5.2.</span> <span class="nav-text">如何利用句子不相似的部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Semantic-Matching"><span class="nav-number">5.2.1.</span> <span class="nav-text">Semantic Matching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Decomposition"><span class="nav-number">5.2.2.</span> <span class="nav-text">Decomposition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Composition"><span class="nav-number">5.2.3.</span> <span class="nav-text">Composition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Similarity-assessing"><span class="nav-number">5.2.4.</span> <span class="nav-text">Similarity assessing</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WikiQA数据集测试结果"><span class="nav-number">6.</span> <span class="nav-text">WikiQA数据集测试结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#各模型主要针对的问题及解决方法"><span class="nav-number">7.</span> <span class="nav-text">各模型主要针对的问题及解决方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#各模型损失函数及额外特征选取"><span class="nav-number">8.</span> <span class="nav-text">各模型损失函数及额外特征选取</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本模型Siamense-Network"><span class="nav-number">2.</span> <span class="nav-text">基本模型Siamense Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Attentive-pooling-networks"><span class="nav-number">2.1.</span> <span class="nav-text">Attentive pooling networks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Perspective-Sentence-Similarity-Modeling-with-Convolutional-Neural-Networks"><span class="nav-number">2.2.</span> <span class="nav-text">Multi-Perspective Sentence Similarity Modeling with Convolutional Neural Networks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM-BASED-DEEP-LEARNING-MODELS-FOR-NON-FACTOID-ANSWER-SELECTION"><span class="nav-number">2.3.</span> <span class="nav-text">LSTM-BASED DEEP LEARNING MODELS FOR NON FACTOID ANSWER SELECTION</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Learning-to-rank-short-text-pairs-with-convolutional-deep-neural-networks"><span class="nav-number">2.4.</span> <span class="nav-text">Learning to rank short text pairs with convolutional deep neural networks</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进一-Attention-Network"><span class="nav-number">3.</span> <span class="nav-text">改进一 Attention Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#双向Attention-Network"><span class="nav-number">3.1.</span> <span class="nav-text">双向Attention Network</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Attention-Based-Convolutional-Neural-Network-for-Modeling-Sentence-Pairs"><span class="nav-number">3.1.1.</span> <span class="nav-text">Attention-Based Convolutional Neural Network for Modeling Sentence Pairs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Attention-Based-Multi-Perspective-Convolutional-Neural-Networks-for-Textual-Similarity-Measurement"><span class="nav-number">3.1.2.</span> <span class="nav-text">Attention-Based Multi-Perspective Convolutional Neural Networks for Textual Similarity Measurement</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单向Attention-Network"><span class="nav-number">3.2.</span> <span class="nav-text">单向Attention Network</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LSTM-BASED-DEEP-LEARNING-MODELS-FOR-NON-FACTOID-ANSWER-SELECTION-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">LSTM-BASED DEEP LEARNING MODELS FOR NON- FACTOID ANSWER SELECTION</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Inner-Attention-based-Recurrent-Neural-Networks-for-Answer-Selection"><span class="nav-number">3.2.2.</span> <span class="nav-text">Inner Attention based Recurrent Neural Networks for Answer Selection</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进二-Compare-Aggregate-Network"><span class="nav-number">4.</span> <span class="nav-text">改进二 Compare-Aggregate Network</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pairwise-Word-Interaction-Modeling-with-Deep-Neural-Networks-for-Semantic-Similarity-Measurement"><span class="nav-number">4.1.</span> <span class="nav-text">Pairwise Word Interaction Modeling with Deep Neural Networks for Semantic Similarity Measurement</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences"><span class="nav-number">4.2.</span> <span class="nav-text">Bilateral Multi-Perspective Matching for Natural Language Sentences</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A-COMPARE-AGGREGATE-MODEL-FOR-MATCHING-TEXT-SEQUENCES"><span class="nav-number">4.3.</span> <span class="nav-text">A COMPARE-AGGREGATE MODEL FOR MATCHING TEXT SEQUENCES</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#One-more-thing"><span class="nav-number">5.</span> <span class="nav-text">One more thing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#选择什么匹配函数"><span class="nav-number">5.1.</span> <span class="nav-text">选择什么匹配函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何利用句子不相似的部分"><span class="nav-number">5.2.</span> <span class="nav-text">如何利用句子不相似的部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Semantic-Matching"><span class="nav-number">5.2.1.</span> <span class="nav-text">Semantic Matching</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Decomposition"><span class="nav-number">5.2.2.</span> <span class="nav-text">Decomposition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Composition"><span class="nav-number">5.2.3.</span> <span class="nav-text">Composition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Similarity-assessing"><span class="nav-number">5.2.4.</span> <span class="nav-text">Similarity assessing</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结论"><span class="nav-number">6.</span> <span class="nav-text">结论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#WikiQA数据集测试结果"><span class="nav-number">6.1.</span> <span class="nav-text">WikiQA数据集测试结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#各模型针对的问题及解决方法"><span class="nav-number">6.2.</span> <span class="nav-text">各模型针对的问题及解决方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#各模型损失函数及额外特征选取"><span class="nav-number">6.3.</span> <span class="nav-text">各模型损失函数及额外特征选取</span></a></li></ol></li></ol></div>
             
 
           </div>
