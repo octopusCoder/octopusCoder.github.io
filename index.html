@@ -496,9 +496,34 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 </thead>
 <tbody>
 <tr>
-<td>CAM[13]</td>
-<td style="text-align:center">选择什么匹配函数</td>
-<td style="text-align:right">对比六种匹配函数在四个数据集的结果，选择SUBMULT+NN或MULT</td>
+<td>APN[2]</td>
+<td style="text-align:center">基本模型无法获得两路输入的联合表示</td>
+<td style="text-align:right">双向Attention</td>
+</tr>
+<tr>
+<td>MPCNN[3]</td>
+<td style="text-align:center">语言表达的多样性、歧义</td>
+<td style="text-align:right">利用CNN提取不同粒度特征，配合多种pooling策略，在不同句子区域使用多种函数进行比较</td>
+</tr>
+<tr>
+<td>LBDLM[4]</td>
+<td style="text-align:center">句子在词级别不相似，但在语义级别相似；LSTM输出直接进行pooling可能会损失语言区域信息</td>
+<td style="text-align:right">利用CNN对LSTM输出进行处理，获得问题和答案更多的组合表示信息</td>
+</tr>
+<tr>
+<td>LRCNN[5]</td>
+<td style="text-align:center">传统特征工程需要复杂的工作和额外资源</td>
+<td style="text-align:right">词向量, CNN</td>
+</tr>
+<tr>
+<td>ABCNN[7]</td>
+<td style="text-align:center">基本模型单独处理两个句子，没有充分考虑句子间的联系</td>
+<td style="text-align:right">双向Attention</td>
+</tr>
+<tr>
+<td>ABMPCNN[8]</td>
+<td style="text-align:center">MPCNN无法获得句子间信息</td>
+<td style="text-align:right">改进MPCNN模型，加入Attention层</td>
 </tr>
 <tr>
 <td>IARNN[10]</td>
@@ -506,29 +531,24 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 <td style="text-align:right">“Attention before represention”，在使用LSTM处理之前进行Attention</td>
 </tr>
 <tr>
-<td>BiMPM[12]</td>
-<td style="text-align:center">传统的模型只在一个方向上应用Attention，匹配时只在词级别或句子级别进行匹配</td>
-<td style="text-align:right">双向Attention，multi-perspective匹配函数，四种匹配策略</td>
-</tr>
-<tr>
 <td>PWIM[11]</td>
 <td style="text-align:center">一般的神经网络模型主要利用句子粗粒度信息，无法捕获细粒度词级别的信息</td>
 <td style="text-align:right">pairwise word interaction modeling，捕获跨句子的词关联信息</td>
 </tr>
 <tr>
+<td>BiMPM[12]</td>
+<td style="text-align:center">传统的模型只在一个方向上应用Attention，匹配时只在词级别或句子级别进行匹配</td>
+<td style="text-align:right">双向Attention，multi-perspective匹配函数，四种匹配策略</td>
+</tr>
+<tr>
+<td>CAM[13]</td>
+<td style="text-align:center">选择什么匹配函数</td>
+<td style="text-align:right">对比六种匹配函数在四个数据集的结果，选择SUBMULT+NN或MULT</td>
+</tr>
+<tr>
 <td>LDC[14]</td>
 <td style="text-align:center">当要比较的句子结构非常相似时，如何利用不相似的部分进行区分</td>
 <td style="text-align:right">Lexical Decomposition and Composition</td>
-</tr>
-<tr>
-<td>ABCNN[7]</td>
-<td style="text-align:center">基本模型单独处理两个句子，没有充分考虑句子间的联系</td>
-<td style="text-align:right">双向Attention。</td>
-</tr>
-<tr>
-<td>APN[2]</td>
-<td style="text-align:center">基本模型无法获得两路输入的联合表示</td>
-<td style="text-align:right">双向Attention</td>
 </tr>
 </tbody>
 </table>
@@ -543,13 +563,43 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 </thead>
 <tbody>
 <tr>
-<td>CAM[13]</td>
-<td style="text-align:center">不明确</td>
+<td>APN[2]</td>
+<td style="text-align:center">hinge loss</td>
 <td style="text-align:right">未使用</td>
+</tr>
+<tr>
+<td>MPCNN[3]</td>
+<td style="text-align:center">hinge loss, KL-divergence loss</td>
+<td style="text-align:right">PARAGRAM vectors, POS tagger</td>
+</tr>
+<tr>
+<td>LBDLM[4]</td>
+<td style="text-align:center">hinge loss</td>
+<td style="text-align:right">未使用</td>
+</tr>
+<tr>
+<td>LRCNN[5]</td>
+<td style="text-align:center">cross-entropy</td>
+<td style="text-align:right">不明确，论文中给出了添加Addition features的方法</td>
+</tr>
+<tr>
+<td>ABCNN[7]</td>
+<td style="text-align:center">不明确</td>
+<td style="text-align:right">sentence lengths, WordCnt and WgtWordCnt</td>
+</tr>
+<tr>
+<td>ABMPCNN[8]</td>
+<td style="text-align:center">不明确</td>
+<td style="text-align:right">PARAGRAM-PHRASE word embeddings</td>
 </tr>
 <tr>
 <td>IARNN[10]</td>
 <td style="text-align:center">max-margin hinge loss</td>
+<td style="text-align:right">未使用</td>
+</tr>
+<tr>
+<td>PWIM[11]</td>
+<td style="text-align:center">hinge loss, KL-divergence</td>
 <td style="text-align:right">未使用</td>
 </tr>
 <tr>
@@ -558,23 +608,13 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 <td style="text-align:right">未使用，但可扩展使用POS，NER特征</td>
 </tr>
 <tr>
-<td>PWIM[11]</td>
-<td style="text-align:center">hinge loss, KL-divergence</td>
+<td>CAM[13]</td>
+<td style="text-align:center">不明确</td>
 <td style="text-align:right">未使用</td>
 </tr>
 <tr>
 <td>LDC[14]</td>
 <td style="text-align:center">不明确</td>
-<td style="text-align:right">未使用</td>
-</tr>
-<tr>
-<td>ABCNN[7]</td>
-<td style="text-align:center">不明确</td>
-<td style="text-align:right">sentence lengths, WordCnt and WgtWordCnt</td>
-</tr>
-<tr>
-<td>APN[2]</td>
-<td style="text-align:center">hinge loss</td>
 <td style="text-align:right">未使用</td>
 </tr>
 </tbody>
