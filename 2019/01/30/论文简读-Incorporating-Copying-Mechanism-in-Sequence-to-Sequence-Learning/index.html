@@ -79,7 +79,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="copynet，encoder-decoder，句子改写," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -95,18 +95,20 @@
 
 
 
-<meta name="description" content="我菜故我在">
-<meta name="keywords" content="copynet，encoder-decoder，句子改写">
+<meta name="description" content="Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：  原文：第76届金球奖，布莱德利·库珀、LadyGaga主演的《一个明星的诞生》歌曲《Shallow》获得最佳原创歌曲。 翻译：在第76届金球奖上，布莱德利·库珀和LadyG">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文简读-Incorporating Copying Mechanism in Sequence-to-Sequence Learning">
 <meta property="og:url" content="http://yoursite.com/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="我菜故我在">
+<meta property="og:description" content="Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：  原文：第76届金球奖，布莱德利·库珀、LadyGaga主演的《一个明星的诞生》歌曲《Shallow》获得最佳原创歌曲。 翻译：在第76届金球奖上，布莱德利·库珀和LadyG">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-30T09:35:58.000Z">
+<meta property="og:image" content="http://yoursite.com/images/rnn%20encoder.png">
+<meta property="og:image" content="http://yoursite.com/images/rnn%20decoder.png">
+<meta property="og:updated_time" content="2019-01-30T13:19:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Incorporating Copying Mechanism in Sequence-to-Sequence Learning">
-<meta name="twitter:description" content="我菜故我在">
+<meta name="twitter:description" content="Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：  原文：第76届金球奖，布莱德利·库珀、LadyGaga主演的《一个明星的诞生》歌曲《Shallow》获得最佳原创歌曲。 翻译：在第76届金球奖上，布莱德利·库珀和LadyG">
+<meta name="twitter:image" content="http://yoursite.com/images/rnn%20encoder.png">
 
 
 
@@ -325,7 +327,21 @@
       
 
       
-        
+        <p>Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：</p>
+<blockquote>
+<p>原文：第76届金球奖，布莱德利·库珀、LadyGaga主演的《一个明星的诞生》歌曲《Shallow》获得最佳原创歌曲。</p>
+<p>翻译：在第76届金球奖上，布莱德利·库珀和LadyGaga主演的歌曲《浅滩》获得了最佳原创歌曲奖。（zh-en-zh）</p>
+</blockquote>
+<p>在对于歌曲名字的翻译上出现了错误，而在人工翻译中一般会将这些词语“照抄”，也就是本文主要说明的copy机制。</p>
+<p>##RNN Encoder-Decoder<br>传统的RNN Encoder-Decoder模型编码过程为：<br><img src="/images/rnn encoder.png" alt="rnn-encoder"><br>解码过程为：<br><img src="/images/rnn decoder.png" alt="rnn-encoder"></p>
+<p>##CopyNet<br>CopyNet与传统RNN模型在Decoder阶段主要有三点区别：</p>
+<ol>
+<li>预测。copynet根据generate-mode和copy-mode混合模型预测words。</li>
+<li>状态更新。copynet在更新t时刻的状态时，不仅使用t-1时刻预测word的embedding，还使用其附近的location-specific隐层状态。</li>
+<li>Reading M（M定义见模型结构图）。除了在M中使用attentive read机制外，copynet还使用了“selective read”机制，使模型具有content-based addressing和location-based addressing的混合能力。</li>
+</ol>
+<p>###Prediction with Copying and Generation<br>给定decoder RNN在t时刻的状态，目标word预测概率由以下混合概率公式决定：</p>
+
       
     </div>
     
@@ -339,12 +355,6 @@
     
 
     <footer class="post-footer">
-      
-        <div class="post-tags">
-          
-            <a href="/tags/copynet，encoder-decoder，句子改写/" rel="tag"># copynet，encoder-decoder，句子改写</a>
-          
-        </div>
       
 
       
