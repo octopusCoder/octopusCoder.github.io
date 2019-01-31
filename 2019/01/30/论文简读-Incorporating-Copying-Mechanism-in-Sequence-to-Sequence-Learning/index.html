@@ -95,20 +95,25 @@
 
 
 
-<meta name="description" content="Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：  原文：第76届金球奖，布莱德利·库珀、LadyGaga主演的《一个明星的诞生》歌曲《Shallow》获得最佳原创歌曲。 翻译：在第76届金球奖上，布莱德利·库珀和LadyG">
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：  原文：第7">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文简读-Incorporating Copying Mechanism in Sequence-to-Sequence Learning">
 <meta property="og:url" content="http://yoursite.com/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：  原文：第76届金球奖，布莱德利·库珀、LadyGaga主演的《一个明星的诞生》歌曲《Shallow》获得最佳原创歌曲。 翻译：在第76届金球奖上，布莱德利·库珀和LadyG">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：  原文：第7">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/rnn%20encoder.png">
-<meta property="og:image" content="http://yoursite.com/images/rnn%20decoder.png">
-<meta property="og:updated_time" content="2019-01-30T13:19:30.000Z">
+<meta property="og:image" content="http://yoursite.com/images/rnnencoder.png">
+<meta property="og:image" content="http://yoursite.com/images/rnndecoder.png">
+<meta property="og:image" content="http://yoursite.com/images/mixtureprobabilities.png">
+<meta property="og:image" content="http://yoursite.com/images/probabilitytwomodes.png">
+<meta property="og:image" content="http://yoursite.com/images/Z.png">
+<meta property="og:image" content="http://yoursite.com/images/gmscore.png">
+<meta property="og:image" content="http://yoursite.com/images/cmscore.png">
+<meta property="og:updated_time" content="2019-01-31T03:32:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Incorporating Copying Mechanism in Sequence-to-Sequence Learning">
-<meta name="twitter:description" content="Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：  原文：第76届金球奖，布莱德利·库珀、LadyGaga主演的《一个明星的诞生》歌曲《Shallow》获得最佳原创歌曲。 翻译：在第76届金球奖上，布莱德利·库珀和LadyG">
-<meta name="twitter:image" content="http://yoursite.com/images/rnn%20encoder.png">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：  原文：第7">
+<meta name="twitter:image" content="http://yoursite.com/images/rnnencoder.png">
 
 
 
@@ -327,20 +332,32 @@
       
 
       
-        <p>Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：</p>
+        <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<p>Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：</p>
 <blockquote>
 <p>原文：第76届金球奖，布莱德利·库珀、LadyGaga主演的《一个明星的诞生》歌曲《Shallow》获得最佳原创歌曲。</p>
 <p>翻译：在第76届金球奖上，布莱德利·库珀和LadyGaga主演的歌曲《浅滩》获得了最佳原创歌曲奖。（zh-en-zh）</p>
 </blockquote>
 <p>在对于歌曲名字的翻译上出现了错误，而在人工翻译中一般会将这些词语“照抄”，也就是本文主要说明的copy机制。</p>
-<p>##RNN Encoder-Decoder<br>传统的RNN Encoder-Decoder模型编码过程为：<br><img src="/images/rnn encoder.png" alt="rnn-encoder"><br>解码过程为：<br><img src="/images/rnn decoder.png" alt="rnn-encoder"></p>
-<p>##CopyNet<br>CopyNet与传统RNN模型在Decoder阶段主要有三点区别：</p>
+<h2 id="RNN-Encoder-Decoder"><a href="#RNN-Encoder-Decoder" class="headerlink" title="RNN Encoder-Decoder"></a>RNN Encoder-Decoder</h2><p>传统的RNN Encoder-Decoder模型编码过程为：<br><img src="/images/rnnencoder.png" alt="rnn-encoder"><br>解码过程为：<br><img src="/images/rnndecoder.png" alt="rnn-encoder"></p>
+<h2 id="CopyNet"><a href="#CopyNet" class="headerlink" title="CopyNet"></a>CopyNet</h2><p>CopyNet与传统RNN模型在Decoder阶段主要有三点区别：</p>
 <ol>
 <li>预测。copynet根据generate-mode和copy-mode混合模型预测words。</li>
 <li>状态更新。copynet在更新t时刻的状态时，不仅使用t-1时刻预测word的embedding，还使用其附近的location-specific隐层状态。</li>
 <li>Reading M（M定义见模型结构图）。除了在M中使用attentive read机制外，copynet还使用了“selective read”机制，使模型具有content-based addressing和location-based addressing的混合能力。</li>
 </ol>
-<p>###Prediction with Copying and Generation<br>给定decoder RNN在t时刻的状态，目标word预测概率由以下混合概率公式决定：</p>
+<h3 id="Prediction-with-Copying-and-Generation"><a href="#Prediction-with-Copying-and-Generation" class="headerlink" title="Prediction with Copying and Generation"></a>Prediction with Copying and Generation</h3><p>给定decoder RNN在t时刻的状态，目标word预测概率由以下混合概率公式决定：<br><img src="/images/mixtureprobabilities.png" alt="rnn-encoder"><br>g表示generate-mode, c表示copy mode。<br>具体计算方法为：<br><img src="/images/probabilitytwomodes.png" alt="rnn-encoder"><br>Z表示两个mode共享的规范系数：<br><img src="/images/Z.png" alt="rnn-encoder"></p>
+<h4 id="Generate-Mode-Score"><a href="#Generate-Mode-Score" class="headerlink" title="Generate-Mode Score"></a>Generate-Mode Score</h4><p>与一般的RNN encoder-decoder 类似：<br><img src="/images/gmscore.png" alt="rnn-encoder"></p>
+<h4 id="Copy-Mode-Score"><a href="#Copy-Mode-Score" class="headerlink" title="Copy-Mode Score"></a>Copy-Mode Score</h4><p>第j个word得分计算公式为：<br><img src="/images/cmscore.png" alt="rnn-encoder"></p>
+<h3 id="State-Update"><a href="#State-Update" class="headerlink" title="State Update"></a>State Update</h3><p>Copynet利用解码器前一个状态$s_{t-1}$和公式2</p>
 
       
     </div>
@@ -425,8 +442,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
             <img class="site-author-image" itemprop="image"
@@ -453,15 +479,6 @@
           
 
           
-            
-            
-            <div class="site-state-item site-state-tags">
-              
-                <span class="site-state-item-count">1</span>
-                <span class="site-state-item-name">标签</span>
-              
-            </div>
-          
 
         </nav>
 
@@ -482,6 +499,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RNN-Encoder-Decoder"><span class="nav-number">1.</span> <span class="nav-text">RNN Encoder-Decoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CopyNet"><span class="nav-number">2.</span> <span class="nav-text">CopyNet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Prediction-with-Copying-and-Generation"><span class="nav-number">2.1.</span> <span class="nav-text">Prediction with Copying and Generation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Generate-Mode-Score"><span class="nav-number">2.1.1.</span> <span class="nav-text">Generate-Mode Score</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Copy-Mode-Score"><span class="nav-number">2.1.2.</span> <span class="nav-text">Copy-Mode Score</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#State-Update"><span class="nav-number">2.2.</span> <span class="nav-text">State Update</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
