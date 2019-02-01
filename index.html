@@ -358,7 +358,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <blockquote>
 <p>正确句子：嫦娥四号着陆器接受光照自主唤醒。<br>生成句子：嫦娥四号嫦娥四号嫦娥四号着陆器接受光照自主唤醒。</p>
 </blockquote>
-<p>猜测可能是由于在$s_{t-1}$-&gt;$s_t$更新时，通过selective reader引入了$h<em>eta$，而相邻单词$h</em>{\eta+1}$与$h_eta$数值也比较接近，导致$s<em>t$与$s</em>{t-1}$也比较接近，使解码器输出的单词相同。具体原因有待进一步探究。</p>
+<p>猜测可能是由于在$s_{t-1}$-&gt;$s_t$更新时，通过selective reader引入了<span>$h_eta$</span><!-- Has MathJax -->，而相邻单词<span>$h_{\eta+1}$</span><!-- Has MathJax -->与<span>$h_eta$</span><!-- Has MathJax -->数值也比较接近，导致<span>$s_t$</span><!-- Has MathJax -->与<span>$s_{t-1}$</span><!-- Has MathJax -->也比较接近，使解码器输出的单词相同。具体原因有待进一步探究。</p>
 
           
         
