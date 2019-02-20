@@ -95,23 +95,22 @@
 
 
 
-<meta name="description" content="ACL 2017入选论文，作者为来自斯坦福的Danqi Chen(cs224n助教)。Facebook于2017.7.27日开放源码，项目名为DrQA。  GitHub地址：https://github.com/facebookresearch/DrQA  DrQA的主要任务是大规模机器阅读（MRS）。DrQA会在一个非常庞大的非结构化文档语料库中寻找问题的答案。这个系统最大的挑战是文档检索">
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语，生成原文中不存在的句子。抽取式更为简单，并且在语法和准确性方面">
 <meta property="og:type" content="article">
-<meta property="og:title" content="论文简读-Reading Wikipedia to Answer Open-Domain Questions">
-<meta property="og:url" content="http://yoursite.com/2017/07/27/论文简读-Reading-Wikipedia-to-Answer-Open-Domain-Questions/index.html">
+<meta property="og:title" content="论文简读-Get To The Point: Summarization with Pointer-Generator Networks">
+<meta property="og:url" content="http://yoursite.com/2019/02/20/论文简读-Get-To-The-Point-Summarization-with-Pointer-Generator-Networks/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="ACL 2017入选论文，作者为来自斯坦福的Danqi Chen(cs224n助教)。Facebook于2017.7.27日开放源码，项目名为DrQA。  GitHub地址：https://github.com/facebookresearch/DrQA  DrQA的主要任务是大规模机器阅读（MRS）。DrQA会在一个非常庞大的非结构化文档语料库中寻找问题的答案。这个系统最大的挑战是文档检索">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语，生成原文中不存在的句子。抽取式更为简单，并且在语法和准确性方面">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/rwaodq-model.png">
-<meta property="og:image" content="http://yoursite.com/images/tf.png">
-<meta property="og:image" content="http://yoursite.com/images/aij.png">
-<meta property="og:image" content="http://yoursite.com/images/bj.png">
-<meta property="og:image" content="http://yoursite.com/images/pred.png">
-<meta property="og:updated_time" content="2017-08-07T06:35:19.000Z">
+<meta property="og:image" content="http://yoursite.com/images/Baselinesequence2sequence">
+<meta property="og:image" content="http://yoursite.com/images/attentiondistribution">
+<meta property="og:image" content="http://yoursite.com/images/contextvector">
+<meta property="og:image" content="http://yoursite.com/images/Pvocab">
+<meta property="og:updated_time" content="2019-02-20T12:56:11.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="论文简读-Reading Wikipedia to Answer Open-Domain Questions">
-<meta name="twitter:description" content="ACL 2017入选论文，作者为来自斯坦福的Danqi Chen(cs224n助教)。Facebook于2017.7.27日开放源码，项目名为DrQA。  GitHub地址：https://github.com/facebookresearch/DrQA  DrQA的主要任务是大规模机器阅读（MRS）。DrQA会在一个非常庞大的非结构化文档语料库中寻找问题的答案。这个系统最大的挑战是文档检索">
-<meta name="twitter:image" content="http://yoursite.com/images/rwaodq-model.png">
+<meta name="twitter:title" content="论文简读-Get To The Point: Summarization with Pointer-Generator Networks">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语，生成原文中不存在的句子。抽取式更为简单，并且在语法和准确性方面">
+<meta name="twitter:image" content="http://yoursite.com/images/Baselinesequence2sequence">
 
 
 
@@ -141,13 +140,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/07/27/论文简读-Reading-Wikipedia-to-Answer-Open-Domain-Questions/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/02/20/论文简读-Get-To-The-Point-Summarization-with-Pointer-Generator-Networks/"/>
 
 
 
 
 
-  <title>论文简读-Reading Wikipedia to Answer Open-Domain Questions | 小菜鸡</title>
+  <title>论文简读-Get To The Point: Summarization with Pointer-Generator Networks | 小菜鸡</title>
   
 
 
@@ -263,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/27/论文简读-Reading-Wikipedia-to-Answer-Open-Domain-Questions/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/20/论文简读-Get-To-The-Point-Summarization-with-Pointer-Generator-Networks/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jeb">
@@ -280,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">论文简读-Reading Wikipedia to Answer Open-Domain Questions</h1>
+          <h1 class="post-title" itemprop="name headline">论文简读-Get To The Point: Summarization with Pointer-Generator Networks</h1>
         
 
         <div class="post-meta">
@@ -292,8 +291,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-27T16:30:19+08:00">
-                2017-07-27
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-20T17:00:19+08:00">
+                2019-02-20
               </time>
             
 
@@ -330,24 +329,20 @@
       
 
       
-        <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+        <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
 </script>
 
-<p>ACL 2017入选论文，作者为来自斯坦福的Danqi Chen(cs224n助教)。Facebook于2017.7.27日开放源码，项目名为DrQA。</p>
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<p>摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语，生成原文中不存在的句子。抽取式更为简单，并且在语法和准确性方面可以保证基本的效果。但如果希望拥有神奇的能力，例如 “paraphrasing, generalization, or the incorporation of real-world knowledge”，就需要抽象式模型了。本文的工作对2016年提出的copyNet进行了许多改进，关于copyNet的介绍可以参考：</p>
 <blockquote>
-<p>GitHub地址：<a href="https://github.com/facebookresearch/DrQA" target="_blank" rel="external">https://github.com/facebookresearch/DrQA</a></p>
 </blockquote>
-<p>DrQA的主要任务是大规模机器阅读（MRS）。DrQA会在一个非常庞大的非结构化文档语料库中寻找问题的答案。这个系统最大的挑战是文档检索与文本的机器理解如何更好的结合。</p>
-<p><img src="/images/rwaodq-model.png" alt="模型结构图"></p>
-<h2 id="文档检索"><a href="#文档检索" class="headerlink" title="文档检索"></a>文档检索</h2><p>采用基于二元语法哈希（bigram hashing）和TF-IDF匹配的搜索方法。</p>
-<h2 id="文档阅读理解"><a href="#文档阅读理解" class="headerlink" title="文档阅读理解"></a>文档阅读理解</h2><p>篇章和问题均采用三层双向LSTM，128个hidden units进行编码。</p>
-<h3 id="篇章编码"><a href="#篇章编码" class="headerlink" title="篇章编码"></a>篇章编码</h3><h4 id="Word-embedding"><a href="#Word-embedding" class="headerlink" title="Word embedding"></a>Word embedding</h4><p>GloVe, 300-dimensional</p>
-<h4 id="Exact-match"><a href="#Exact-match" class="headerlink" title="Exact match."></a>Exact match.</h4><p>篇章中的某个词的原始、全部转换为小写和形态上是否匹配。</p>
-<h4 id="Token-features"><a href="#Token-features" class="headerlink" title="Token features."></a>Token features.</h4><p><img src="/images/tf.png" alt="tf"></p>
-<h4 id="Aligned-question-embedding"><a href="#Aligned-question-embedding" class="headerlink" title="Aligned question embedding."></a>Aligned question embedding.</h4><p>与问题计算注意力权重后获得的特征。</p>
-<p><img src="/images/aij.png" alt="aij"></p>
-<h3 id="问题编码"><a href="#问题编码" class="headerlink" title="问题编码"></a>问题编码</h3><p>使用一个需要学习的权值向量计算问题各个单词的注意力权重，然后加权求和作为问题的整体表示。<br><img src="/images/bj.png" alt="bj"></p>
-<h3 id="预测"><a href="#预测" class="headerlink" title="预测"></a>预测</h3><p><img src="/images/pred.png" alt="pred"><br>获得篇章单词与问题的相似度结果后，选择Pstart(i)×Pend(i′)最大的作为答案开始坐标和结束坐标，坐标之间即为答案，同时可利用i ≤ i′ ≤ i+15限制答案长度。</p>
+<p>copyNet在解码阶段会出现多次重复的情况，Pointer-Generator Networks使用Coverage mechanism来解决这个问题。下面具体介绍模型实现细节。</p>
+<p>##Sequence-to-sequence attentional model<br>文中首先使用Seq2Seq模型，并结合Attention实现了baseline model。如下图所示：<br><img src="/images/Baselinesequence2sequence" alt="rnn-encoder"><br>其中attention分布计算方式与Bahdanau[]在机器翻译中的公式类似，这里补充说明一下，attention机制在NLP领域首次正是Bahdanau等人的工作。公式如下：<br><img src="/images/attentiondistribution" alt="rnn-encoder"><br>其中<span>$h_t$</span><!-- Has MathJax -->表示encoder hidden states，<span>$s_t$</span><!-- Has MathJax -->表示decoder state。v，<span>$W_h$</span><!-- Has MathJax -->，<span>$W_s$</span><!-- Has MathJax -->和<span>$b_attn$</span><!-- Has MathJax -->均为可学习的参数。<br>attention distribution表示的是源句子单词的权值分布，用于在解码时有侧重的产生下一个单词。下一步，利用attention distribution产生context vector :<br><img src="/images/contextvector" alt="rnn-encoder"><br>vocab概率分布<span>$P_vocab$</span><!-- Has MathJax -->由context vector和decoder state <span>$s_t$</span><!-- Has MathJax -->拼接后产生：<br><img src="/images/Pvocab" alt="rnn-encoder"><br>【待续】</p>
 
       
     </div>
@@ -372,8 +367,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/03/LeetCode-279-Perfect-Squares/" rel="next" title="LeetCode-279.Perfect Squares">
-                <i class="fa fa-chevron-left"></i> LeetCode-279.Perfect Squares
+              <a href="/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/" rel="next" title="论文简读-Incorporating Copying Mechanism in Sequence-to-Sequence Learning">
+                <i class="fa fa-chevron-left"></i> 论文简读-Incorporating Copying Mechanism in Sequence-to-Sequence Learning
               </a>
             
           </div>
@@ -381,10 +376,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/06/论文简读-Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences/" rel="prev" title="论文简读-Bilateral Multi-Perspective Matching for Natural Language Sentences">
-                论文简读-Bilateral Multi-Perspective Matching for Natural Language Sentences <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -436,17 +427,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
             <img class="site-author-image" itemprop="image"
@@ -493,22 +475,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#文档检索"><span class="nav-number">1.</span> <span class="nav-text">文档检索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文档阅读理解"><span class="nav-number">2.</span> <span class="nav-text">文档阅读理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#篇章编码"><span class="nav-number">2.1.</span> <span class="nav-text">篇章编码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Word-embedding"><span class="nav-number">2.1.1.</span> <span class="nav-text">Word embedding</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Exact-match"><span class="nav-number">2.1.2.</span> <span class="nav-text">Exact match.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Token-features"><span class="nav-number">2.1.3.</span> <span class="nav-text">Token features.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Aligned-question-embedding"><span class="nav-number">2.1.4.</span> <span class="nav-text">Aligned question embedding.</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#问题编码"><span class="nav-number">2.2.</span> <span class="nav-text">问题编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#预测"><span class="nav-number">2.3.</span> <span class="nav-text">预测</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
