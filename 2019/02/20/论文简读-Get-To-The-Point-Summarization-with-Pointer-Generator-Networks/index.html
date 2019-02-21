@@ -102,15 +102,15 @@
 <meta property="og:site_name" content="小菜鸡">
 <meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语，生成原文中不存在的句子。抽取式更为简单，并且在语法和准确性方面">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/Baselinesequence2sequence">
-<meta property="og:image" content="http://yoursite.com/images/attentiondistribution">
-<meta property="og:image" content="http://yoursite.com/images/contextvector">
-<meta property="og:image" content="http://yoursite.com/images/Pvocab">
-<meta property="og:updated_time" content="2019-02-20T12:56:11.000Z">
+<meta property="og:image" content="http://yoursite.com/images/Baselinesequence2sequence.png">
+<meta property="og:image" content="http://yoursite.com/images/attentiondistribution.png">
+<meta property="og:image" content="http://yoursite.com/images/contextvector.png">
+<meta property="og:image" content="http://yoursite.com/images/Pvocab.png">
+<meta property="og:updated_time" content="2019-02-21T03:43:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Get To The Point: Summarization with Pointer-Generator Networks">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语，生成原文中不存在的句子。抽取式更为简单，并且在语法和准确性方面">
-<meta name="twitter:image" content="http://yoursite.com/images/Baselinesequence2sequence">
+<meta name="twitter:image" content="http://yoursite.com/images/Baselinesequence2sequence.png">
 
 
 
@@ -342,7 +342,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <blockquote>
 </blockquote>
 <p>copyNet在解码阶段会出现多次重复的情况，Pointer-Generator Networks使用Coverage mechanism来解决这个问题。下面具体介绍模型实现细节。</p>
-<p>##Sequence-to-sequence attentional model<br>文中首先使用Seq2Seq模型，并结合Attention实现了baseline model。如下图所示：<br><img src="/images/Baselinesequence2sequence" alt="rnn-encoder"><br>其中attention分布计算方式与Bahdanau[]在机器翻译中的公式类似，这里补充说明一下，attention机制在NLP领域首次正是Bahdanau等人的工作。公式如下：<br><img src="/images/attentiondistribution" alt="rnn-encoder"><br>其中<span>$h_t$</span><!-- Has MathJax -->表示encoder hidden states，<span>$s_t$</span><!-- Has MathJax -->表示decoder state。v，<span>$W_h$</span><!-- Has MathJax -->，<span>$W_s$</span><!-- Has MathJax -->和<span>$b_attn$</span><!-- Has MathJax -->均为可学习的参数。<br>attention distribution表示的是源句子单词的权值分布，用于在解码时有侧重的产生下一个单词。下一步，利用attention distribution产生context vector :<br><img src="/images/contextvector" alt="rnn-encoder"><br>vocab概率分布<span>$P_vocab$</span><!-- Has MathJax -->由context vector和decoder state <span>$s_t$</span><!-- Has MathJax -->拼接后产生：<br><img src="/images/Pvocab" alt="rnn-encoder"><br>【待续】</p>
+<p>##Sequence-to-sequence attentional model<br>文中首先使用Seq2Seq模型，并结合Attention实现了baseline model。如下图所示：<br><img src="/images/Baselinesequence2sequence.png" alt="rnn-encoder"><br>其中attention分布计算方式与Bahdanau[]在机器翻译中的公式类似，这里补充说明一下，attention机制在NLP领域首次正是Bahdanau等人的工作。公式如下：<br><img src="/images/attentiondistribution.png" alt="rnn-encoder"><br>其中<span>$h_t$</span><!-- Has MathJax -->表示encoder hidden states，<span>$s_t$</span><!-- Has MathJax -->表示decoder state。v，<span>$W_h$</span><!-- Has MathJax -->，<span>$W_s$</span><!-- Has MathJax -->和<span>$b_attn$</span><!-- Has MathJax -->均为可学习的参数。<br>attention distribution表示的是源句子单词的权值分布，用于在解码时有侧重的产生下一个单词。下一步，利用attention distribution产生context vector :<br><img src="/images/contextvector.png" alt="rnn-encoder"><br>vocab概率分布<span>$P_vocab$</span><!-- Has MathJax -->由context vector和decoder state <span>$s_t$</span><!-- Has MathJax -->拼接后产生：<br><img src="/images/Pvocab.png" alt="rnn-encoder"><br>【待续】</p>
 
       
     </div>
