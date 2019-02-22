@@ -95,22 +95,22 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语，生成原文中不存在的句子。抽取式更为简单，并且在语法和准确性方面">
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语。抽取式更为简单，并且在语法和准确性方面可以保证基本的效果。但如">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文简读-Get To The Point: Summarization with Pointer-Generator Networks">
 <meta property="og:url" content="http://yoursite.com/2019/02/20/论文简读-Get-To-The-Point-Summarization-with-Pointer-Generator-Networks/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语，生成原文中不存在的句子。抽取式更为简单，并且在语法和准确性方面">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语。抽取式更为简单，并且在语法和准确性方面可以保证基本的效果。但如">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/Baselinesequence2sequence.png">
 <meta property="og:image" content="http://yoursite.com/images/attentiondistribution.png">
 <meta property="og:image" content="http://yoursite.com/images/Bahdanau.png">
 <meta property="og:image" content="http://yoursite.com/images/contextvector.png">
 <meta property="og:image" content="http://yoursite.com/images/Pvocab.png">
-<meta property="og:updated_time" content="2019-02-21T12:12:57.000Z">
+<meta property="og:updated_time" content="2019-02-22T09:37:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Get To The Point: Summarization with Pointer-Generator Networks">
-<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语，生成原文中不存在的句子。抽取式更为简单，并且在语法和准确性方面">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语。抽取式更为简单，并且在语法和准确性方面可以保证基本的效果。但如">
 <meta name="twitter:image" content="http://yoursite.com/images/Baselinesequence2sequence.png">
 
 
@@ -339,16 +339,19 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
 
-<p>摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语，生成原文中不存在的句子。抽取式更为简单，并且在语法和准确性方面可以保证基本的效果。但如果希望拥有神奇的能力，例如 “paraphrasing, generalization, or the incorporation of real-world knowledge”，就需要抽象式模型了。本文的工作对2016年提出的copyNet进行了许多改进，关于copyNet的介绍可以参考：</p>
+<p>摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语。抽取式更为简单，并且在语法和准确性方面可以保证基本的效果。但如果希望拥有神奇的能力，例如 “paraphrasing, generalization, or the incorporation of real-world knowledge”，就需要抽象式模型了。本文的工作对2016年提出的copyNet进行了许多改进，关于copyNet的介绍可以参考：</p>
 <blockquote>
 </blockquote>
 <p>copyNet在解码阶段会出现多次重复的情况，Pointer-Generator Networks使用Coverage mechanism来解决这个问题。下面具体介绍模型实现细节。</p>
-<h2 id="Sequence-to-sequence-attentional-model"><a href="#Sequence-to-sequence-attentional-model" class="headerlink" title="Sequence-to-sequence attentional model"></a>Sequence-to-sequence attentional model</h2><p>文中首先使用Seq2Seq模型，并结合Attention实现了baseline model。如下图所示：<br><img src="/images/Baselinesequence2sequence.png" alt="rnn-encoder"><br>文中提到其attention分布计算方式与Bahdanau[]在机器翻译中的公式类似，这里补充说明一下，attention机制在NLP领域首次正是Bahdanau等人的工作。本文公式如下：<br><img src="/images/attentiondistribution.png" alt="rnn-encoder"><br>其中<span>$h_t$</span><!-- Has MathJax -->表示encoder hidden states，<span>$s_t$</span><!-- Has MathJax -->表示decoder state。v，<span>$W_h$</span><!-- Has MathJax -->，<span>$W_s$</span><!-- Has MathJax -->和<span>$b_attn$</span><!-- Has MathJax -->均为可学习的参数。<br>但本文并未说明<span>$s_t$</span><!-- Has MathJax -->的计算方式，如果按照Bahdanau一文中的计算方式，貌似有些问题。不妨回顾一下：<br><img src="/images/Bahdanau.png" alt="rnn-encoder"><br>attention distribution表示的是源句子单词的权值分布，用于在解码时有侧重的产生下一个单词。下一步，利用attention distribution产生context vector :<br><img src="/images/contextvector.png" alt="rnn-encoder"><br>vocab概率分布<span>$P_{vocab}$</span><!-- Has MathJax -->由context vector和decoder state <span>$s_t$</span><!-- Has MathJax -->拼接后产生：<br><img src="/images/Pvocab.png" alt="rnn-encoder"><br>其中V，V’，b和b’是可学习的参数。<span>$P_{vocab}$</span><!-- Has MathJax -->是词表中所有词的概率分布，而预测词语w的概率为：</p>
-<span>$p\left(w\right) =P_{vocab}\left(w\right)$</span><!-- Has MathJax -->
-<p>训练过程中，每一个时间t的loss由目标word <span>$W^{\ast }_{t}$</span><!-- Has MathJax -->的negative log likelihood计算得出：</p>
-<span>$loss_{t}=-\log P\left( w^{*}_{t}\right)$</span><!-- Has MathJax -->
-<p>所有输入序列的总loss为：</p>
-<span>$loss=\dfrac {1}{T}\Sigma ^{T}_{t=0}loss_{t}$</span><!-- Has MathJax -->
+<h2 id="Sequence-to-sequence-attentional-model"><a href="#Sequence-to-sequence-attentional-model" class="headerlink" title="Sequence-to-sequence attentional model"></a>Sequence-to-sequence attentional model</h2><p>文中首先使用Seq2Seq模型，并结合Attention实现了baseline model。如下图所示：<br><img src="/images/Baselinesequence2sequence.png" alt="rnn-encoder"><br>文中提到其attention分布计算方式与Bahdanau[]在机器翻译中的公式类似，这里补充说明一下，attention机制在NLP领域首次正是Bahdanau等人的工作。本文公式如下：<br><img src="/images/attentiondistribution.png" alt="rnn-encoder"><br>其中<span>$h_t$</span><!-- Has MathJax -->表示encoder hidden states，<span>$s_t$</span><!-- Has MathJax -->表示decoder state。v，<span>$W_h$</span><!-- Has MathJax -->，<span>$W_s$</span><!-- Has MathJax -->和<span>$b_{attn}$</span><!-- Has MathJax -->均为可学习的参数。<br>但本文并未说明<span>$s_t$</span><!-- Has MathJax -->的计算方式，如果按照Bahdanau一文中的计算方式，貌似有些问题。不妨回顾一下：<br><img src="/images/Bahdanau.png" alt="rnn-encoder"><br>这里暂时偷个懒，公式中的符号就不一一介绍了，可以对比本文的表示方法，基本类似。可以看到，Bahdanau一文中先计算<span>$c_{i}$</span><!-- Has MathJax -->，然后利用<span>$c_{i}$</span><!-- Has MathJax -->，<span>$y_{i-1}$</span><!-- Has MathJax -->和<span>$s_{i-1}$</span><!-- Has MathJax -->来计算<span>$s_{i}$</span><!-- Has MathJax -->。而本文在计算context vectors时已经使用了<span>$s_{t}$</span><!-- Has MathJax -->。<br>attention distribution表示的是源句子单词的权值分布，用于在解码时有侧重的产生下一个单词。下一步，利用attention distribution产生context vector :<br><img src="/images/contextvector.png" alt="rnn-encoder"><br>vocab概率分布<span>$P_{vocab}$</span><!-- Has MathJax -->由context vector和decoder state <span>$s_t$</span><!-- Has MathJax -->拼接后产生：<br><img src="/images/Pvocab.png" alt="rnn-encoder"><br>其中V，V’，b和b’是可学习的参数。<span>$P_{vocab}$</span><!-- Has MathJax -->是词表中所有词的概率分布，而预测词语w的概率为：<br><span>$$\begin{gather*}
+p\left(w\right) =P_{vocab}\left(w\right)
+\end{gather*}$$</span><!-- Has MathJax --></p>
+<p>训练过程中，每一个时间t的loss由目标word <span>$W^{\ast }_{t}$</span><!-- Has MathJax -->的negative log likelihood计算得出：<br><span>$$\begin{gather*}
+loss_{t}=-\log P\left( w^{*}_{t}\right)
+\end{gather*}$$</span><!-- Has MathJax --></p>
+<p>所有输入序列的总loss为：<br><span>$$\begin{gather*}
+loss=\dfrac {1}{T}\Sigma ^{T}_{t=0}loss_{t}
+\end{gather*}$$</span><!-- Has MathJax --></p>
 <h2 id="Pointer-generator-network"><a href="#Pointer-generator-network" class="headerlink" title="Pointer-generator network"></a>Pointer-generator network</h2>
       
     </div>
