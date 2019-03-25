@@ -95,17 +95,17 @@
 
 
 
-<meta name="description" content="##BERT2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。20">
+<meta name="description" content="BERT2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。2018">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Language Model based on BERT">
 <meta property="og:url" content="http://yoursite.com/2019/03/25/Language-Model-based-on-BERT/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="##BERT2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。20">
+<meta property="og:description" content="BERT2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。2018">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-25T11:23:49.000Z">
+<meta property="og:updated_time" content="2019-03-25T11:30:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Language Model based on BERT">
-<meta name="twitter:description" content="##BERT2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。20">
+<meta name="twitter:description" content="BERT2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。2018">
 
 
 
@@ -326,8 +326,8 @@
       
 
       
-        <p>##BERT<br>2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。2018年1月3日微软亚洲研究院提交的R-NET模型在EM值（Exact Match表示预测答案和真实答案完全匹配）上以82.650的最高分领先，并率先超越人类分数82.304。而当谷歌一出手，便知有没有，目前SQuAD排行榜上已经被BERT霸屏，排行前列的模型几乎全部基于BERT。关于通用语言模型的介绍，可以参考另一篇翻译的博客，以及张俊林老师的介绍，参考链接附在本文末尾。</p>
-<p>##源码分析<br>谷歌已开放源码：</p>
+        <h2 id="BERT"><a href="#BERT" class="headerlink" title="BERT"></a>BERT</h2><p>2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。2018年1月3日微软亚洲研究院提交的R-NET模型在EM值（Exact Match表示预测答案和真实答案完全匹配）上以82.650的最高分领先，并率先超越人类分数82.304。而当谷歌一出手，便知有没有，目前SQuAD排行榜上已经被BERT霸屏，排行前列的模型几乎全部基于BERT。关于通用语言模型的介绍，可以参考另一篇翻译的博客，以及张俊林老师的介绍，参考链接附在本文末尾。</p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>谷歌已开放源码：</p>
 <blockquote>
 <p><a href="https://github.com/google-research/bert" target="_blank" rel="external">https://github.com/google-research/bert</a></p>
 </blockquote>
@@ -343,7 +343,7 @@
 <p>ppl: 自然语言处理领域（NLP）中，衡量语言模型好坏的指标。根据每个词来估计一句话出现的概率，并用句子长度作normalize，ppl值越小，表示该句子越合理。</p>
 </blockquote>
 <p>结果解析，ppl计算代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">def parse_result(result, all_tokens, output_file=None):</div><div class="line">  with tf.gfile.GFile(output_file, &quot;w&quot;) as writer:</div><div class="line">    tf.logging.info(&quot;***** Predict results *****&quot;)</div><div class="line">    i = 0</div><div class="line">    sentences = []</div><div class="line">    for word_loss in result:</div><div class="line">      # start of a sentence</div><div class="line">      if all_tokens[i] == &quot;[CLS]&quot;:</div><div class="line">        sentence = &#123;&#125;</div><div class="line">        tokens = []</div><div class="line">        sentence_loss = 0.0</div><div class="line">        word_count_per_sent = 0</div><div class="line">        i += 1</div><div class="line"></div><div class="line">      # add token</div><div class="line">      tokens.append(&#123;&quot;token&quot;: tokenization.printable_text(all_tokens[i]),</div><div class="line">                     &quot;prob&quot;: float(np.exp(-word_loss[0])) &#125;)</div><div class="line">      sentence_loss += word_loss[0]</div><div class="line">      word_count_per_sent += 1</div><div class="line">      i += 1</div><div class="line"></div><div class="line">      token_count_per_word = 0</div><div class="line">      while is_subtoken(all_tokens[i]):</div><div class="line">        token_count_per_word += 1</div><div class="line">        tokens.append(&#123;&quot;token&quot;: tokenization.printable_text(all_tokens[i]),</div><div class="line">                       &quot;prob&quot;: float(np.exp(-word_loss[token_count_per_word]))&#125;)</div><div class="line">        sentence_loss += word_loss[token_count_per_word]</div><div class="line">        i += 1</div><div class="line"></div><div class="line">      # end of a sentence</div><div class="line">      if all_tokens[i] == &quot;[SEP]&quot;:</div><div class="line">        sentence[&quot;tokens&quot;] = tokens</div><div class="line">        sentence[&quot;ppl&quot;] = float(np.exp(sentence_loss / word_count_per_sent))</div><div class="line">        sentences.append(sentence)</div><div class="line">        i += 1</div><div class="line"></div><div class="line">    if output_file is not None:</div><div class="line">      tf.logging.info(&quot;Saving results to %s&quot; % output_file)</div><div class="line">      writer.write(json.dumps(sentences, indent=2, ensure_ascii=False))</div></pre></td></tr></table></figure></p>
-<p>##模型训练、导出和部署<br>由于预训练模型中masked lm loss节点并未命名，所以添加name后需要启动很短暂的预训练，同时将模型导出。get_masked_lm_output函数参考bert-as-language-model中的代码进行相应改造。Tensorflow版本升级后，使用estimator接受输入，原来我们最爱的placeholder找不到了，而在部署模型时，仍需要使用placeholder接受输入，可在run_pretraining.py导出模型时添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">if FLAGS.do_export:</div><div class="line">    estimator._export_to_tpu = False</div><div class="line">    name_to_features = [(&quot;input_ids&quot;, tf.int32), (&quot;input_mask&quot;, tf.int32),</div><div class="line">                            (&quot;segment_ids&quot;, tf.int32), (&quot;masked_lm_positions&quot;, tf.int32), (&quot;masked_lm_ids&quot;, tf.int32),</div><div class="line">                            (&quot;masked_lm_weights&quot;, tf.float32), (&quot;next_sentence_labels&quot;, tf.int32)]</div><div class="line">    feature_placeholders = &#123;name: tf.placeholder(dtype, [1, FLAGS.max_seq_length],</div><div class="line">                                                     name=&apos;bert/&apos; + name + &quot;_placeholder&quot;) for name, dtype in</div><div class="line">                                name_to_features&#125;</div><div class="line">    serving_input_fn = tf.estimator.export.build_raw_serving_input_receiver_fn(feature_placeholders)</div><div class="line">    path = estimator.export_savedmodel(&quot;./export/&quot;, serving_input_fn)</div></pre></td></tr></table></figure></p>
+<h2 id="模型训练、导出和部署"><a href="#模型训练、导出和部署" class="headerlink" title="模型训练、导出和部署"></a>模型训练、导出和部署</h2><p>由于预训练模型中masked lm loss节点并未命名，所以添加name后需要启动很短暂的预训练，同时将模型导出。get_masked_lm_output函数参考bert-as-language-model中的代码进行相应改造。Tensorflow版本升级后，使用estimator接受输入，原来我们最爱的placeholder找不到了，而在部署模型时，仍需要使用placeholder接受输入，可在run_pretraining.py导出模型时添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">if FLAGS.do_export:</div><div class="line">    estimator._export_to_tpu = False</div><div class="line">    name_to_features = [(&quot;input_ids&quot;, tf.int32), (&quot;input_mask&quot;, tf.int32),</div><div class="line">                            (&quot;segment_ids&quot;, tf.int32), (&quot;masked_lm_positions&quot;, tf.int32), (&quot;masked_lm_ids&quot;, tf.int32),</div><div class="line">                            (&quot;masked_lm_weights&quot;, tf.float32), (&quot;next_sentence_labels&quot;, tf.int32)]</div><div class="line">    feature_placeholders = &#123;name: tf.placeholder(dtype, [1, FLAGS.max_seq_length],</div><div class="line">                                                     name=&apos;bert/&apos; + name + &quot;_placeholder&quot;) for name, dtype in</div><div class="line">                                name_to_features&#125;</div><div class="line">    serving_input_fn = tf.estimator.export.build_raw_serving_input_receiver_fn(feature_placeholders)</div><div class="line">    path = estimator.export_savedmodel(&quot;./export/&quot;, serving_input_fn)</div></pre></td></tr></table></figure></p>
 <p>本文部署模型使用golang语言，基于tfgo实现模型的加载和tensorflow对应节点的计算。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//模型加载</div><div class="line">model := tg.LoadModel(*modleDir, []string&#123;&quot;serve&quot;&#125;, nil)</div></pre></td></tr></table></figure></p>
 <p>参考run_pretraining.py导出模型时的代码，golang程序中需要构造7个输入，而masked_lm_weights和next_sentence_labels对于语言模型没有影响，可按自己喜爱构造。以下面的例子说明一下输入的构造标准：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">//输入句子</div><div class="line">何以浮云过太空</div><div class="line">//处理后的句子</div><div class="line">[[CLS] 何 以 浮 云 过 太 空 [SEP]]</div><div class="line">------------------------token 1-----------------------------</div><div class="line">//input_ids</div><div class="line">[101 103 809 3859 756 6814 1922 4958 102 0 0 0 ...]</div><div class="line">//input_mask</div><div class="line">[1 1 1 1 1 1 1 1 1 0 0 0 ...]</div><div class="line">//segment_ids</div><div class="line">[0 0 0 ...]</div><div class="line">//masked_lm_positions</div><div class="line">[1 0 0 0 ...]</div><div class="line">//masked_lm_ids</div><div class="line">[862 0 0 0 0 0 ...]</div><div class="line">------------------------token 2----------------------------</div><div class="line">[101 862 103 3859 756 6814 1922 4958 102 0 0 0 ...]</div><div class="line">[1 1 1 1 1 1 1 1 1 0 0 0 ...]</div><div class="line">[0 0 0 ...]</div><div class="line">[2 0 0 0 ...]</div><div class="line">[809 0 0 0 ...]</div></pre></td></tr></table></figure></p>
 <p>Golang程序计算句子ppl：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">for i := 1; i &lt; ids_len - 1; i++&#123;</div><div class="line">	...</div><div class="line">	result := model.Exec([]tf.Output&#123;</div><div class="line">				model.Op(&quot;cls/predictions/lm_loss&quot;, 0),</div><div class="line">			&#125;, map[tf.Output]*tf.Tensor&#123;</div><div class="line">				model.Op(&quot;bert/input_ids_placeholder&quot;, 0):           inputX1,</div><div class="line">				model.Op(&quot;bert/input_mask_placeholder&quot;, 0):           inputX2,</div><div class="line">				model.Op(&quot;bert/segment_ids_placeholder&quot;, 0):           inputX3,</div><div class="line">				model.Op(&quot;bert/masked_lm_positions_placeholder&quot;, 0):           inputX4,</div><div class="line">				model.Op(&quot;bert/masked_lm_ids_placeholder&quot;, 0):           inputX5,</div><div class="line">				model.Op(&quot;bert/masked_lm_weights_placeholder&quot;, 0):           inputX6,</div><div class="line">				model.Op(&quot;bert/next_sentence_labels_placeholder&quot;, 0):           inputX7,</div><div class="line">			&#125;)</div><div class="line">	</div><div class="line">	val := result[0].Value().([][]float32)[0][0]</div><div class="line">	sentence_loss += float64(val)</div><div class="line">	...</div><div class="line">&#125;</div><div class="line"></div><div class="line">ppl := math.Pow(math.E, sentence_loss / float64(ids_len))</div></pre></td></tr></table></figure></p>
@@ -431,8 +431,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           
             <img class="site-author-image" itemprop="image"
@@ -479,6 +488,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BERT"><span class="nav-number">1.</span> <span class="nav-text">BERT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#源码分析"><span class="nav-number">2.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型训练、导出和部署"><span class="nav-number">3.</span> <span class="nav-text">模型训练、导出和部署</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
