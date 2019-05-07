@@ -104,7 +104,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/face2bmimodel.png">
 <meta property="og:image" content="http://yoursite.com/images/svr.png">
-<meta property="og:updated_time" content="2019-05-07T03:49:09.000Z">
+<meta property="og:updated_time" content="2019-05-07T03:50:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于Tensorflow Hub进行迁移学习完成人脸BMI指数预测">
 <meta name="twitter:description" content="Tensorflow HubTF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙，你懂得）：  https://www.tensorflow.org/hub  模型结构首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完">
@@ -347,7 +347,7 @@
 <blockquote>
 <p><a href="https://blog.csdn.net/zb123455445/article/details/78354489" target="_blank" rel="external">https://blog.csdn.net/zb123455445/article/details/78354489</a></p>
 </blockquote>
-<p>Tensorflow中实现SVR模型首先设置和初始化W,b和ε，通过W*x+b获得final_tensor，最后计算loss，公式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">with tf.name_scope(&apos;loss&apos;):</div><div class="line">    loss = tf.reduce_mean(tf.maximum(0., tf.subtract(tf.abs(tf.subtract(final_tensor, ground_truth_input)), epsilon)))</div></pre></td></tr></table></figure></p>
+<p>Tensorflow中实现SVR模型首先设置和初始化W, b和ε，通过W*x+b获得final_tensor，最后计算loss，公式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">with tf.name_scope(&apos;loss&apos;):</div><div class="line">    loss = tf.reduce_mean(tf.maximum(0., tf.subtract(tf.abs(tf.subtract(final_tensor, ground_truth_input)), epsilon)))</div></pre></td></tr></table></figure></p>
 <h1 id="模型代码"><a href="#模型代码" class="headerlink" title="模型代码"></a>模型代码</h1><p>训练代码参考了tensorflow提供的鲜花分类的retrain.py代码，主要对loss函数，数据处理和模型导出做了修改。</p>
 <blockquote>
 <p>参考连接：<a href="https://github.com/tensorflow/hub/raw/master/examples/image_retraining/retrain.py" target="_blank" rel="external">https://github.com/tensorflow/hub/raw/master/examples/image_retraining/retrain.py</a></p>
