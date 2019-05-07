@@ -381,6 +381,150 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/基于Tensorflow-Hub进行迁移学习完成人脸BMI指数预测/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/07/基于Tensorflow-Hub进行迁移学习完成人脸BMI指数预测/" itemprop="url">基于Tensorflow Hub进行迁移学习完成人脸BMI指数预测</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T11:23:00+08:00">
+                2019-05-07
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#Tensorflow Hub<br>TF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙，你懂得）：</p>
+<blockquote>
+<p><a href="https://www.tensorflow.org/hub" target="_blank" rel="external">https://www.tensorflow.org/hub</a></p>
+</blockquote>
+<p>#模型结构<br>首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完成基于人脸的BMI指数预测。<br><img src="https://wesure.lexiangla.com/assets/3f3a9f486fd011e98a400a58ac130517" alt=""></p>
+<blockquote>
+<p>参考论文链接：<a href="https://arxiv.org/abs/1703.03156" target="_blank" rel="external">https://arxiv.org/abs/1703.03156</a></p>
+</blockquote>
+<p>##人脸识别<br>这里介绍golang版本解决方案，python的资源丰富，例如<a href="https://github.com/ageitgey/face_recognition" target="_blank" rel="external">face_recognition</a>等。<a href="https://github.com/Kagami/go-face" target="_blank" rel="external">go-face</a>提供了纯go版本的人脸识别功能，不需要安装opencv等复杂的环境依赖，相关的依赖也可以通过apt-get方式快速安装，值得注意的是其需要人脸识别的模型文件shape_predictor和dlib_face_recognition，具体介绍可以参考其github主页。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">//主要代码</div><div class="line">const dataDir = &quot;testdata&quot;</div><div class="line"></div><div class="line">func main() &#123;</div><div class="line">	// Init the recognizer.</div><div class="line">	rec, err := face.NewRecognizer(dataDir)</div><div class="line">	if err != nil &#123;</div><div class="line">		log.Fatalf(&quot;Can&apos;t init face recognizer: %v&quot;, err)</div><div class="line">	&#125;</div><div class="line">	// Free the resources when you&apos;re finished.</div><div class="line">	defer rec.Close()</div><div class="line"></div><div class="line">	// Test</div><div class="line">	testImage := filepath.Join(dataDir, &quot;face.jpg&quot;)</div><div class="line">	// Recognize faces on that image.</div><div class="line">	faces, err := rec.RecognizeFile(testImagePristin)</div><div class="line">	if err != nil &#123;</div><div class="line">		log.Fatalf(&quot;Can&apos;t recognize: %v&quot;, err)</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>##tfhub<br>这里使用google发布的inception_v3模型，由于网络原因，如果在代码中无法下载可以选择手动下载并指定路径，下载时url为：</p>
+<blockquote>
+<p><a href="https://storage.googleapis.com/tfhub-modules/google/imagenet/inception_v3/feature_vector/1.tar.gz" target="_blank" rel="external">https://storage.googleapis.com/tfhub-modules/google/imagenet/inception_v3/feature_vector/1.tar.gz</a></p>
+</blockquote>
+<p>模型下载完成并指定路径后可直接在hub中使用并获得输入图片的feature vector。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">height, width = hub.get_expected_image_size(module_spec)</div><div class="line">resized_input_tensor = tf.placeholder(tf.float32, [None, height, width, 3], name=&quot;input_tensor&quot;)</div><div class="line">m = hub.Module(module_spec)</div><div class="line">bottleneck_tensor = m(resized_input_tensor)</div></pre></td></tr></table></figure></p>
+<p>##SVR模型<br>对于一般的回归问题，给定训练样本，模型希望学习得到一个f(x)与y尽可能的接近，只有f(x)和y完全相同时，损失才为零，而支持向量回归可以容忍f(x)与y之前最多有ε的偏差，当且仅当f(x)与y的差别绝对值大于ε时，才计算损失。此时相当于以f(x)为中心，构建一个宽度为2ε的间隔带，若训练样本落入此间隔带，则认为是被预测正确的。如下图所示：<br><img src="https://wesure.lexiangla.com/assets/b840f0ca6fd711e989280a58ac13011e" alt="图片" title="图片"><br>参考链接：</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/zb123455445/article/details/78354489" target="_blank" rel="external">https://blog.csdn.net/zb123455445/article/details/78354489</a></p>
+</blockquote>
+<p>Tensorflow中实现SVR模型首先设置和初始化W,b和ε，通过W*x+b获得final_tensor，最后计算loss，公式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">with tf.name_scope(&apos;loss&apos;):</div><div class="line">    loss = tf.reduce_mean(tf.maximum(0., tf.subtract(tf.abs(tf.subtract(final_tensor, ground_truth_input)), epsilon)))</div></pre></td></tr></table></figure></p>
+<p>#模型代码<br>训练代码参考了tensorflow提供的鲜花分类的retrain.py代码，主要对loss函数，数据处理和模型导出做了修改。</p>
+<blockquote>
+<p>参考连接：<a href="https://github.com/tensorflow/hub/raw/master/examples/image_retraining/retrain.py" target="_blank" rel="external">https://github.com/tensorflow/hub/raw/master/examples/image_retraining/retrain.py</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/25/Language-Model-based-on-BERT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1803,143 +1947,6 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/08/论文简读-Attention-over-Attention-Neural-Networks-for-Reading-Comprehension/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/08/论文简读-Attention-over-Attention-Neural-Networks-for-Reading-Comprehension/" itemprop="url">论文简读-Attention-over-Attention Neural Networks for Reading Comprehension</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-08T10:29:28+08:00">
-                2017-08-08
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>科大讯飞与哈工大联合实验室最近(截止2017.8.9)在SQuAD数据集上的准确率夺得全球第一名，力压微软亚洲研究院。本篇论文是该实验室在2016年发布的，是模型的早期版本。印象中当时在SQuAD榜单上single model准确率第二名，整体排名大概是第7名，F1 score约为79+，此处信息有待核实。准确率第一名的模型为“Interactive AoA Reader”，基于交互式层叠注意力。主要思想是根据给定的问题对篇章进行多次过滤，同时根据已经被过滤的文章进一步筛选出问题中的关键提问点，交互式地精确划定答案的范围。个人猜想其思想与斯坦福大学CS224n公开课Lecture 16中提出的Dynamic Memory Network基本一致。由于新模型的论文可能暂时没有发表，这里先对早期模型进行一下总结。</p>
-<h1 id="任务描述"><a href="#任务描述" class="headerlink" title="任务描述"></a>任务描述</h1><p>面向完形填空型阅读理解任务，可利用一个三元组表示：<d,q,a>，D表示文档，Q表示查询，A表示答案。测试数据集使用了CNN News和CBTest。</d,q,a></p>
-<h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p><img src="/images/aoamodel.png" alt="aoamodel"><br>模型主要思想是直接从文档级别的注意力选择答案，而不是计算文档的混合特征。</p>
-<h2 id="Contextual-Embedding"><a href="#Contextual-Embedding" class="headerlink" title="Contextual Embedding"></a>Contextual Embedding</h2><p>首先将单词转换为one-hot表示，然后利用一个共享embedding matrix We将单词转换为向量表示（与使用word2vec类似）。利用双向GRUs分别获得文档和查询单词的文法表示，每个单词的表示由GRU前向和后向表示连接而成。<br><img src="/images/aoace.png" alt="aoace"></p>
-<h2 id="Pair-wise-Matching-Score"><a href="#Pair-wise-Matching-Score" class="headerlink" title="Pair-wise Matching Score"></a>Pair-wise Matching Score</h2><p>计算每个文档单词与查询单词的匹配值，直接求dot product。<br><img src="/images/aoapms.png" alt="aoapms"></p>
-<h2 id="Individual-Attentions"><a href="#Individual-Attentions" class="headerlink" title="Individual Attentions"></a>Individual Attentions</h2><p>通过Pair-wise Matching获得了匹配矩阵M，在矩阵列上使用softmax函数获得每一列的注意力权重，则每一列的结果表示给定一个query单词，仅document-level的注意力。α(t)表示给定t时刻的query单词时document-level的注意力分布，可以认为是query-to-document注意力。<br><img src="/images/aoaia.png" alt="aoaia"></p>
-<h2 id="Attention-over-Attention"><a href="#Attention-over-Attention" class="headerlink" title="Attention-over-Attention"></a>Attention-over-Attention</h2><p>首先，计算给定一个document单词时query单词的注意力分布，β(t)表示给定t时刻document单词时query-level注意力分布。<br><img src="/images/aoad2q.png" alt="aoad2q"><br>通过上面的计算获得了query-to-document注意力α和document-to-query注意力β。下面对query-level的注意力求均值：<br><img src="/images/aoaavg.png" alt="aoaavg"><br>最后计算α与β dot product的结果，作为“attended document-level注意力”。这里的计算表示在t时刻给定query word时对每个仅document-level注意力进行加权求和。每个query word的贡献值可以被显式的学习，最后document-level的注意力经过每个query word的重要性加权获得。<br><img src="/images/aoaab.png" alt="aoaab"></p>
-<h2 id="Final-Predictions"><a href="#Final-Predictions" class="headerlink" title="Final Predictions"></a>Final Predictions</h2><p>与《Text understanding with the attention sum reader network》一文类似，本文也采用了sum attention机制获得答案。最终的输出应该被映射到词汇空间V，而非document-level attention |D|，这个对结果影响很大。<br><img src="/images/aoafor11.png" alt="aoafor11"><br>I(w, D)表示单词w在document D中出现的位置。训练时目标函数最大化正确答案的log-likelihood。<br><img src="/images/aoafor12.png" alt="aoafor12"></p>
-<h1 id="N-best-Re-ranking-Strategy"><a href="#N-best-Re-ranking-Strategy" class="headerlink" title="N-best Re-ranking Strategy"></a>N-best Re-ranking Strategy</h1><p>一般来说，做完形填空时，都会将候选答案填到句子中，二次检查其是否适合、流畅和符合语法。本文提出了N-best re-ranking策略来进行二次检查。模型输出N个可能性最大的候选答案，然后将这些答案一一填充到句子中，然后对句子进行打分。此种Re-ranking的方法适用于完形填空型阅读理解任务。</p>
-<h2 id="Feature-Scoring"><a href="#Feature-Scoring" class="headerlink" title="Feature Scoring"></a>Feature Scoring</h2><p>使用了三种特征：</p>
-<ol>
-<li>Global N-gram LM. 利用训练集中的document数据训练语言模型，计算句子的流畅度。</li>
-<li>Local N-gram LM. 利用测试集中的document数据训练语言模型，计算句子的流畅度。sample-by-sample训练方式，不是在整个测试集上训练，该模型在测试sample中有许多未知词时比较有用。</li>
-<li>Word-class LM. 与global相似，该模型在整个训练集的document数据上进行训练，词转换为对应的词类编号，编号通过聚类方法（mkcls tool）获得。</li>
-</ol>
-<h1 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h1><p><img src="/images/aoaexp.png" alt="aoaexp"><br>在CNNnews,CBTest NE 和 CN数据集上进行了测试，达到了state-of-art水平。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1993,7 +2000,7 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
