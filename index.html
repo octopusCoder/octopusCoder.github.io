@@ -610,7 +610,7 @@
 <p><a href="https://storage.googleapis.com/tfhub-modules/google/imagenet/inception_v3/feature_vector/1.tar.gz" target="_blank" rel="external">https://storage.googleapis.com/tfhub-modules/google/imagenet/inception_v3/feature_vector/1.tar.gz</a></p>
 </blockquote>
 <p>模型下载完成并指定路径后可直接在hub中使用并获得输入图片的feature vector。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">height, width = hub.get_expected_image_size(module_spec)</div><div class="line">resized_input_tensor = tf.placeholder(tf.float32, [None, height, width, 3], name=&quot;input_tensor&quot;)</div><div class="line">m = hub.Module(module_spec)</div><div class="line">bottleneck_tensor = m(resized_input_tensor)</div></pre></td></tr></table></figure></p>
-<h2 id="SVR模型"><a href="#SVR模型" class="headerlink" title="SVR模型"></a>SVR模型</h2><p>对于一般的回归问题，给定训练样本，模型希望学习得到一个f(x)与y尽可能的接近，只有f(x)和y完全相同时，损失才为零，而支持向量回归可以容忍f(x)与y之前最多有ε的偏差，当且仅当f(x)与y的差别绝对值大于ε时，才计算损失。此时相当于以f(x)为中心，构建一个宽度为2ε的间隔带，若训练样本落入此间隔带，则认为是被预测正确的。如下图所示：<br><img src="/images/svr" alt="图片"><br>参考链接：</p>
+<h2 id="SVR模型"><a href="#SVR模型" class="headerlink" title="SVR模型"></a>SVR模型</h2><p>对于一般的回归问题，给定训练样本，模型希望学习得到一个f(x)与y尽可能的接近，只有f(x)和y完全相同时，损失才为零，而支持向量回归可以容忍f(x)与y之前最多有ε的偏差，当且仅当f(x)与y的差别绝对值大于ε时，才计算损失。此时相当于以f(x)为中心，构建一个宽度为2ε的间隔带，若训练样本落入此间隔带，则认为是被预测正确的。如下图所示：<br><img src="/images/svr.png" alt="图片"><br>参考链接：</p>
 <blockquote>
 <p><a href="https://blog.csdn.net/zb123455445/article/details/78354489" target="_blank" rel="external">https://blog.csdn.net/zb123455445/article/details/78354489</a></p>
 </blockquote>
