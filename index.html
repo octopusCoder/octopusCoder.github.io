@@ -381,6 +381,149 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/使用TensorFlow-Serving快速部署模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/07/使用TensorFlow-Serving快速部署模型/" itemprop="url">使用TensorFlow Serving快速部署模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T11:41:42+08:00">
+                2019-05-07
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#工业产品中TensorFlow使用方法</p>
+<ol>
+<li>用TensorFlow的C++/Java/Nodejs API直接使用保存的TensorFlow模型：类似Caffe，适合做桌面软件。</li>
+<li>直接将使用TensorFlow的Python代码放到Flask等Web程序中，提供Restful接口：实现和调试方便，但效率不太高，不大适合高负荷场景，且没有版本管理、模型热更新等功能。</li>
+<li>将TensorFlow模型托管到TensorFlow Serving中，提供RPC或Restful服务：实现方便，高效，自带版本管理、模型热更新等，很适合大规模线上业务。</li>
+</ol>
+<blockquote>
+<p>参考链接：<a href="https://cloud.tencent.com/developer/article/1375668" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1375668</a></p>
+</blockquote>
+<p>#TensorFlow Serving简介<br>Tensorflow Serving是Google官方提供的模型部署方式，在导出模型时定义输入和输出接口并正确导出模型后，可一分钟完成模型部署（官方广告）。TF1.8后，Tensorflow Serving支持RESTfull API和grpc的请求方式，模型部署完成后可很方便的利用post请求进行测试。</p>
+<p>#TensorFlow Serving服务框架<br>框架分为模型训练、模型上线和服务使用三部分。模型训练与正常的训练过程一致，只是导出时需要按照TF Serving的标准定义输入、输出和签名。模型上线时指定端口号和模型路径后，通过tensorflow_model_server命令启动服务。服务使用可通过grpc和RESTfull方式请求。<br><img src="/images/tfserving.png" alt="图片"></p>
+<p>#模型导出<br>需指定模型的输入和输出，并在tags中包含”serve”，在实际使用中，TF Serving要求导出模型包含”serve”这个tag。此外，还需要指定默认签名，tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY = “serving_default”，此外tf.saved_model.signature_constants定义了三类签名，分别是：</p>
+<ul>
+<li>分类classify</li>
+<li>回归regress</li>
+<li>预测predict</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">CLASSIFY_METHOD_NAME = &quot;tensorflow/serving/classify&quot;</div><div class="line">PREDICT_METHOD_NAME = &quot;tensorflow/serving/predict&quot;</div><div class="line">REGRESS_METHOD_NAME = &quot;tensorflow/serving/regress&quot;</div></pre></td></tr></table></figure>
+<p>一般而言，用predict就完事了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">with sess.graph.as_default() as graph:</div><div class="line">    builder = tf.saved_model.builder.SavedModelBuilder(saved_model_dir)</div><div class="line">    signature = tf.saved_model.signature_def_utils.predict_signature_def(inputs=&#123;&apos;image&apos;: in_image&#125;,</div><div class="line">                                      outputs=&#123;&apos;prediction&apos;: graph.get_tensor_by_name(&apos;final_result:0&apos;)&#125;,)</div><div class="line">    builder.add_meta_graph_and_variables(sess=sess,</div><div class="line">                                         tags=[&quot;serve&quot;],</div><div class="line">                                         signature_def_map=&#123;&apos;predict&apos;:signature, tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:signature&#125;)</div><div class="line">    builder.save()</div></pre></td></tr></table></figure></p>
+<p>#启动服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tensorflow_model_server --port=8500 --rest_api_port=8501 --model_name=模型名 --model_base_path=模型所在路径</div></pre></td></tr></table></figure></p>
+<p>#请求服务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -d &apos;&#123;&quot;inputs&quot;: [[1.1,1.2,0.8,1.3]]&#125;&apos; -X POST http://localhost:8501/v1/models/模型名:predict</div></pre></td></tr></table></figure></p>
+<p>python可以通过post请求，golang可以通过grpc服务请求。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/基于Tensorflow-Hub进行迁移学习完成人脸BMI指数预测/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -458,7 +601,7 @@
 <blockquote>
 <p><a href="https://www.tensorflow.org/hub" target="_blank" rel="external">https://www.tensorflow.org/hub</a></p>
 </blockquote>
-<p>#模型结构<br>首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完成基于人脸的BMI指数预测。<br><img src="https://wesure.lexiangla.com/assets/3f3a9f486fd011e98a400a58ac130517" alt=""></p>
+<p>#模型结构<br>首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完成基于人脸的BMI指数预测。<br><img src="/images/face2bmimodel.png" alt=""></p>
 <blockquote>
 <p>参考论文链接：<a href="https://arxiv.org/abs/1703.03156" target="_blank" rel="external">https://arxiv.org/abs/1703.03156</a></p>
 </blockquote>
@@ -468,7 +611,7 @@
 <p><a href="https://storage.googleapis.com/tfhub-modules/google/imagenet/inception_v3/feature_vector/1.tar.gz" target="_blank" rel="external">https://storage.googleapis.com/tfhub-modules/google/imagenet/inception_v3/feature_vector/1.tar.gz</a></p>
 </blockquote>
 <p>模型下载完成并指定路径后可直接在hub中使用并获得输入图片的feature vector。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">height, width = hub.get_expected_image_size(module_spec)</div><div class="line">resized_input_tensor = tf.placeholder(tf.float32, [None, height, width, 3], name=&quot;input_tensor&quot;)</div><div class="line">m = hub.Module(module_spec)</div><div class="line">bottleneck_tensor = m(resized_input_tensor)</div></pre></td></tr></table></figure></p>
-<p>##SVR模型<br>对于一般的回归问题，给定训练样本，模型希望学习得到一个f(x)与y尽可能的接近，只有f(x)和y完全相同时，损失才为零，而支持向量回归可以容忍f(x)与y之前最多有ε的偏差，当且仅当f(x)与y的差别绝对值大于ε时，才计算损失。此时相当于以f(x)为中心，构建一个宽度为2ε的间隔带，若训练样本落入此间隔带，则认为是被预测正确的。如下图所示：<br><img src="https://wesure.lexiangla.com/assets/b840f0ca6fd711e989280a58ac13011e" alt="图片" title="图片"><br>参考链接：</p>
+<p>##SVR模型<br>对于一般的回归问题，给定训练样本，模型希望学习得到一个f(x)与y尽可能的接近，只有f(x)和y完全相同时，损失才为零，而支持向量回归可以容忍f(x)与y之前最多有ε的偏差，当且仅当f(x)与y的差别绝对值大于ε时，才计算损失。此时相当于以f(x)为中心，构建一个宽度为2ε的间隔带，若训练样本落入此间隔带，则认为是被预测正确的。如下图所示：<br><img src="/images/svr" alt="图片"><br>参考链接：</p>
 <blockquote>
 <p><a href="https://blog.csdn.net/zb123455445/article/details/78354489" target="_blank" rel="external">https://blog.csdn.net/zb123455445/article/details/78354489</a></p>
 </blockquote>
@@ -1825,128 +1968,6 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/18/论文简读-Sentence-Similarity-Learning-by-Lexical-Decomposition-and-Composition/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/18/论文简读-Sentence-Similarity-Learning-by-Lexical-Decomposition-and-Composition/" itemprop="url">论文简读-Sentence Similarity Learning by Lexical Decomposition and Composition</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-18T14:23:11+08:00">
-                2017-08-18
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>作者为Zhiguo Wang等人，属于IBM T.J. Watson Research Center，发表于2016年。大多数的传统的句子相似性计算方法只关注两个句子相似的部分，而忽略不相似的部分，但在某些情况下，不相似的部分对于决定两个句子是否相似也很重要。本文通过对句子lexical semantics进行分解和合成同时考虑相关性和不相关性，利用两通道的CNN将相关部分和不相关部分进行合成得到特征。模型主要涉及矩阵数学运算，CNN参数调整，没有使用RNN，训练速度较快。</p>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><h1 id="Model-Overview"><a href="#Model-Overview" class="headerlink" title="Model Overview"></a>Model Overview</h1>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2000,7 +2021,7 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
