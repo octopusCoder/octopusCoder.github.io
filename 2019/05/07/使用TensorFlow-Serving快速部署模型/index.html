@@ -102,12 +102,12 @@
 <meta property="og:site_name" content="小菜鸡">
 <meta property="og:description" content="工业产品中TensorFlow使用方法 用TensorFlow的C++/Java/Nodejs API直接使用保存的TensorFlow模型：类似Caffe，适合做桌面软件。 直接将使用TensorFlow的Python代码放到Flask等Web程序中，提供Restful接口：实现和调试方便，但效率不太高，不大适合高负荷场景，且没有版本管理、模型热更新等功能。 将TensorFlow模型托管到Te">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/images/tfserving.png">
-<meta property="og:updated_time" content="2019-05-07T06:58:45.000Z">
+<meta property="og:image" content="https://ss.csdn.net/p?http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtzxrqiba6BicbqCjDDQ313ohCZJQ5u0LTnK5okv89ibHbf2pI6YWMq05UNjjoiaxxibxd6pqk6l07T04rA/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1">
+<meta property="og:updated_time" content="2019-05-15T03:08:23.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用TensorFlow Serving快速部署模型">
 <meta name="twitter:description" content="工业产品中TensorFlow使用方法 用TensorFlow的C++/Java/Nodejs API直接使用保存的TensorFlow模型：类似Caffe，适合做桌面软件。 直接将使用TensorFlow的Python代码放到Flask等Web程序中，提供Restful接口：实现和调试方便，但效率不太高，不大适合高负荷场景，且没有版本管理、模型热更新等功能。 将TensorFlow模型托管到Te">
-<meta name="twitter:image" content="http://yoursite.com/images/tfserving.png">
+<meta name="twitter:image" content="https://ss.csdn.net/p?http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtzxrqiba6BicbqCjDDQ313ohCZJQ5u0LTnK5okv89ibHbf2pI6YWMq05UNjjoiaxxibxd6pqk6l07T04rA/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1">
 
 
 
@@ -337,7 +337,7 @@
 <p>参考链接：<a href="https://cloud.tencent.com/developer/article/1375668" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1375668</a> </p>
 </blockquote>
 <h1 id="TensorFlow-Serving简介"><a href="#TensorFlow-Serving简介" class="headerlink" title="TensorFlow Serving简介"></a>TensorFlow Serving简介</h1><p><a href="https://github.com/tensorflow/serving" target="_blank" rel="external">Tensorflow Serving</a>是Google官方提供的模型部署方式，正确导出模型后，可一分钟完成部署（官方广告）。TF1.8后，Tensorflow Serving支持RESTfull API和grpc的请求方式，模型部署完成后可很方便的利用post请求进行测试。</p>
-<h1 id="TensorFlow-Serving服务框架"><a href="#TensorFlow-Serving服务框架" class="headerlink" title="TensorFlow Serving服务框架"></a>TensorFlow Serving服务框架</h1><p>框架分为模型训练、模型上线和服务使用三部分。模型训练与正常的训练过程一致，只是导出时需要按照TF Serving的标准定义输入、输出和签名。模型上线时指定端口号和模型路径后，通过tensorflow_model_server命令启动服务。服务使用可通过grpc和RESTfull方式请求。<br><img width="724" src="/images/tfserving.png"></p>
+<h1 id="TensorFlow-Serving服务框架"><a href="#TensorFlow-Serving服务框架" class="headerlink" title="TensorFlow Serving服务框架"></a>TensorFlow Serving服务框架</h1><p>框架分为模型训练、模型上线和服务使用三部分。模型训练与正常的训练过程一致，只是导出时需要按照TF Serving的标准定义输入、输出和签名。模型上线时指定端口号和模型路径后，通过tensorflow_model_server命令启动服务。服务使用可通过grpc和RESTfull方式请求。<br><img width="724" src="https://ss.csdn.net/p?http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtzxrqiba6BicbqCjDDQ313ohCZJQ5u0LTnK5okv89ibHbf2pI6YWMq05UNjjoiaxxibxd6pqk6l07T04rA/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1"></p>
 <h1 id="模型导出"><a href="#模型导出" class="headerlink" title="模型导出"></a>模型导出</h1><p>需指定模型的输入和输出，并在tags中包含”serve”，在实际使用中，TF Serving要求导出模型包含”serve”这个tag。此外，还需要指定默认签名，tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY = “serving_default”，此外tf.saved_model.signature_constants定义了三类签名，分别是：</p>
 <ul>
 <li>分类classify</li>
@@ -382,6 +382,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/14/TextRank算法/" rel="prev" title="TextRank算法">
+                TextRank算法 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -461,7 +465,7 @@
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
