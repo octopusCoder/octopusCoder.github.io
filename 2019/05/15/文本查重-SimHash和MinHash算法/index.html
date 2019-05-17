@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="SimHash和MinHash算法主要应用于海量文本查重，两者都属于局部敏感哈希（Locality-Sensitive Hashing, LSH）算法，而LSH又是近似最近邻查找（Approximate Nearest  Neighbor, ANN）中的一类算法，其主要思想是利用降维和索引，加快查找过程。 SimHash算法的过程如下图所示：具体过程为：  确定文本Doc中各个词语（中文需分词）的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="文本查重-SimHash和MinHash算法">
+<meta property="og:url" content="http://yoursite.com/2019/05/15/文本查重-SimHash和MinHash算法/index.html">
+<meta property="og:site_name" content="小菜鸡">
+<meta property="og:description" content="SimHash和MinHash算法主要应用于海量文本查重，两者都属于局部敏感哈希（Locality-Sensitive Hashing, LSH）算法，而LSH又是近似最近邻查找（Approximate Nearest  Neighbor, ANN）中的一类算法，其主要思想是利用降维和索引，加快查找过程。 SimHash算法的过程如下图所示：具体过程为：  确定文本Doc中各个词语（中文需分词）的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://dl.iteye.com/upload/attachment/437426/baf42378-e625-35d2-9a89-471524a355d8.jpg">
+<meta property="og:image" content="http://dl.iteye.com/upload/attachment/438114/ae5a47cb-068c-32b6-a4d5-6a5b808b0b26.jpg">
+<meta property="og:image" content="http://dl.iteye.com/upload/attachment/437527/d31f3880-d43e-33ac-89c3-3e11a3f4f95e.jpg">
+<meta property="og:image" content="http://dl.iteye.com/upload/attachment/437559/689719df-54b7-318c-bc90-e289f84344b9.jpg">
+<meta property="og:image" content="http://dl.iteye.com/upload/attachment/437586/b72b8dc2-9139-3078-ad24-b689f64fd71a.jpg">
+<meta property="og:image" content="http://yoursite.com/images/bucket.png">
+<meta property="og:image" content="http://yoursite.com/images/bucket5.png">
+<meta property="og:updated_time" content="2019-05-17T03:35:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="文本查重-SimHash和MinHash算法">
+<meta name="twitter:description" content="SimHash和MinHash算法主要应用于海量文本查重，两者都属于局部敏感哈希（Locality-Sensitive Hashing, LSH）算法，而LSH又是近似最近邻查找（Approximate Nearest  Neighbor, ANN）中的一类算法，其主要思想是利用降维和索引，加快查找过程。 SimHash算法的过程如下图所示：具体过程为：  确定文本Doc中各个词语（中文需分词）的">
+<meta name="twitter:image" content="http://dl.iteye.com/upload/attachment/437426/baf42378-e625-35d2-9a89-471524a355d8.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/05/15/文本查重-SimHash和MinHash算法/"/>
+
+
+
+
+
+  <title>文本查重-SimHash和MinHash算法 | 小菜鸡</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-106410509-1', 'auto');
+  ga('send', 'pageview');
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小菜鸡</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/15/文本查重-SimHash和MinHash算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">文本查重-SimHash和MinHash算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T15:16:45+08:00">
+                2019-05-15
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>SimHash和MinHash算法主要应用于海量文本查重，两者都属于<a href="https://www.cnblogs.com/wt869054461/p/8148940.html" target="_blank" rel="external">局部敏感哈希</a>（Locality-Sensitive Hashing, LSH）算法，而LSH又是<a href="http://www.cnblogs.com/ljygoodgoodstudydaydayup/p/10519253.html" target="_blank" rel="external">近似最近邻查找</a>（Approximate Nearest  Neighbor, ANN）中的一类算法，其主要思想是利用降维和索引，加快查找过程。</p>
+<h2 id="SimHash"><a href="#SimHash" class="headerlink" title="SimHash"></a>SimHash</h2><p>算法的过程如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437426/baf42378-e625-35d2-9a89-471524a355d8.jpg" alt=""><br>具体过程为：</p>
+<ol>
+<li>确定文本Doc中各个词语（中文需分词）的权重，方法可以有多种，例如TfIdf和TextRank算法，则文档可表示为(feature, weight)组成的向量；</li>
+<li>初始化一个长度为64位（可综合空间和时间复杂度考虑具体数值）的Doc特征向量，各元素初始化为0；</li>
+<li>对Doc中每个词语利用hash函数计算一个长度为64位的特征向量；</li>
+<li>遍历词语特征向量，如果第i位为1，则Doc特征向量对应位+w，否则-w；</li>
+<li>所有词语处理完毕后，判断Doc特征向量的每一位，如果大于0，则置1，否则置0；</li>
+<li>获得各Doc的特征向量后，可利用海明距离判断两篇文档的相似性，一般地，距离&lt;=3时认为两者是相似的。</li>
+</ol>
+<p>上述过程可以理解为Doc的特征降维过程，我们将降维后的特征向量成为fingerprints。完成降维后，我们需要思考如何设计索引来加快查找过程。<br>第一种方案是对查询向量Q进行变化，查找64位所有3位以内的变化的组合，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/438114/ae5a47cb-068c-32b6-a4d5-6a5b808b0b26.jpg" alt=""><br>单一内容Q需要进行四万多次查询，时间复杂度太高。<br>第二种方案是对已生成Doc的fingerprints进行3位以内的组合变化，但需要多占据四万多倍的原始空间，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437527/d31f3880-d43e-33ac-89c3-3e11a3f4f95e.jpg" alt=""><br>如何找到一种空间和时间的平衡呢？假设海明距离在3以内的两个文档是相似的，那么只要将64位的二进制串分为4块，根据鸽巢原理，两个文档的fingerprints中至少有一块是完全相同的，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437559/689719df-54b7-318c-bc90-e289f84344b9.jpg" alt=""><br>由于查询时无法预知是哪一块区域相同，因此需要对四块中的每一块都建立索引，假设样本库中有$2^(32)$，约43亿的fingerprints，那么每个table中包含$2^(32-16)$=65536个候选结果，大大减少了海明距离的计算成本。上图所示的索引结构在MongoDB中实现非常简单。此外，索引块数k和table中候选结果数量m也是一个平衡抉择的过程，k越大，m越小，空间复杂度升高；k越小，m越大，时间复杂度升高。下图是k=4时索引示意图：<br><img src="http://dl.iteye.com/upload/attachment/437586/b72b8dc2-9139-3078-ad24-b689f64fd71a.jpg" alt=""></p>
+<h2 id="MinHash"><a href="#MinHash" class="headerlink" title="MinHash"></a>MinHash</h2><p>与SimHash不同，MinHash要从衡量两个文档的相似度说起。Jaccard相似度用于描述两个集合的相似程度，假设有两个集合A和B，相似度=A与B交集的元素个数／A与B并集的元素个数，公式为：<br><span>$$\begin{gather*}
+J(A, B)=\frac{|A \cap B|}{|A \cup B|}
+\end{gather*}$$</span><!-- Has MathJax --><br>海量文本直接求Jaccard相似度复杂度太高，两个文档需要逐个词比较，为降低复杂度，我们使用两个文档的最小哈希值相等的概率来等价于两个文档的Jaccard相似度，并可以证明两者是相等的。首先说明一下如何求一个集合的最小哈希值，假设现在有4个集合，分别为S1，S2，S3，S4；其中，S1={a,d}, S2={c}, S3={b,d,e}, S4={a,c,d}，所以全集U={a,b,c,d,e}。我们可以构造如下0-1矩阵：</p>
+<table>
+<thead>
+<tr>
+<th>元素</th>
+<th>S1</th>
+<th>S2</th>
+<th>S3</th>
+<th>S4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>b</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>c</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>d</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>e</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>为得到各集合的最小哈希值，首先对矩阵进行随机行打乱，则某个集合（某一列）的最小哈希值就等于打乱后第一个值为1的行所在的行号。定义一个最小哈希函数h，用于模拟对矩阵进行随机打乱，假设打乱后的矩阵如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>元素</th>
+<th>S1</th>
+<th>S2</th>
+<th>S3</th>
+<th>S4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>b</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>e</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>a</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>d</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>c</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>则h(S1)=2, h(S2)=4, h(S3)=0, h(S4)=2。经过随机打乱后，两个集合的最小哈希值相等的概率=两集合的Jaccard的相似度证明如下：</p>
+<blockquote>
+<p>仅考虑集合S1和S2，那么这两列所在的行有以下三种情况：</p>
+<ol>
+<li>S1和S2的值都为1，用X表示；</li>
+<li>一个值为1，另一个为0，用Y表示；</li>
+<li>S1和S2的值都为0，用Z表示。</li>
+</ol>
+</blockquote>
+<p>S1与S2的交集元素个数为X，并集个数为X+Y，所以sim(S1,S2)=Jaccard(S1,S2)=X/(X+Y)。随机打乱后h(S1)=h(S2)的概率等于从上往下扫描，在遇到Y行之前遇到X行的概率（Z行没有影响），或者说把X个黑球和Y个白球放入一个袋子中，首次拿到黑球的概率，即h(S1)=h(S2)的概率为X/(X+Y)。假设特征矩阵很大时，对其进行打乱非常耗时，而且要进行多次打乱，其实可以通过多个随机哈希函数来模拟打乱的效果。具体地，定义n个随机哈希函数$h_1, h_2,…,h_n$，sig(i,j)表示签名矩阵中第i个哈希函数在第j列上的元素，将签名矩阵中各个元素sig(i,j)初始化为inf(无穷大)，对原矩阵中每一行r：</p>
+<ol>
+<li>计算$h_1(r),h_2(r),…,h_n(r)$；</li>
+<li>对于每一列j：<ul>
+<li>如果j所在的第r行为0，什么都不做；</li>
+<li>如果j所在的第r行为1，则对每个i=1,2,…,n，$sig(i,j)=min(sig(i,j), h_i(r))$</li>
+</ul>
+</li>
+</ol>
+<p>例如$h_1(x)=(x+1)%5, h_2(x)=(3*x+1)%5$，则经过上述操作可获得如下的签名矩阵：</p>
+<table>
+<thead>
+<tr>
+<th>哈希函数</th>
+<th>S1</th>
+<th>S2</th>
+<th>S3</th>
+<th>S4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$h_1$</td>
+<td>1</td>
+<td>3</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>$h_2$</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>上述获得各文档签名矩阵可以理解为一个降维过程，获得签名后，假如数据量十分庞大的话，两两比较的话计算复杂度仍然非常高，所以需要类似SimHash索引分块的方法来降低查询复杂度。当一个新文档到达时，希望仅比较与其相似性较高的文档，忽略相似性较低的集合。如下图所示，假设签名矩阵有12行，我们将3行为一组放进一个“桶”里：<br><img width="500" src="/images/bucket.png"><br>对于S2，仅需要查询与其具有相同桶的集合，如下图所示：<br><img width="500" src="/images/bucket5.png"><br>即只需要查询S4和S5。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><blockquote>
+<p><a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.295.8001&amp;rep=rep1&amp;type=pdf" target="_blank" rel="external">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.295.8001&amp;rep=rep1&amp;type=pdf</a><br><a href="https://blog.csdn.net/heiyeshuwu/article/details/44117473" target="_blank" rel="external">https://blog.csdn.net/heiyeshuwu/article/details/44117473</a><br><a href="https://www.cnblogs.com/sddai/p/6110704.html" target="_blank" rel="external">https://www.cnblogs.com/sddai/p/6110704.html</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/14/TextRank算法/" rel="next" title="TextRank算法">
+                <i class="fa fa-chevron-left"></i> TextRank算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="/images/avatar.gif"
+              alt="Jeb" />
+          
+            <p class="site-author-name" itemprop="name">Jeb</p>
+            <p class="site-description motion-element" itemprop="description">我菜故我在</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SimHash"><span class="nav-number">1.</span> <span class="nav-text">SimHash</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MinHash"><span class="nav-number">2.</span> <span class="nav-text">MinHash</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jeb</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
