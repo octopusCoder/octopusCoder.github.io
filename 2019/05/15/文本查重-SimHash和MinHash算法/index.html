@@ -109,7 +109,7 @@
 <meta property="og:image" content="http://dl.iteye.com/upload/attachment/437586/b72b8dc2-9139-3078-ad24-b689f64fd71a.jpg">
 <meta property="og:image" content="http://yoursite.com/images/bucket.png">
 <meta property="og:image" content="http://yoursite.com/images/bucket5.png">
-<meta property="og:updated_time" content="2019-05-17T03:35:09.000Z">
+<meta property="og:updated_time" content="2019-05-17T07:51:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="文本查重-SimHash和MinHash算法">
 <meta name="twitter:description" content="SimHash和MinHash算法主要应用于海量文本查重，两者都属于局部敏感哈希（Locality-Sensitive Hashing, LSH）算法，而LSH又是近似最近邻查找（Approximate Nearest  Neighbor, ANN）中的一类算法，其主要思想是利用降维和索引，加快查找过程。 SimHash算法的过程如下图所示：具体过程为：  确定文本Doc中各个词语（中文需分词）的">
@@ -456,14 +456,14 @@ J(A, B)=\frac{|A \cap B|}{|A \cup B|}
 </blockquote>
 <p>S1与S2的交集元素个数为X，并集个数为X+Y，所以sim(S1,S2)=Jaccard(S1,S2)=X/(X+Y)。随机打乱后h(S1)=h(S2)的概率等于从上往下扫描，在遇到Y行之前遇到X行的概率（Z行没有影响），或者说把X个黑球和Y个白球放入一个袋子中，首次拿到黑球的概率，即h(S1)=h(S2)的概率为X/(X+Y)。假设特征矩阵很大时，对其进行打乱非常耗时，而且要进行多次打乱，其实可以通过多个随机哈希函数来模拟打乱的效果。具体地，定义n个随机哈希函数$h_1, h_2,…,h_n$，sig(i,j)表示签名矩阵中第i个哈希函数在第j列上的元素，将签名矩阵中各个元素sig(i,j)初始化为inf(无穷大)，对原矩阵中每一行r：</p>
 <ol>
-<li>计算$h_1(r),h_2(r),…,h_n(r)$；</li>
+<li>计算<span>$h_1(r),h_2(r),...,h_n(r)$</span><!-- Has MathJax -->；</li>
 <li>对于每一列j：<ul>
 <li>如果j所在的第r行为0，什么都不做；</li>
 <li>如果j所在的第r行为1，则对每个i=1,2,…,n，$sig(i,j)=min(sig(i,j), h_i(r))$</li>
 </ul>
 </li>
 </ol>
-<p>例如$h_1(x)=(x+1)%5, h_2(x)=(3*x+1)%5$，则经过上述操作可获得如下的签名矩阵：</p>
+<p>例如<span>$h_1(x)=(x+1)%5, h_2(x)=(3*x+1)%5$</span><!-- Has MathJax -->，则经过上述操作可获得如下的签名矩阵：</p>
 <table>
 <thead>
 <tr>
