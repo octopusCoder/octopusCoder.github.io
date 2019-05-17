@@ -104,7 +104,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/dgraph.png">
 <meta property="og:image" content="http://yoursite.com/images/keywords.png">
-<meta property="og:updated_time" content="2019-05-15T03:26:58.000Z">
+<meta property="og:updated_time" content="2019-05-17T06:36:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TextRank算法">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      TextRank算法可以用于提取文本关键词和生成摘要，其思想来源于PageRank算法。Google两位创始人，在斯坦福大学读研期间从事网页排序研究时，受到学术界对学术论文重要性的评估方法（论文引用次数），提出了PageRank算法。Pa">
@@ -353,7 +353,7 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
 \end{gather*}$$</span><!-- Has MathJax --><br>TR值计算公式与PR值十分类似，区别在于加入了一个参数<span>$w_{j i}$</span><!-- Has MathJax -->，一般来说<span>$w_{j i}$</span><!-- Has MathJax -->的值为文章中第j个单词和第i个单词在一定窗口大小的共现次数。后续的迭代过程与PR值计算类似。</p>
 <h4 id="摘要生成"><a href="#摘要生成" class="headerlink" title="摘要生成"></a>摘要生成</h4><p>将文本中的每个句子看作图中的一个节点，句子之间的“链接关系”由句子间的相似性体现。句子相似性有多种计算方式，这里使用一种很简单的方法，计算两个句子共有词比例。句子相似性公式：<br><span>$$\begin{gather*}
 \text {Similarity}\left(S_{i}, S_{j}\right)=\frac{\left|\left\{w_{k} | w_{k} \in S_{i} \&amp; w_{k} \in S_{j}\right\}\right|}{\log \left(\left|S_{i}\right|\right)+\log \left(\left|S_{j}\right|\right)}
-\end{gather*}$$</span><!-- Has MathJax --><br><span>$S_{i}, S_{j}$</span><!-- Has MathJax -->分别表示第i个和第j个句子，w_{k}表示句子中的词语，公式中分子表示两个句子共有词的个数，分母表示两个句子词总数对数求和。后续TR值计算和迭代过程与关键词提取类似。</p>
+\end{gather*}$$</span><!-- Has MathJax --><br><span>$S_{i}, S_{j}$</span><!-- Has MathJax -->分别表示第i个和第j个句子，$w_{k}$表示句子中的词语，公式中分子表示两个句子共有词的个数，分母表示两个句子词总数对数求和。后续TR值计算和迭代过程与关键词提取类似。</p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><blockquote>
 <p><a href="http://www.cnblogs.com/xueyinzhe/p/7101295.html" target="_blank" rel="external">http://www.cnblogs.com/xueyinzhe/p/7101295.html</a><br><a href="https://blog.csdn.net/woshiliulei0/article/details/81479434" target="_blank" rel="external">https://blog.csdn.net/woshiliulei0/article/details/81479434</a></p>
 </blockquote>
