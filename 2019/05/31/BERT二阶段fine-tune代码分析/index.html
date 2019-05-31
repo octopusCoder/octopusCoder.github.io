@@ -95,19 +95,19 @@
 
 
 
-<meta name="description" content="工业产品中TensorFlow使用方法 用TensorFlow的C++/Java/Nodejs API直接使用保存的TensorFlow模型：类似Caffe，适合做桌面软件。 直接将使用TensorFlow的Python代码放到Flask等Web程序中，提供Restful接口：实现和调试方便，但效率不太高，不大适合高负荷场景，且没有版本管理、模型热更新等功能。 将TensorFlow模型托管到Te">
+<meta name="description" content="BERT除预训练代码run_pretraining.py外，还提供了run_classifier.py用于文本分类和run_squad.py用于阅读理解，下面通过对比三个代码总结出如何快速基于BERT做二阶段fine tune的方法。此外，如果TF Hub中有对应任务可使用的预训练模型，也可直接使用，例如同样用于分类的run_classifier_with_tfhub.py。 代码整体结构代码的整">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用TensorFlow Serving快速部署模型">
-<meta property="og:url" content="http://yoursite.com/2019/05/07/使用TensorFlow-Serving快速部署模型/index.html">
+<meta property="og:title" content="BERT二阶段fine tune代码分析">
+<meta property="og:url" content="http://yoursite.com/2019/05/31/BERT二阶段fine-tune代码分析/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="工业产品中TensorFlow使用方法 用TensorFlow的C++/Java/Nodejs API直接使用保存的TensorFlow模型：类似Caffe，适合做桌面软件。 直接将使用TensorFlow的Python代码放到Flask等Web程序中，提供Restful接口：实现和调试方便，但效率不太高，不大适合高负荷场景，且没有版本管理、模型热更新等功能。 将TensorFlow模型托管到Te">
+<meta property="og:description" content="BERT除预训练代码run_pretraining.py外，还提供了run_classifier.py用于文本分类和run_squad.py用于阅读理解，下面通过对比三个代码总结出如何快速基于BERT做二阶段fine tune的方法。此外，如果TF Hub中有对应任务可使用的预训练模型，也可直接使用，例如同样用于分类的run_classifier_with_tfhub.py。 代码整体结构代码的整">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://ss.csdn.net/p?http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtzxrqiba6BicbqCjDDQ313ohCZJQ5u0LTnK5okv89ibHbf2pI6YWMq05UNjjoiaxxibxd6pqk6l07T04rA/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1">
-<meta property="og:updated_time" content="2019-05-15T03:08:23.000Z">
+<meta property="og:image" content="http://yoursite.com/images/BERT.png">
+<meta property="og:updated_time" content="2019-05-31T09:04:20.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用TensorFlow Serving快速部署模型">
-<meta name="twitter:description" content="工业产品中TensorFlow使用方法 用TensorFlow的C++/Java/Nodejs API直接使用保存的TensorFlow模型：类似Caffe，适合做桌面软件。 直接将使用TensorFlow的Python代码放到Flask等Web程序中，提供Restful接口：实现和调试方便，但效率不太高，不大适合高负荷场景，且没有版本管理、模型热更新等功能。 将TensorFlow模型托管到Te">
-<meta name="twitter:image" content="https://ss.csdn.net/p?http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtzxrqiba6BicbqCjDDQ313ohCZJQ5u0LTnK5okv89ibHbf2pI6YWMq05UNjjoiaxxibxd6pqk6l07T04rA/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1">
+<meta name="twitter:title" content="BERT二阶段fine tune代码分析">
+<meta name="twitter:description" content="BERT除预训练代码run_pretraining.py外，还提供了run_classifier.py用于文本分类和run_squad.py用于阅读理解，下面通过对比三个代码总结出如何快速基于BERT做二阶段fine tune的方法。此外，如果TF Hub中有对应任务可使用的预训练模型，也可直接使用，例如同样用于分类的run_classifier_with_tfhub.py。 代码整体结构代码的整">
+<meta name="twitter:image" content="http://yoursite.com/images/BERT.png">
 
 
 
@@ -137,13 +137,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/05/07/使用TensorFlow-Serving快速部署模型/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/05/31/BERT二阶段fine-tune代码分析/"/>
 
 
 
 
 
-  <title>使用TensorFlow Serving快速部署模型 | 小菜鸡</title>
+  <title>BERT二阶段fine tune代码分析 | 小菜鸡</title>
   
 
 
@@ -259,7 +259,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/使用TensorFlow-Serving快速部署模型/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/31/BERT二阶段fine-tune代码分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jeb">
@@ -276,7 +276,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">使用TensorFlow Serving快速部署模型</h1>
+          <h1 class="post-title" itemprop="name headline">BERT二阶段fine tune代码分析</h1>
         
 
         <div class="post-meta">
@@ -288,8 +288,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T11:41:42+08:00">
-                2019-05-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-31T16:56:20+08:00">
+                2019-05-31
               </time>
             
 
@@ -328,27 +328,44 @@
       
 
       
-        <h1 id="工业产品中TensorFlow使用方法"><a href="#工业产品中TensorFlow使用方法" class="headerlink" title="工业产品中TensorFlow使用方法"></a>工业产品中TensorFlow使用方法</h1><ol>
-<li>用TensorFlow的C++/Java/Nodejs API直接使用保存的TensorFlow模型：类似Caffe，适合做桌面软件。</li>
-<li>直接将使用TensorFlow的Python代码放到Flask等Web程序中，提供Restful接口：实现和调试方便，但效率不太高，不大适合高负荷场景，且没有版本管理、模型热更新等功能。</li>
-<li>将TensorFlow模型托管到TensorFlow Serving中，提供RPC或Restful服务：实现方便，高效，自带版本管理、模型热更新等，很适合大规模线上业务。</li>
-</ol>
-<blockquote>
-<p>参考链接：<a href="https://cloud.tencent.com/developer/article/1375668" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1375668</a> </p>
-</blockquote>
-<h1 id="TensorFlow-Serving简介"><a href="#TensorFlow-Serving简介" class="headerlink" title="TensorFlow Serving简介"></a>TensorFlow Serving简介</h1><p><a href="https://github.com/tensorflow/serving" target="_blank" rel="external">Tensorflow Serving</a>是Google官方提供的模型部署方式，正确导出模型后，可一分钟完成部署（官方广告）。TF1.8后，Tensorflow Serving支持RESTfull API和grpc的请求方式，模型部署完成后可很方便的利用post请求进行测试。</p>
-<h1 id="TensorFlow-Serving服务框架"><a href="#TensorFlow-Serving服务框架" class="headerlink" title="TensorFlow Serving服务框架"></a>TensorFlow Serving服务框架</h1><p>框架分为模型训练、模型上线和服务使用三部分。模型训练与正常的训练过程一致，只是导出时需要按照TF Serving的标准定义输入、输出和签名。模型上线时指定端口号和模型路径后，通过tensorflow_model_server命令启动服务。服务使用可通过grpc和RESTfull方式请求。<br><img width="724" src="https://ss.csdn.net/p?http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtzxrqiba6BicbqCjDDQ313ohCZJQ5u0LTnK5okv89ibHbf2pI6YWMq05UNjjoiaxxibxd6pqk6l07T04rA/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1"></p>
-<h1 id="模型导出"><a href="#模型导出" class="headerlink" title="模型导出"></a>模型导出</h1><p>需指定模型的输入和输出，并在tags中包含”serve”，在实际使用中，TF Serving要求导出模型包含”serve”这个tag。此外，还需要指定默认签名，tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY = “serving_default”，此外tf.saved_model.signature_constants定义了三类签名，分别是：</p>
-<ul>
-<li>分类classify</li>
-<li>回归regress</li>
-<li>预测predict</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">CLASSIFY_METHOD_NAME = &quot;tensorflow/serving/classify&quot;</div><div class="line">PREDICT_METHOD_NAME = &quot;tensorflow/serving/predict&quot;</div><div class="line">REGRESS_METHOD_NAME = &quot;tensorflow/serving/regress&quot;</div></pre></td></tr></table></figure>
-<p>一般而言，用predict就完事了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">with sess.graph.as_default() as graph:</div><div class="line">    builder = tf.saved_model.builder.SavedModelBuilder(saved_model_dir)</div><div class="line">    signature = tf.saved_model.signature_def_utils.predict_signature_def(inputs=&#123;&apos;image&apos;: in_image&#125;,</div><div class="line">                                      outputs=&#123;&apos;prediction&apos;: graph.get_tensor_by_name(&apos;final_result:0&apos;)&#125;,)</div><div class="line">    builder.add_meta_graph_and_variables(sess=sess,</div><div class="line">                                         tags=[&quot;serve&quot;],</div><div class="line">                                         signature_def_map=&#123;&apos;predict&apos;:signature, tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:signature&#125;)</div><div class="line">    builder.save()</div></pre></td></tr></table></figure></p>
-<h1 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tensorflow_model_server --port=8500 --rest_api_port=8501 --model_name=模型名 --model_base_path=模型所在路径</div></pre></td></tr></table></figure>
-<h1 id="请求服务"><a href="#请求服务" class="headerlink" title="请求服务"></a>请求服务</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -d &apos;&#123;&quot;inputs&quot;: [[1.1,1.2,0.8,1.3]]&#125;&apos; -X POST http://localhost:8501/v1/models/模型名:predict</div></pre></td></tr></table></figure>
-<p>python可以通过post请求，golang可以通过grpc服务请求。</p>
+        <p>BERT除预训练代码run_pretraining.py外，还提供了run_classifier.py用于文本分类和run_squad.py用于阅读理解，下面通过对比三个代码总结出如何快速基于BERT做二阶段fine tune的方法。此外，如果TF Hub中有对应任务可使用的预训练模型，也可直接使用，例如同样用于分类的run_classifier_with_tfhub.py。</p>
+<h2 id="代码整体结构"><a href="#代码整体结构" class="headerlink" title="代码整体结构"></a>代码整体结构</h2><p>代码的整体流程如下图所示：<br><img src="/images/BERT.png" alt=""></p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>在bert_config_file文件中配置各个参数，例如attention_probs_dropout_prob和directionality等，config文件在BERT提供的预训练模型中。</p>
+<h3 id="输入处理"><a href="#输入处理" class="headerlink" title="输入处理"></a>输入处理</h3><p>结构图中以get input files表示整个的输入数据处理部分，不同于早期版本的数据处理过程，当前的TF版本将数据转化为features用于训练。所以需要建立相应的结构体承接数据，并建立对应的数据处理方法，最后转化为features。</p>
+<table>
+<thead>
+<tr>
+<th>代码/功能</th>
+<th>承接数据</th>
+<th>数据处理方法</th>
+<th>转化为features</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>run_classifier.py</td>
+<td>InputExample, InputFeatures</td>
+<td>DataProcessor</td>
+<td>convert_single_example</td>
+</tr>
+<tr>
+<td>run_squad.py</td>
+<td>SquadExample, InputFeatures</td>
+<td>read_squad_examples</td>
+<td>convert_examples_to_features</td>
+</tr>
+</tbody>
+</table>
+<p>###建立模型<br>以run_classifier.py为例，使用model_fn_builder函数建立模型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">model_fn = model_fn_builder(</div><div class="line">      bert_config=bert_config,</div><div class="line">      num_labels=len(label_list),</div><div class="line">      init_checkpoint=FLAGS.init_checkpoint,</div><div class="line">      learning_rate=FLAGS.learning_rate,</div><div class="line">      num_train_steps=num_train_steps,</div><div class="line">      num_warmup_steps=num_warmup_steps,</div><div class="line">      use_tpu=FLAGS.use_tpu,</div><div class="line">      use_one_hot_embeddings=FLAGS.use_tpu)</div></pre></td></tr></table></figure></p>
+<p>具体地，将配置、训练数据等信息传入create_model函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">(total_loss, per_example_loss, logits, probabilities) = create_model(</div><div class="line">        bert_config, is_training, input_ids, input_mask, segment_ids, label_ids,</div><div class="line">        num_labels, use_one_hot_embeddings)</div></pre></td></tr></table></figure></p>
+<p>create_model函数首先基于BERT建立模型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">model = modeling.BertModel(</div><div class="line">      config=bert_config,</div><div class="line">      is_training=is_training,</div><div class="line">      input_ids=input_ids,</div><div class="line">      input_mask=input_mask,</div><div class="line">      token_type_ids=segment_ids,</div><div class="line">      use_one_hot_embeddings=use_one_hot_embeddings)</div></pre></td></tr></table></figure></p>
+<p>然后根据需要取得BERT模型的输出，例如在run_classifier.py中output_layer = model.get_pooled_output()，run_squad.py中final_hidden = model.get_sequence_output()。此部分相当于利用BERT作为一个Encoder来编码输入信息，随后便可根据任务定义对应的可学习参数和loss。</p>
+<p>###建立estimator<br>根据已建立的模型和配置信息新建estimator。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">estimator = tf.contrib.tpu.TPUEstimator(</div><div class="line">      use_tpu=FLAGS.use_tpu,</div><div class="line">      model_fn=model_fn,</div><div class="line">      config=run_config,</div><div class="line">      train_batch_size=FLAGS.train_batch_size,</div><div class="line">      predict_batch_size=FLAGS.predict_batch_size)</div></pre></td></tr></table></figure></p>
+<h3 id="开始训练"><a href="#开始训练" class="headerlink" title="开始训练"></a>开始训练</h3><p>使用input_fn_builder建立训练数据，输入estimator开始训练。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">train_input_fn = input_fn_builder(</div><div class="line">        input_file=train_writer.filename,</div><div class="line">        seq_length=FLAGS.max_seq_length,</div><div class="line">        is_training=True,</div><div class="line">        drop_remainder=True)</div><div class="line">    estimator.train(input_fn=train_input_fn, max_steps=num_train_steps)</div></pre></td></tr></table></figure></p>
+<h2 id="使用TF-Hub"><a href="#使用TF-Hub" class="headerlink" title="使用TF Hub"></a>使用TF Hub</h2><p>run_classifier_with_tfhub.py与run_classifier.py整体流程非常类似，区别在于run_classifier_with_tfhub.py中获得BERT模型是通过TF Hub。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bert_module = hub.Module(bert_hub_module_handle, tags=tags, trainable=True)</div></pre></td></tr></table></figure></p>
+<p>获得BERT模型输出时需要指定signature。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">bert_outputs = bert_module(</div><div class="line">      inputs=bert_inputs,</div><div class="line">      signature=&quot;tokens&quot;,</div><div class="line">      as_dict=True)</div></pre></td></tr></table></figure></p>
+<p>其他部分与run_classifier.py类似。</p>
+<h2 id="新任务"><a href="#新任务" class="headerlink" title="新任务"></a>新任务</h2><p>对于一个新任务，可参考run_classifier.py代码进行修改，主要修改数据处理、模型建立等部分，具体地，InputExample，InputFeatures，convert_examples_to_features和create_model函数等。</p>
 
       
     </div>
@@ -373,8 +390,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/07/基于Tensorflow-Hub进行迁移学习完成人脸BMI指数预测/" rel="next" title="基于Tensorflow Hub进行迁移学习完成人脸BMI指数预测">
-                <i class="fa fa-chevron-left"></i> 基于Tensorflow Hub进行迁移学习完成人脸BMI指数预测
+              <a href="/2019/05/15/文本查重-SimHash和MinHash算法/" rel="next" title="文本查重-SimHash和MinHash算法">
+                <i class="fa fa-chevron-left"></i> 文本查重-SimHash和MinHash算法
               </a>
             
           </div>
@@ -382,10 +399,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/14/TextRank算法/" rel="prev" title="TextRank算法">
-                TextRank算法 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -504,7 +517,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#工业产品中TensorFlow使用方法"><span class="nav-number">1.</span> <span class="nav-text">工业产品中TensorFlow使用方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TensorFlow-Serving简介"><span class="nav-number">2.</span> <span class="nav-text">TensorFlow Serving简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TensorFlow-Serving服务框架"><span class="nav-number">3.</span> <span class="nav-text">TensorFlow Serving服务框架</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型导出"><span class="nav-number">4.</span> <span class="nav-text">模型导出</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#启动服务"><span class="nav-number">5.</span> <span class="nav-text">启动服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#请求服务"><span class="nav-number">6.</span> <span class="nav-text">请求服务</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#代码整体结构"><span class="nav-number">1.</span> <span class="nav-text">代码整体结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置"><span class="nav-number">1.1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输入处理"><span class="nav-number">1.2.</span> <span class="nav-text">输入处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始训练"><span class="nav-number">1.3.</span> <span class="nav-text">开始训练</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用TF-Hub"><span class="nav-number">2.</span> <span class="nav-text">使用TF Hub</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新任务"><span class="nav-number">3.</span> <span class="nav-text">新任务</span></a></li></ol></div>
             
 
           </div>
