@@ -457,7 +457,7 @@
             <p>BERT除预训练代码run_pretraining.py外，还提供了run_classifier.py用于文本分类和run_squad.py用于阅读理解，下面通过对比三个代码总结出如何快速基于BERT做二阶段fine tune的方法。此外，如果TF Hub中有对应任务可使用的预训练模型，也可直接使用，例如同样用于分类的run_classifier_with_tfhub.py。</p>
 <h2 id="代码整体结构"><a href="#代码整体结构" class="headerlink" title="代码整体结构"></a>代码整体结构</h2><p>代码的整体流程如下图所示：<br><img src="/images/BERT.png" alt=""></p>
 <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>在bert_config_file文件中配置各个参数，例如attention_probs_dropout_prob和directionality等，config文件在BERT提供的预训练模型中。</p>
-<h3 id="输入处理"><a href="#输入处理" class="headerlink" title="输入处理"></a>输入处理</h3><p>结构图中以get input files表示整个的输入数据处理部分，不同于早期版本的数据处理过程，当前的TF版本将数据转化为features用于训练。所以需要建立相应的结构体承接数据，并建立对应的数据处理方法，最后转化为features。</p>
+<h3 id="输入处理"><a href="#输入处理" class="headerlink" title="输入处理"></a>输入处理</h3><p>结构图中以get input files表示整个的输入数据处理部分，不同于早期版本的数据处理过程，当前的TF版本将数据转化为features用于训练。所以需要建立相应的结构体承接数据，并建立对应的数据处理方法，最后转化为features，下表中convert_exps_to_features为convert_examples_to_features简写。</p>
 <table>
 <thead>
 <tr>
@@ -478,7 +478,7 @@
 <td>run_squad.py</td>
 <td>SquadExample, InputFeatures</td>
 <td>read_squad_examples</td>
-<td>convert_examples_to_features</td>
+<td>convert_exps_to_features</td>
 </tr>
 </tbody>
 </table>
