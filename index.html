@@ -458,8 +458,11 @@
 <h2 id="搜索"><a href="#搜索" class="headerlink" title="搜索"></a>搜索</h2><p>搜索的目标是选择与用户输入query最相关的一组文档，目前主要步骤如下：</p>
 <ol>
 <li>粗排：query-doc匹配，得到一组与query相关的文档，目前一般采用倒排索引实现；</li>
-<li>精排：选取更多特征，按照用户点击该doc的可能性大小排序，Learning to rank即是实现该部分的机器学习模型。<h2 id="机器学习排序系统"><a href="#机器学习排序系统" class="headerlink" title="机器学习排序系统"></a>机器学习排序系统</h2>典型的机器学习排序系统如下图所示：<br><img src="/images/rank-system.jpg" alt=""><h2 id="Learning-to-rank"><a href="#Learning-to-rank" class="headerlink" title="Learning to rank"></a>Learning to rank</h2>包含pointwise方法、pairwise方法和listwise方法三种类型。<br>(1) pointwise方法：对于某一个query， 判断每个doc这个query的相关度，由此将docs排序问题转化为了分类（比如相关、不相关）或回归问题（相关程度越大，回归函数的值越大）。其L2R框架具有以下特征：</li>
+<li>精排：选取更多特征，按照用户点击该doc的可能性大小排序，Learning to rank即是实现该部分的机器学习模型。</li>
 </ol>
+<h2 id="机器学习排序系统"><a href="#机器学习排序系统" class="headerlink" title="机器学习排序系统"></a>机器学习排序系统</h2><p>典型的机器学习排序系统如下图所示：<br><img src="/images/rank-system.jpg" alt=""></p>
+<h2 id="Learning-to-rank"><a href="#Learning-to-rank" class="headerlink" title="Learning to rank"></a>Learning to rank</h2><p>包含pointwise方法、pairwise方法和listwise方法三种类型。</p>
+<p>(1) pointwise方法：对于某一个query， 判断每个doc这个query的相关度，由此将docs排序问题转化为了分类（比如相关、不相关）或回归问题（相关程度越大，回归函数的值越大）。其L2R框架具有以下特征：</p>
 <ul>
 <li>输入空间中样本是单个 doc（和对应 query）构成的特征向量；</li>
 <li>输出空间中样本是单个 doc（和对应 query）的相关度；</li>
@@ -478,8 +481,10 @@
 <ul>
 <li>优化基于评价指标的 ranking error 的连续可微的近似，这种方法就可以直接应用已有的优化方法，如SoftRank，ApproximateRank，SmoothRank。</li>
 <li>优化基于评价指标的 ranking error 的连续可微的上界，如 SVM-MAP，SVM-NDCG，PermuRank。</li>
-<li>使用可以优化非平滑目标函数的优化技术，如 AdaRank，RankGP。非直接相关的损失函数则不再使用与评价相关的loss来优化模型，而是设计能衡量模型输出与真实排列之间差异的 loss，如此获得的模型在评价指标上也能获得不错的性能。例如 ：ListNet，ListMLE，StructRank和BoltzRank。<h3 id="主要模型分类"><a href="#主要模型分类" class="headerlink" title="主要模型分类"></a>主要模型分类</h3>按照这三种类型，可以将主要模型做如下梳理：<br><img src="/images/l2r-models.png" alt=""><br>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。<h3 id="xgboost"><a href="#xgboost" class="headerlink" title="xgboost"></a>xgboost</h3>下面以xgboost模型为例，说明如何完成排序。大致过程如下：<br><strong>训练</strong></li>
+<li>使用可以优化非平滑目标函数的优化技术，如 AdaRank，RankGP。非直接相关的损失函数则不再使用与评价相关的loss来优化模型，而是设计能衡量模型输出与真实排列之间差异的 loss，如此获得的模型在评价指标上也能获得不错的性能。例如 ：ListNet，ListMLE，StructRank和BoltzRank。</li>
+<li><h3 id="主要模型分类"><a href="#主要模型分类" class="headerlink" title="主要模型分类"></a>主要模型分类</h3>按照这三种类型，可以将主要模型做如下梳理：<br><img src="/images/l2r-models.png" alt=""><br>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</li>
 </ul>
+<h3 id="xgboost"><a href="#xgboost" class="headerlink" title="xgboost"></a>xgboost</h3><p>下面以xgboost模型为例，说明如何完成排序。大致过程如下：<br><strong>训练</strong></p>
 <ol>
 <li>获取训练数据；</li>
 <li>构造特征候选集，完成训练样本准备；</li>
