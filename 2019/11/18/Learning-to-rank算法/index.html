@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="##简介互联网搜索诞生初期，检索模型使用的特征相对简单，这些特征主要基于query与doc之间的相关度来对文档进行排序。另一种传统排序模型是重要性排序模型，此时模型不考虑query ，而仅仅根据文档（网页）之间的图结构来判断doc的重要程度，例如PageRank排序模型。而随着互联网不断发展，海量数据的产生，更多复杂有效的特征被用于搜索排序，人工调参已不能满足需求，此时机器学习开始在搜索排序领域得">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Learning to rank算法">
+<meta property="og:url" content="http://yoursite.com/2019/11/18/Learning-to-rank算法/index.html">
+<meta property="og:site_name" content="小菜鸡">
+<meta property="og:description" content="##简介互联网搜索诞生初期，检索模型使用的特征相对简单，这些特征主要基于query与doc之间的相关度来对文档进行排序。另一种传统排序模型是重要性排序模型，此时模型不考虑query ，而仅仅根据文档（网页）之间的图结构来判断doc的重要程度，例如PageRank排序模型。而随着互联网不断发展，海量数据的产生，更多复杂有效的特征被用于搜索排序，人工调参已不能满足需求，此时机器学习开始在搜索排序领域得">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/rank-system.jpg">
+<meta property="og:image" content="http://yoursite.com/images/l2r-models.png">
+<meta property="og:updated_time" content="2019-11-18T07:30:59.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Learning to rank算法">
+<meta name="twitter:description" content="##简介互联网搜索诞生初期，检索模型使用的特征相对简单，这些特征主要基于query与doc之间的相关度来对文档进行排序。另一种传统排序模型是重要性排序模型，此时模型不考虑query ，而仅仅根据文档（网页）之间的图结构来判断doc的重要程度，例如PageRank排序模型。而随着互联网不断发展，海量数据的产生，更多复杂有效的特征被用于搜索排序，人工调参已不能满足需求，此时机器学习开始在搜索排序领域得">
+<meta name="twitter:image" content="http://yoursite.com/images/rank-system.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/11/18/Learning-to-rank算法/"/>
+
+
+
+
+
+  <title>Learning to rank算法 | 小菜鸡</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-106410509-1', 'auto');
+  ga('send', 'pageview');
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小菜鸡</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/Learning-to-rank算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Learning to rank算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-18T15:25:57+08:00">
+                2019-11-18
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>##简介<br>互联网<strong>搜索</strong>诞生初期，检索模型使用的特征相对简单，这些特征主要基于query与doc之间的相关度来对文档进行排序。另一种传统排序模型是重要性排序模型，此时模型不考虑query ，而仅仅根据文档（网页）之间的图结构来判断doc的重要程度，例如PageRank排序模型。而随着互联网不断发展，海量数据的产生，更多复杂有效的特征被用于搜索排序，人工调参已不能满足需求，此时机器学习开始在搜索排序领域得到应用，learning to rank逐渐成为热门研究方向。</p>
+<p>##搜索<br>搜索的目标是选择与用户输入query最相关的一组文档，目前主要步骤如下：</p>
+<ol>
+<li>粗排：query-doc匹配，得到一组与query相关的文档，目前一般采用倒排索引实现；</li>
+<li>精排：选取更多特征，按照用户点击该doc的可能性大小排序，Learning to rank即是实现该部分的机器学习模型。</li>
+</ol>
+<p>##机器学习排序系统<br>典型的机器学习排序系统如下图所示：<br><img src="/images/rank-system.jpg" alt=""></p>
+<p>##Learning to rank<br>包含pointwise方法、pairwise方法和listwise方法三种类型。</p>
+<p>(1) pointwise方法：对于某一个query， 判断每个doc这个query的相关度，由此将docs排序问题转化为了分类（比如相关、不相关）或回归问题（相关程度越大，回归函数的值越大）。其L2R框架具有以下特征：</p>
+<ul>
+<li>输入空间中样本是单个 doc（和对应 query）构成的特征向量；</li>
+<li>输出空间中样本是单个 doc（和对应 query）的相关度；</li>
+<li>假设样本满足打分函数；</li>
+<li>损失函数评估单个 doc 的预测得分和真实得分之间差异。</li>
+</ul>
+<p>(2) pairwise方法：该方法并不关心某一个doc与query相关程度的具体数值，而是将排序问题转化为任意两个不同的docs di和dj谁与当前的query更相关的相对顺序的排序问题。一般分为di比dj更相关、更不相关和相关程度相等三个类别，分别记为{+1, -1, 0}，由此便又转化为了分类问题。其 L2R 框架具有以下特征：</p>
+<ul>
+<li>输入空间中样本是（同一 query 对应的）两个 doc（和对应 query）构成的两个特征向量；</li>
+<li>输出空间中样本是 pairwise preference；</li>
+<li>假设空间中样本满足二变量函数；</li>
+<li>损失函数评估 doc pair 的预测 preference 和真实 preference 之间差异。</li>
+</ul>
+<p>(3) listwise方法：将一个query对应的所有相关文档看做一个整体，作为单个训练样本。其 L2R 框架具有以下特征：</p>
+<ul>
+<li>输入空间中样本是（同一 query 对应的）所有 doc构成的多个特征向量（列表）；</li>
+<li>输出空间中样本是这些 doc与对应 query的相关度排序列表；</li>
+<li>假设空间中样本满足多变量函数，对于 docs 得到其排列，实践中，通常是一个打分函数，根据打分函数对所有 docs 的打分进行排序得到 docs 相关度的排列；</li>
+<li>损失函数分成两类，一类是直接和评价指标相关的，还有一类不是直接相关的。</li>
+</ul>
+<p>由于评价指标通常是离散不可微的，直接优化ranking评价指标并不简单，通常有以下处理方式：</p>
+<ul>
+<li>优化基于评价指标的 ranking error 的连续可微的近似，这种方法就可以直接应用已有的优化方法，如SoftRank，ApproximateRank，SmoothRank。</li>
+<li>优化基于评价指标的 ranking error 的连续可微的上界，如 SVM-MAP，SVM-NDCG，PermuRank。</li>
+<li>使用可以优化非平滑目标函数的优化技术，如 AdaRank，RankGP。非直接相关的损失函数则不再使用与评价相关的loss来优化模型，而是设计能衡量模型输出与真实排列之间差异的 loss，如此获得的模型在评价指标上也能获得不错的性能。例如 ：ListNet，ListMLE，StructRank和BoltzRank。</li>
+</ul>
+<p>###主要模型分类<br>按照这三种类型，可以将主要模型做如下梳理：<br><img src="/images/l2r-models.png" alt=""><br>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</p>
+<p>###xgboost<br>下面以xgboost模型为例，说明如何完成排序。大致过程如下：<br><strong>训练</strong></p>
+<ol>
+<li>获取训练数据；</li>
+<li>构造特征候选集，完成训练样本准备；</li>
+<li>基于xgboost寻找划分点，重复该步至不能再分裂划分点；</li>
+<li>通过最小化pairwise loss生成下一棵树；</li>
+<li>生成设定数量的树后，训练完成；</li>
+</ol>
+<p><strong>测试</strong></p>
+<ol>
+<li>输入测试样本；</li>
+<li>根据训练所得模型和打分函数进行打分；</li>
+<li>获得每个<query,doc>对打分，并完成排序。</query,doc></li>
+</ol>
+<p>值得注意的是，目前使用比较多的XGBoost ranking模型是LambdaRank，但尚未完成，所以目前使用pairwise rank，参考<a href="https://github.com/dmlc/xgboost/tree/master/demo/rank" target="_blank" rel="external">dmlc/xgboost</a> .</p>
+<p><strong>代码示例</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">#@mathewlin</div><div class="line">import os,sys,json</div><div class="line">import math</div><div class="line">import random</div><div class="line">import numpy as np</div><div class="line">import pandas as pd</div><div class="line">import sklearn.utils</div><div class="line">import xgboost as xgb</div><div class="line"></div><div class="line">enableFeatures = [</div><div class="line">    &quot;fea1&quot;,</div><div class="line">    &quot;fea2&quot;</div><div class="line">]</div><div class="line"></div><div class="line">train_data = pd.read_csv(&quot;train.csv&quot;, sep=&quot;\t&quot;)</div><div class="line">test_data = pd.read_csv(&quot;test.csv&quot;, sep=&quot;\t&quot;)</div><div class="line">print(&quot;all data &#123;0&#125;&quot;.format(train_data.shape))</div><div class="line">print(&quot;all data &#123;0&#125;&quot;.format(test_data.shape))</div><div class="line"></div><div class="line"># 分组处理数据</div><div class="line">traingroups = &#123;&#125;</div><div class="line">validgroups = &#123;&#125;</div><div class="line"></div><div class="line">for qid, df in list(train_data.groupby(&quot;group_id&quot;)):</div><div class="line">    group = traingroups.setdefault(qid, &#123;&#125;)</div><div class="line">    group[&quot;length&quot;] = len(df)</div><div class="line">    group[&quot;weight&quot;] = 1</div><div class="line">    group[&quot;df&quot;] = df</div><div class="line"></div><div class="line">for qid, df in list(test_data.groupby(&quot;group_id&quot;)):</div><div class="line">    group = validgroups.setdefault(qid, &#123;&#125;)</div><div class="line">    group[&quot;length&quot;] = len(df)</div><div class="line">    group[&quot;weight&quot;] = 1</div><div class="line">    group[&quot;df&quot;] = df</div><div class="line"></div><div class="line">print(&quot;groups&quot;)</div><div class="line">traingroups = [group for qid, group in traingroups.items() ]</div><div class="line">validgroups = [group for qid, group in validgroups.items() ]</div><div class="line"></div><div class="line">print(&quot;concat&quot;)</div><div class="line">train_X = pd.concat(map(lambda x: sklearn.utils.shuffle(x[&quot;df&quot;]), traingroups), ignore_index=True)</div><div class="line">valid_X = pd.concat(map(lambda x: sklearn.utils.shuffle(x[&quot;df&quot;]), validgroups), ignore_index=True)</div><div class="line">train_y = train_X[&quot;label&quot;]</div><div class="line">valid_y = valid_X[&quot;label&quot;]</div><div class="line"></div><div class="line">train_X = train_X[enableFeatures]</div><div class="line">valid_X = valid_X[enableFeatures]</div><div class="line">train_X, valid_X = train_X.align(valid_X, join=&quot;left&quot;, axis=1)</div><div class="line"></div><div class="line">print(&quot;data length weight&quot;)</div><div class="line">train_q = np.array(list(map(lambda x: x[&quot;length&quot;], traingroups)))</div><div class="line">valid_q = np.array(list(map(lambda x: x[&quot;length&quot;], validgroups)))</div><div class="line">train_w = np.array(list(map(lambda x: x[&quot;weight&quot;], traingroups)))</div><div class="line">valid_w = np.array(list(map(lambda x: x[&quot;weight&quot;], validgroups)))</div><div class="line"></div><div class="line">print(&quot;model train&quot;)</div><div class="line">#&quot;rank:ndcg&quot;</div><div class="line">ranker = xgb.XGBRanker(objective=&quot;rank:pairwise&quot;)</div><div class="line">ranker.fit(train_X, train_y, train_q, sample_weight=train_w,</div><div class="line">    eval_set=[(valid_X, valid_y)], eval_group=[valid_q], sample_weight_eval_set=[valid_w],</div><div class="line">    eval_metric=[&quot;ndcg@5-&quot;, &quot;ndcg@10-&quot;], early_stopping_rounds=5, verbose=True,</div><div class="line">    callbacks=[xgb.callback.reset_learning_rate(lambda x,y: 0.95 ** x * 0.1)])</div><div class="line">ranker.feature_names = map(str, train_X.columns)</div><div class="line">with open(&quot;xgb_pair.model.features&quot;, &quot;w&quot;) as fw:</div><div class="line">    fw.write( &quot;,&quot;.join(ranker.feature_names))</div><div class="line">ranker.save_model(&apos;xgb_pair.model&apos;)</div><div class="line">model = xgb.Booster(model_file=&apos;xgb_pair.model&apos;)</div><div class="line">print(ranker.get_booster().get_score(importance_type=&apos;gain&apos;) )</div></pre></td></tr></table></figure></p>
+<p>##参考资料<br><a href="https://blog.csdn.net/seasongirl/article/details/100178083" target="_blank" rel="external">用xgboost做排序任务——xgboost下的learning2rank</a><br><a href="https://blog.csdn.net/zuolixiangfisher/article/details/81072922" target="_blank" rel="external">Learning to Rank系列之概述</a><br><a href="http://www.bdpt.net/cn/2018/11/20/rank教程-06-learning-to-rank-概述/" target="_blank" rel="external">Learning to Rank 概述</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/31/BERT二阶段fine-tune代码分析/" rel="next" title="BERT二阶段fine tune代码分析">
+                <i class="fa fa-chevron-left"></i> BERT二阶段fine tune代码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="/images/avatar.gif"
+              alt="Jeb" />
+          
+            <p class="site-author-name" itemprop="name">Jeb</p>
+            <p class="site-description motion-element" itemprop="description">我菜故我在</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jeb</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

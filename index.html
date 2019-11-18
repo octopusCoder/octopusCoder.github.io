@@ -381,6 +381,180 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/Learning-to-rank算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/18/Learning-to-rank算法/" itemprop="url">Learning to rank算法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-18T15:25:57+08:00">
+                2019-11-18
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>##简介<br>互联网<strong>搜索</strong>诞生初期，检索模型使用的特征相对简单，这些特征主要基于query与doc之间的相关度来对文档进行排序。另一种传统排序模型是重要性排序模型，此时模型不考虑query ，而仅仅根据文档（网页）之间的图结构来判断doc的重要程度，例如PageRank排序模型。而随着互联网不断发展，海量数据的产生，更多复杂有效的特征被用于搜索排序，人工调参已不能满足需求，此时机器学习开始在搜索排序领域得到应用，learning to rank逐渐成为热门研究方向。</p>
+<p>##搜索<br>搜索的目标是选择与用户输入query最相关的一组文档，目前主要步骤如下：</p>
+<ol>
+<li>粗排：query-doc匹配，得到一组与query相关的文档，目前一般采用倒排索引实现；</li>
+<li>精排：选取更多特征，按照用户点击该doc的可能性大小排序，Learning to rank即是实现该部分的机器学习模型。</li>
+</ol>
+<p>##机器学习排序系统<br>典型的机器学习排序系统如下图所示：<br><img src="/images/rank-system.jpg" alt=""></p>
+<p>##Learning to rank<br>包含pointwise方法、pairwise方法和listwise方法三种类型。</p>
+<p>(1) pointwise方法：对于某一个query， 判断每个doc这个query的相关度，由此将docs排序问题转化为了分类（比如相关、不相关）或回归问题（相关程度越大，回归函数的值越大）。其L2R框架具有以下特征：</p>
+<ul>
+<li>输入空间中样本是单个 doc（和对应 query）构成的特征向量；</li>
+<li>输出空间中样本是单个 doc（和对应 query）的相关度；</li>
+<li>假设样本满足打分函数；</li>
+<li>损失函数评估单个 doc 的预测得分和真实得分之间差异。</li>
+</ul>
+<p>(2) pairwise方法：该方法并不关心某一个doc与query相关程度的具体数值，而是将排序问题转化为任意两个不同的docs di和dj谁与当前的query更相关的相对顺序的排序问题。一般分为di比dj更相关、更不相关和相关程度相等三个类别，分别记为{+1, -1, 0}，由此便又转化为了分类问题。其 L2R 框架具有以下特征：</p>
+<ul>
+<li>输入空间中样本是（同一 query 对应的）两个 doc（和对应 query）构成的两个特征向量；</li>
+<li>输出空间中样本是 pairwise preference；</li>
+<li>假设空间中样本满足二变量函数；</li>
+<li>损失函数评估 doc pair 的预测 preference 和真实 preference 之间差异。</li>
+</ul>
+<p>(3) listwise方法：将一个query对应的所有相关文档看做一个整体，作为单个训练样本。其 L2R 框架具有以下特征：</p>
+<ul>
+<li>输入空间中样本是（同一 query 对应的）所有 doc构成的多个特征向量（列表）；</li>
+<li>输出空间中样本是这些 doc与对应 query的相关度排序列表；</li>
+<li>假设空间中样本满足多变量函数，对于 docs 得到其排列，实践中，通常是一个打分函数，根据打分函数对所有 docs 的打分进行排序得到 docs 相关度的排列；</li>
+<li>损失函数分成两类，一类是直接和评价指标相关的，还有一类不是直接相关的。</li>
+</ul>
+<p>由于评价指标通常是离散不可微的，直接优化ranking评价指标并不简单，通常有以下处理方式：</p>
+<ul>
+<li>优化基于评价指标的 ranking error 的连续可微的近似，这种方法就可以直接应用已有的优化方法，如SoftRank，ApproximateRank，SmoothRank。</li>
+<li>优化基于评价指标的 ranking error 的连续可微的上界，如 SVM-MAP，SVM-NDCG，PermuRank。</li>
+<li>使用可以优化非平滑目标函数的优化技术，如 AdaRank，RankGP。非直接相关的损失函数则不再使用与评价相关的loss来优化模型，而是设计能衡量模型输出与真实排列之间差异的 loss，如此获得的模型在评价指标上也能获得不错的性能。例如 ：ListNet，ListMLE，StructRank和BoltzRank。</li>
+</ul>
+<p>###主要模型分类<br>按照这三种类型，可以将主要模型做如下梳理：<br><img src="/images/l2r-models.png" alt=""><br>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</p>
+<p>###xgboost<br>下面以xgboost模型为例，说明如何完成排序。大致过程如下：<br><strong>训练</strong></p>
+<ol>
+<li>获取训练数据；</li>
+<li>构造特征候选集，完成训练样本准备；</li>
+<li>基于xgboost寻找划分点，重复该步至不能再分裂划分点；</li>
+<li>通过最小化pairwise loss生成下一棵树；</li>
+<li>生成设定数量的树后，训练完成；</li>
+</ol>
+<p><strong>测试</strong></p>
+<ol>
+<li>输入测试样本；</li>
+<li>根据训练所得模型和打分函数进行打分；</li>
+<li>获得每个<query,doc>对打分，并完成排序。</query,doc></li>
+</ol>
+<p>值得注意的是，目前使用比较多的XGBoost ranking模型是LambdaRank，但尚未完成，所以目前使用pairwise rank，参考<a href="https://github.com/dmlc/xgboost/tree/master/demo/rank" target="_blank" rel="external">dmlc/xgboost</a> .</p>
+<p><strong>代码示例</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">#@mathewlin</div><div class="line">import os,sys,json</div><div class="line">import math</div><div class="line">import random</div><div class="line">import numpy as np</div><div class="line">import pandas as pd</div><div class="line">import sklearn.utils</div><div class="line">import xgboost as xgb</div><div class="line"></div><div class="line">enableFeatures = [</div><div class="line">    &quot;fea1&quot;,</div><div class="line">    &quot;fea2&quot;</div><div class="line">]</div><div class="line"></div><div class="line">train_data = pd.read_csv(&quot;train.csv&quot;, sep=&quot;\t&quot;)</div><div class="line">test_data = pd.read_csv(&quot;test.csv&quot;, sep=&quot;\t&quot;)</div><div class="line">print(&quot;all data &#123;0&#125;&quot;.format(train_data.shape))</div><div class="line">print(&quot;all data &#123;0&#125;&quot;.format(test_data.shape))</div><div class="line"></div><div class="line"># 分组处理数据</div><div class="line">traingroups = &#123;&#125;</div><div class="line">validgroups = &#123;&#125;</div><div class="line"></div><div class="line">for qid, df in list(train_data.groupby(&quot;group_id&quot;)):</div><div class="line">    group = traingroups.setdefault(qid, &#123;&#125;)</div><div class="line">    group[&quot;length&quot;] = len(df)</div><div class="line">    group[&quot;weight&quot;] = 1</div><div class="line">    group[&quot;df&quot;] = df</div><div class="line"></div><div class="line">for qid, df in list(test_data.groupby(&quot;group_id&quot;)):</div><div class="line">    group = validgroups.setdefault(qid, &#123;&#125;)</div><div class="line">    group[&quot;length&quot;] = len(df)</div><div class="line">    group[&quot;weight&quot;] = 1</div><div class="line">    group[&quot;df&quot;] = df</div><div class="line"></div><div class="line">print(&quot;groups&quot;)</div><div class="line">traingroups = [group for qid, group in traingroups.items() ]</div><div class="line">validgroups = [group for qid, group in validgroups.items() ]</div><div class="line"></div><div class="line">print(&quot;concat&quot;)</div><div class="line">train_X = pd.concat(map(lambda x: sklearn.utils.shuffle(x[&quot;df&quot;]), traingroups), ignore_index=True)</div><div class="line">valid_X = pd.concat(map(lambda x: sklearn.utils.shuffle(x[&quot;df&quot;]), validgroups), ignore_index=True)</div><div class="line">train_y = train_X[&quot;label&quot;]</div><div class="line">valid_y = valid_X[&quot;label&quot;]</div><div class="line"></div><div class="line">train_X = train_X[enableFeatures]</div><div class="line">valid_X = valid_X[enableFeatures]</div><div class="line">train_X, valid_X = train_X.align(valid_X, join=&quot;left&quot;, axis=1)</div><div class="line"></div><div class="line">print(&quot;data length weight&quot;)</div><div class="line">train_q = np.array(list(map(lambda x: x[&quot;length&quot;], traingroups)))</div><div class="line">valid_q = np.array(list(map(lambda x: x[&quot;length&quot;], validgroups)))</div><div class="line">train_w = np.array(list(map(lambda x: x[&quot;weight&quot;], traingroups)))</div><div class="line">valid_w = np.array(list(map(lambda x: x[&quot;weight&quot;], validgroups)))</div><div class="line"></div><div class="line">print(&quot;model train&quot;)</div><div class="line">#&quot;rank:ndcg&quot;</div><div class="line">ranker = xgb.XGBRanker(objective=&quot;rank:pairwise&quot;)</div><div class="line">ranker.fit(train_X, train_y, train_q, sample_weight=train_w,</div><div class="line">    eval_set=[(valid_X, valid_y)], eval_group=[valid_q], sample_weight_eval_set=[valid_w],</div><div class="line">    eval_metric=[&quot;ndcg@5-&quot;, &quot;ndcg@10-&quot;], early_stopping_rounds=5, verbose=True,</div><div class="line">    callbacks=[xgb.callback.reset_learning_rate(lambda x,y: 0.95 ** x * 0.1)])</div><div class="line">ranker.feature_names = map(str, train_X.columns)</div><div class="line">with open(&quot;xgb_pair.model.features&quot;, &quot;w&quot;) as fw:</div><div class="line">    fw.write( &quot;,&quot;.join(ranker.feature_names))</div><div class="line">ranker.save_model(&apos;xgb_pair.model&apos;)</div><div class="line">model = xgb.Booster(model_file=&apos;xgb_pair.model&apos;)</div><div class="line">print(ranker.get_booster().get_score(importance_type=&apos;gain&apos;) )</div></pre></td></tr></table></figure></p>
+<p>##参考资料<br><a href="https://blog.csdn.net/seasongirl/article/details/100178083" target="_blank" rel="external">用xgboost做排序任务——xgboost下的learning2rank</a><br><a href="https://blog.csdn.net/zuolixiangfisher/article/details/81072922" target="_blank" rel="external">Learning to Rank系列之概述</a><br><a href="http://www.bdpt.net/cn/2018/11/20/rank教程-06-learning-to-rank-概述/" target="_blank" rel="external">Learning to Rank 概述</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/31/BERT二阶段fine-tune代码分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1682,158 +1856,6 @@ loss=\dfrac {1}{T}\Sigma ^{T}_{t=0}loss_{t}
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/" itemprop="url">论文简读-Incorporating Copying Mechanism in Sequence-to-Sequence Learning</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-30T17:30:51+08:00">
-                2019-01-30
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-<p>Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：</p>
-<blockquote>
-<p>原文：第76届金球奖，布莱德利·库珀、LadyGaga主演的《一个明星的诞生》歌曲《Shallow》获得最佳原创歌曲。</p>
-<p>翻译：在第76届金球奖上，布莱德利·库珀和LadyGaga主演的歌曲《浅滩》获得了最佳原创歌曲奖。（zh-en-zh）</p>
-</blockquote>
-<p>在对于歌曲名字的翻译上出现了错误，而在人工翻译中一般会将这些词语“照抄”，也就是本文主要说明的copy机制。</p>
-<h2 id="RNN-Encoder-Decoder"><a href="#RNN-Encoder-Decoder" class="headerlink" title="RNN Encoder-Decoder"></a>RNN Encoder-Decoder</h2><p>传统的RNN Encoder-Decoder模型编码过程为：<br><img src="/images/rnnencoder.png" alt="rnn-encoder"><br>解码过程为：<br><img src="/images/rnndecoder.png" alt="rnn-encoder"></p>
-<h2 id="CopyNet"><a href="#CopyNet" class="headerlink" title="CopyNet"></a>CopyNet</h2><p>模型整体结构图：<br><img src="/images/copymode.png" alt="rnn-encoder"><br>CopyNet与传统RNN模型在Decoder阶段主要有三点区别：</p>
-<ol>
-<li>预测。copynet根据generate-mode和copy-mode混合模型预测words。</li>
-<li>状态更新。copynet在更新t时刻的状态时，不仅使用t-1时刻预测word的embedding，还使用其附近的location-specific隐层状态。</li>
-<li>Reading M（M定义见模型结构图）。除了在M中使用attentive read机制外，copynet还使用了“selective read”机制，使模型具有content-based addressing和location-based addressing的混合能力。</li>
-</ol>
-<h3 id="Prediction-with-Copying-and-Generation"><a href="#Prediction-with-Copying-and-Generation" class="headerlink" title="Prediction with Copying and Generation"></a>Prediction with Copying and Generation</h3><p>给定decoder RNN在t时刻的状态，目标word预测概率由以下混合概率公式决定：<br><img src="/images/mixtureprobabilities.png" alt="rnn-encoder"><br>g表示generate-mode, c表示copy mode。<br>具体计算方法为：<br><img src="/images/probabilitytwomodes.png" alt="rnn-encoder"><br>Z表示两个mode共享的规范系数：<br><img src="/images/Z.png" alt="rnn-encoder"></p>
-<h4 id="Generate-Mode-Score"><a href="#Generate-Mode-Score" class="headerlink" title="Generate-Mode Score"></a>Generate-Mode Score</h4><p>与一般的RNN encoder-decoder 类似：<br><img src="/images/gmscore.png" alt="rnn-encoder"></p>
-<h4 id="Copy-Mode-Score"><a href="#Copy-Mode-Score" class="headerlink" title="Copy-Mode Score"></a>Copy-Mode Score</h4><p>第j个word得分计算公式为：<br><img src="/images/cmscore.png" alt="rnn-encoder"></p>
-<h3 id="State-Update"><a href="#State-Update" class="headerlink" title="State Update"></a>State Update</h3><p>Copynet利用解码器前一个状态$s_{t-1}$和公式2中的context vector $c_t$来更新当前解码器状态<span>$s_t$</span><!-- Has MathJax -->。针对copying机制，<span>$y_{t-1}$</span><!-- Has MathJax -->-&gt;<span>$s_t$</span><!-- Has MathJax -->做了一些修改。<span>$y_t$</span><!-- Has MathJax -->表示为<span>$\left[ e\left( y_{t-1}\right) ;&zeta;\left( y_{t-1}\right) \right] ^{T}$</span><!-- Has MathJax -->。其中<span>$e(y_t-1)$</span><!-- Has MathJax -->表示<span>$y_{t-1}$</span><!-- Has MathJax -->对应的词向量。<span>$&zeta;\left( y_{t-1}\right)$</span><!-- Has MathJax -->表示M中隐层状态的加权和，计算公式为：<br><img src="/images/weightedsum.png" alt="rnn-encoder"><br>公式中各个参数具体说明见论文。直观来看这个公式，当<span>$x_\tau=y_{t-1}$</span><!-- Has MathJax -->时，例如整体模型结构图中输入序列的“Tony”与解码器输出的“Tony”相同时，copy机制会影响<span>$y_{t-1}$</span><!-- Has MathJax -->，进而影响$s_t$状态的更新。<br>这一块没有理解很透彻，从encoder-decoder角度看，模型这样设计的合理性是什么？猜测是因为“拷贝的惯性”，当前词需要从编码器输入copy时，那么下一个词也很有可能需要拷贝？当然，论文中将解码器概率作为一个四分类问题，通过数据集训练来决定一个输入词的分类概率，这样看倒是能理解一些。解码器分类示意图：<br><img src="/images/4-class.png" alt="rnn-encoder"></p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>作者在Text Summarization和Single-turn Dialogue两个任务上进行了试验，取得了较好的效果。文本总结示例：<br><img src="/images/tmexample.png" alt="rnn-encoder"><br>在实际使用copynet模型时遇到了一些问题，通过对相似句子对的训练，期望可以改善Seq2Seq模型在翻译中对实体、成语等处理不佳的情况，实验结果表明在解码时确实能有效处理这些需要copy的词语，但是会出现多次重复的情况，例如：</p>
-<blockquote>
-<p>正确句子：嫦娥四号着陆器接受光照自主唤醒。<br>生成句子：嫦娥四号嫦娥四号嫦娥四号着陆器接受光照自主唤醒。</p>
-</blockquote>
-<p>猜测可能是由于在$s_{t-1}$-&gt;$s_t$更新时，通过selective reader引入了<span>$h_\tau$</span><!-- Has MathJax -->，而相邻单词<span>$h_{\tau+1}$</span><!-- Has MathJax -->与<span>$h_\tau$</span><!-- Has MathJax -->数值也比较接近，导致<span>$s_t$</span><!-- Has MathJax -->与<span>$s_{t-1}$</span><!-- Has MathJax -->也比较接近，使解码器输出的单词相同。具体原因有待进一步探究。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1887,7 +1909,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
