@@ -463,7 +463,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
 
-<p>[toc]</p>
+<p>[TOC]</p>
 <p><strong><em>[待进一步整理]</em></strong></p>
 <h1 id="算法框架"><a href="#算法框架" class="headerlink" title="算法框架"></a>算法框架</h1><p>典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包括展现日志、点击日志和Query日志。<br><img width="700" src="/images/search_structure.png"></p>
 <h1 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h1><h2 id="泛特征"><a href="#泛特征" class="headerlink" title="泛特征"></a>泛特征</h2><p>Query特征：Query的时效性、长度、主题、词权重等。<br>Doc特征：文章分类、长度、点赞数等。<br>User特征：年龄、性别等。<br>Query-Doc匹配特征：类别匹配特征、BM25、FM模型。<br>点击特征：CTR、首次点击等。</p>
