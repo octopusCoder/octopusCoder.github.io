@@ -381,6 +381,278 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/19/搜索排序算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/01/19/搜索排序算法/" itemprop="url">搜索排序算法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-19T15:56:07+08:00">
+                2020-01-19
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<p>[TOC]</p>
+<p><strong><em>待进一步整理</em></strong></p>
+<h1 id="算法框架"><a href="#算法框架" class="headerlink" title="算法框架"></a>算法框架</h1><p>典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包括展现日志、点击日志和Query日志。<br><img width="500" src="/images/search_structure.png"></p>
+<h1 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h1><h2 id="泛特征"><a href="#泛特征" class="headerlink" title="泛特征"></a>泛特征</h2><p>Query特征：Query的时效性、长度、主题、词权重等。<br>Doc特征：文章分类、长度、点赞数等。<br>User特征：年龄、性别等。<br>Query-Doc匹配特征：类别匹配特征、BM25、FM模型。<br>点击特征：CTR、首次点击等。</p>
+<h1 id="日志设计"><a href="#日志设计" class="headerlink" title="日志设计"></a>日志设计</h1><p>展现日志：理论上可根据经验进行人工标注打分，并且作为模型的启动训练数据。<br>点击日志：用户的点击行为日志，可以用于Query日志挖掘，进行查询扩展等，例如多个query搜索结果用户都点击了同一篇文档，则可认为这些query相似。<br>Query日志：用于和点击／转化数据做联合分析。</p>
+<h1 id="模型介绍"><a href="#模型介绍" class="headerlink" title="模型介绍"></a>模型介绍</h1><p>相关性模型：Learning to Rank模型</p>
+<ol>
+<li>按照样本生成方法和Loss Function不同分为point wise、pair wise和list wise三种，参考<a href="https://wesure.lexiangla.com/teams/dm/docs/1665fb8a09d111ea81c20a58ac131706?company_from=wesure" target="_blank" rel="external">L2R算法介绍</a>。2019年Google提出的group wise模型 TF Ranking。</li>
+<li>按照模型结构划分，可分为线性排序模型、树模型、深度学习模型，以及组合模型（GBDT+LR，Deep&amp;Wide）。</li>
+</ol>
+<p>时效性模型：[待补充]。<br>个性化模型：逻辑回归(Logistic Regression）。<br>点击模型：深度置信网络(DeepBeliefNetworks)。</p>
+<h2 id="相关性模型"><a href="#相关性模型" class="headerlink" title="相关性模型"></a>相关性模型</h2><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><img width="500" src="/images/search_kinds.png"></p>
+<h3 id="迭代过程"><a href="#迭代过程" class="headerlink" title="迭代过程"></a>迭代过程</h3><p><img width="500" src="/images/search_process.png"></p>
+<h3 id="主流模型及评测指标"><a href="#主流模型及评测指标" class="headerlink" title="主流模型及评测指标"></a>主流模型及评测指标</h3><p><img width="500" src="/images/search_evalute.png"></p>
+<h3 id="主流模型对比"><a href="#主流模型对比" class="headerlink" title="主流模型对比"></a>主流模型对比</h3><p><img width="500" src="/images/serach_model_compare.png"></p>
+<h3 id="模型详情"><a href="#模型详情" class="headerlink" title="模型详情"></a>模型详情</h3><h4 id="RankSVM"><a href="#RankSVM" class="headerlink" title="RankSVM"></a>RankSVM</h4><p>RankSVM(2003)，将排序问题转化为pairwise的分类问题，然后使用SVM分类模型进行学习并求解，举例说明，两组query及其召回的documents，其中query-doc的相关程度等级分为三档，如下图所示：<br><img width="500" src="/images/search_ranksvm1.png"><br>同一个query下的不同相关度的doc的feature vector可以进行组合，形成新的feature vector：x1-x2，x1-x3，x2-x3。同时label也会被重新赋值，例如L1-L2，L1-L3，L2-L3。这几个feature vector的label被赋值成分类问题中的positive label。进一步，为了形成一个标准的分类问题，我们还需要有negative samples，这里我们就使用前述的几个新的positive feature vector的反方向向量作为相应的negative samples：x2-x1，x3-x1，x3-x2。另外，需要注意的是，我们在组合形成新的feature vector的时候，不能使用在原始排序问题中处于相同相似度等级的两个feature vector，也不能使用处于不同query下的两个feature vector。<br><img width="500" src="/images/search_ranksvm2.png"></p>
+<h4 id="RankNet"><a href="#RankNet" class="headerlink" title="RankNet"></a>RankNet</h4><p>微软(2005)提出，属于pairwise算法，从概率的角度来解决排序问题。RankNet的核心是提出了一种概率损失函数来学习Ranking Function，并应用Ranking Function对文档进行排序。这里的Ranking Function可以是任意对参数可微的模型，也就是说，该概率损失函数并不依赖于特定的机器学习模型，在论文中，RankNet是基于神经网络实现的。除此之外，GBDT等模型也可以应用于该框架。<br>对于任意一个doc对(Ui,Uj)，模型输出的score分别为si和sj，那么根据模型的预测，Ui比Uj与Query更相关的概率为Pij。由于RankNet使用的模型一般为神经网络，根据经验sigmoid函数能提供一个比较好的概率评估。<br>那么根据模型的预测，Ui比Uj与Query更相关的概率为：<br><span>$$\begin{gather*}
+P_{i j}=P\left(U_{i}&gt;U_{j}\right)=\frac{1}{1+e^{-\sigma\left(s_{i}-s_{j}\right)}}
+\end{gather*}$$</span><!-- Has MathJax --><br><strong><em>RankNet证明了如果知道一个待排序文档的排列中相邻两个文档之间的排序概率，则通过推导可以算出每两个文档之间的排序概率。因此对于一个待排序文档序列，只需计算相邻文档之间的排序概率，不需要计算所有pair，减少计算量。</em></strong><br>对于训练数据中的Ui和Uj，它们都包含有一个与Query相关性的真实label，比如Ui与Query的相关性label为good，Uj与Query的相关性label为bad，那么显然Ui比Uj更相关。我们定义Ui比Uj更相关的真实概率为Sij：<br><span>$$\begin{gather*}
+\bar{p}_{i j}=\frac{1}{2}\left(1+S_{i j}\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>如果Ui比Uj更相关，那么Sij=1；如果Ui不如Uj相关，那么Sij=−1；如果Ui、Uj与Query的相关程度相同，那么Sij=0。通常，两个doc的相关度可由人工标注或者从搜索日志中得到。<br>对于一个排序，RankNet从各个doc的相对关系来评价排序结果的好坏，排序的效果越好，那么有错误相对关系的doc pair就越少。所谓错误的相对关系即如果根据模型输出Ui排在Uj前面，但真实label为Ui的相关性小于Uj，那么就记一个错误pair，RankNet本质上就是以错误的pair最少为优化目标。而在抽象成cost function时，RankNet实际上是引入了概率的思想：不是直接判断Ui排在Uj前面，而是说Ui以一定的概率P排在Uj前面，即是以预测概率与真实概率的差距最小作为优化目标。最后，RankNet使用Cross Entropy作为cost function，来衡量预测相关性概率对真实相关性概率的拟合程度：<br><span>$$\begin{gather*}
+C=-\bar{P}_{i j} \log P_{i j}-\left(1-\bar{P}_{i j}\right) \log \left(1-P_{i j}\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>该损失函数有以下两个特点：<br>进一步化简后有：<br><span>$$\begin{gather*}
+\begin{aligned}
+C_{i j} &amp;=-\frac{1}{2}\left(1+S_{i j}\right) \log \frac{1}{1+e^{-\sigma\left(s_{i}-s_{j}\right)}}-\frac{1}{2}\left(1-S_{i j}\right) \log \frac{e^{-\sigma\left(s_{i}-s_{j}\right)}}{1+e^{-\sigma\left(s_{i}-s_{j}\right)}} \\
+&amp;=-\frac{1}{2}\left(1+S_{i j}\right) \log \frac{1}{1+e^{-\sigma\left(s_{i}-s_{j}\right)}}-\frac{1}{2}\left(1-S_{i j}\right)\left[-\sigma\left(s_{i}-s_{j}\right)+\log \frac{1}{1+e^{-\sigma\left(s_{i}-s_{j}\right)}}\right] \\
+&amp;=\frac{1}{2}\left(1-S_{i j}\right) \sigma\left(s_{i}-s_{j}\right)+\log \left(1+e^{-\sigma\left(s_{i}-s_{j}\right)}\right)
+\end{aligned}
+\end{gather*}$$</span><!-- Has MathJax --><br>当Sij=1，有：<br><span>$$\begin{gather*}
+C=\log \left(1+e^{-\sigma\left(s_{i}-s_{j}\right)}\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>当Sij=-1，有：<br><span>$$\begin{gather*}
+C=\log \left(1+e^{-\sigma\left(s_{j}-s_{i}\right)}\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>下图展示了当Sij分别取1，0，-1的时候cost function以si-sj为变量的函数图像：<br><img src="https://wesure.lexiangla.com/assets/1efce98e374911ea940e0a58ac132127" alt=""><br>可以看到当Sij=1时，模型预测的si比sj越大，其代价越小；Sij=−1时，si比sj越小，代价越小；Sij=0时，代价的最小值在si与sj相等处取得。<br>该损失函数有下面两个特点：</p>
+<ol>
+<li>当两个相关性不同的文档算出来的模型分数相同时，损失函数的值大于0，仍会对这对pair做惩罚，使他们的排序位置区分开。</li>
+<li>损失函数是一个类线性函数，可以有效减少异常样本数据对模型的影响，因此具有鲁棒性。</li>
+</ol>
+<p>代价函数C可微，下面就可以用随机梯度下降法来迭代更新模型参数wk了，即：<br><span>$$\begin{gather*}
+w_{k} \rightarrow w_{k}-\eta \frac{\partial C}{\partial w_{k}}
+\end{gather*}$$</span><!-- Has MathJax --><br>η为步长，代价C沿负梯度方向变化：<br><span>$$\begin{gather*}
+\Delta C=\sum_{k} \frac{\partial C}{\partial w_{k}} \Delta w_{k}=\sum_{k} \frac{\partial C}{\partial w_{k}}\left(\eta \frac{\partial C}{\partial w_{k}}\right)=-\eta \sum_{k}\left(\frac{\partial C}{\partial w_{k}}\right)^{2}&lt;0
+\end{gather*}$$</span><!-- Has MathJax --><br>这表明沿负梯度方向更新参数确实可以降低总代价。<br>随机梯度下降法时，有：<br><span>$$\begin{gather*}
+\begin{aligned}
+\frac{\partial C}{\partial w_{k}} &amp;=\frac{\partial C}{\partial s_{i}} \frac{\partial s_{i}}{\partial w_{k}}+\frac{\partial C}{\partial s_{j}} \frac{\partial s_{j}}{\partial w_{k}}=\sigma\left(\frac{1}{2}\left(1-S_{i j}\right)-\frac{1}{1+e^{\sigma\left(s_{i}-s_{j}\right)}}\right)\left(\frac{\partial s_{i}}{\partial w_{k}}-\frac{\partial s_{j}}{\partial w_{k}}\right) \\
+&amp;=\lambda_{i j}\left(\frac{\partial s_{i}}{\partial w_{k}}-\frac{\partial s_{j}}{\partial w_{k}}\right)
+\end{aligned}
+\end{gather*}$$</span><!-- Has MathJax --><br>其中：<br><span>$$\begin{gather*}
+\lambda_{i j} \equiv \frac{\partial C\left(s_{i}-s_{j}\right)}{\partial s_{i}}=\sigma\left(\frac{1}{2}\left(1-S_{i j}\right)-\frac{1}{1+e^{\sigma\left(s_{i}-s_{j}\right)}}\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>上面的是对于每一对pair都会进行一次权重的更新，其实是可以对同一个query下的所有文档pair全部带入神经网络进行前向预测，然后计算总差分并进行误差后向反馈，这样将大大减少误差反向传播的次数，加速RankNet训练过程，即利用批处理的梯度下降法：<br><span>$$\begin{gather*}
+\frac{\partial C}{\partial w_{k}}=\sum_{(i, j) \in I}\left(\frac{\partial C_{i j}}{\partial s_{i}} \frac{\partial s_{i}}{\partial w_{k}}+\frac{\partial C_{i j}}{\partial s_{j}} \frac{\partial s_{j}}{\partial w_{k}}\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>其中：<br><span>$$\begin{gather*}
+\frac{\partial C_{i j}}{\partial s_{i}}=\sigma\left(\frac{1}{2}\left(1-S_{i j}\right)-\frac{1}{1+e^{\sigma\left(s_{i}-s_{j}\right)}}\right)=-\frac{\partial C_{i j}}{\partial s_{j}}
+\end{gather*}$$</span><!-- Has MathJax --><br>令：<br><span>$$\begin{gather*}
+\lambda_{i j}=\frac{\partial C_{i j}}{\partial s_{i}}=\sigma\left(\frac{1}{2}\left(1-S_{i j}\right)-\frac{1}{1+e^{o\left(s_{i}-s_{j}\right)}}\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>有：<br><span>$$\begin{gather*}
+\begin{aligned}
+\frac{\partial C}{\partial w_{k}} &amp;=\sum_{(i, j) \in I} \sigma\left(\frac{1}{2}\left(1-S_{i j}\right)-\frac{1}{1+e^{\sigma\left(s_{i}-s_{j}\right)}}\right)\left(\frac{\partial s_{i}}{\partial w_{k}}-\frac{\partial s_{j}}{\partial w_{k}}\right) \\
+&amp;=\sum_{(i, j) \in I} \lambda_{i j}\left(\frac{\partial s_{i}}{\partial w_{k}}-\frac{\partial s_{j}}{\partial w_{k}}\right) \\
+&amp;=\sum_{i} \lambda_{i} \frac{\partial s_{i}}{\partial w_{k}}
+\end{aligned}
+\end{gather*}$$</span><!-- Has MathJax --></p>
+<p>如何理解上式最后一步的化简及λi的意义呢？前面讲过集合I中只包含label不同的doc的集合，且每个pair仅包含一次，即(Ui,Uj)与(Uj,Ui)等价。为方便起见，我们假设I中只包含Ui相关性大于Uj的pair(Ui,Uj)，即I中的pair均满足Sij=1，那么：<br><span>$$\begin{gather*}
+\lambda_{i}=\sum_{j:(i, j) \in I} \lambda_{i j}-\sum_{k:(k, i) \in I} \lambda_{k i}
+\end{gather*}$$</span><!-- Has MathJax --><br>举例说明，假设有三个doc，其真实相关性满足U1&gt;U2&gt;U3，那么集合I中就包含{(1,2), (1,3), (2,3)}共三个pair，则：<br><span>$$\begin{gather*}
+\frac{\partial C}{\partial w_{k}}=\left(\lambda_{12} \frac{\partial s_{1}}{\partial w_{k}}-\lambda_{12} \frac{\partial s_{2}}{\partial w_{k}}\right)+\left(\lambda_{13} \frac{\partial s_{1}}{\partial w_{k}}-\lambda_{13} \frac{\partial s_{3}}{\partial w_{k}}\right)+\left(\lambda_{23} \frac{\partial s_{2}}{\partial w_{k}}-\lambda_{23} \frac{\partial s_{3}}{\partial w_{k}}\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>显然λ1=λ12+λ13，λ2=λ23−λ12，λ3=−λ13−λ23。<br><strong><em>λi决定着第i个doc在迭代中的移动方向和幅度，真实的排在Ui前面的doc越少，排在Ui后面的doc越多，那么文档Ui向前移动的幅度就越大。</em></strong><br>如何理解呢？我们可以结合损失函数C的图像来看，第i个doc与query越相关，λi越大，则wk变化越大，损失函数C减少越多，而损失函数C的图像在Sij=1时越小，si-sj越大，表明模型输出的文档i的分数与文档j分数相差越大，即文档Ui向前移动的幅度就越大。</p>
+<h4 id="GBrank"><a href="#GBrank" class="headerlink" title="GBrank"></a>GBrank</h4><p><strong><em>基本思想：对两个具有relative relevance judgment的Documents，利用pairwise的方式构造一个特殊的 loss function，再使用GBDT的方法来对此loss function进行优化，求解其极小值。</em></strong><br>GBRank的创新点之一就在于构造一个特殊的loss function。首先，我们需要构造pair，即在同一个query下有两个doc，可以通过人工标注或者搜索日志来对这两个doc与该query的相关程度进行判断，得到一个pair关系，即其中一个doc的相关程度要比另一个doc的相关程度更高，这就是relative relevance judgment。一旦我们有了这个pairwise的相对关系，问题就成了如何利用这些doc pair学习出一个排序模型。<br>假设我们有以下的preference pairs 作为training data：<br><span>$$\begin{gather*}
+\left\{\left(x_{i}^{(1)}, x_{i}^{(2)}\right), x_{i}^{(1)}&gt;x_{i}^{(2)}\right\}_{i=1}^{N}
+\end{gather*}$$</span><!-- Has MathJax --><br>则可构造损失函数L(f)，与SVM中hinge loss类似:<br><span>$$\begin{gather*}
+L(f)=\frac{1}{2} \sum_{i=1}^{N}\left(\max \left\{0, \tau-\left(f\left(x_{i}^{(1)}\right)-f\left(x_{i}^{(2)}\right)\right\}\right)^{2}\right.
+\end{gather*}$$</span><!-- Has MathJax --><br>在hinge loss的基础上，将原来为1的参数改成了τ。即当两个doc相关度差距达到τ以上的时候，loss才为0。若f(x)输出固定，那么损失函数最少，但不是训练目标。<br>然后问题就变成了怎样对这个loss function进行优化求解极小值。这里使用了GBDT的思想，即Functional Gradient Descent的方法。</p>
+<blockquote>
+<p>在GBDT中，Functional Gradient Descent的使用为：将需要求解的f(x)表示成一个additive model，即将一个函数分解为若干个小函数的加和形式，而这每个小函数的产生过程是串行生成的，即每个小函数都是在拟合loss function在已有的f(x)上的梯度方向（由于训练数据是有限个数的，所以f(x)是离散值的向量，而此梯度方向也表示成一个离散值的向量），然后将拟合的结果函数进一步更新到f(x)中，形成一个新的f(x)。</p>
+</blockquote>
+<p>对于loss function，利用Functional Gradient Descent的方法优化为极小值的过程为：将f(x)表示成additive model，每次迭代的时候，用一个regression tree来拟合loss function在当前f(x)上的梯度方向。此时由于训练数据是有限个数的，f(x)同样只是一系列离散值，梯度向量也是一系列离散值，则可使用regression tree来拟合这一系列离散值。<br>但不同之处在于，由于使用pairwise方法，这里的loss function中，有两个不一样的f(x)的离散值，所以每次我们需要对f(x)在这两个点上的值都进行更新，即需要对一个training instance计算两个梯度方向。首先将以下两个变量看作未知变量：<br><span>$$\begin{gather*}
+f\left(x_{i}^{(1)}\right), \quad f\left(x_{i}^{(2)}\right), \quad i=1, \cdots, N
+\end{gather*}$$</span><!-- Has MathJax --><br>然后求解loss function对这两个未知变量的梯度（分别对两个未知变量求导），如下：<br><span>$$\begin{gather*}
+-\max \left\{0, f\left(x_{i}^{(2)}\right)-f\left(x_{i}^{(1)}\right)+\tau\right\}, \quad \max \left\{0, f\left(x_{i}^{(2)}\right)-f\left(x_{i}^{(1)}\right)+\tau\right\}, \quad i=1, \cdots, N
+\end{gather*}$$</span><!-- Has MathJax --><br>如果两个变量之差大于0，则此时对应的loss为0，我们无需对f(x)进行迭代更新；反之loss不为0，我们需要对f(x)进行迭代更新，即使得新的f(x)在这个instance上的两个点的预测值能够更接近真实值。f(x)更新类似于梯度下降方法中参数的更新：<br><span>$$\begin{gather*}
+f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>pairwise方法中，具体为：<br><span>$$\begin{gather*}
+\begin{aligned}
+&amp;f_{k}\left(x_{i}^{(1)}\right)=f_{k-1}\left(x_{i}^{(1)}\right)+\eta\left(f_{k-1}\left(x_{i}^{(2)}\right)-f_{k-1}\left(x_{i}^{(1)}\right)+\tau\right)\\
+&amp;f_{k}\left(x_{i}^{(2)}\right)=f_{k-1}\left(x_{i}^{(2)}\right)-\eta\left(f_{k-1}\left(x_{i}^{(2)}\right)-f_{k-1}\left(x_{i}^{(1)}\right)+\tau\right)
+\end{aligned}
+\end{gather*}$$</span><!-- Has MathJax --><br>当学习速率η等于1的时候，更新公式即为：<br><span>$$\begin{gather*}
+\begin{aligned}
+&amp;f_{k}\left(x_{i}^{(1)}\right)=f_{k-1}\left(x_{i}^{(2)}\right)+\tau\\
+&amp;f_{k}\left(x_{i}^{(2)}\right)=f_{k-1}\left(x_{i}^{(1)}\right)-\tau
+\end{aligned}
+\end{gather*}$$</span><!-- Has MathJax --><br>当我们收集到所有loss值不为0的training instance后，我们便得到了其对应的更新值：<br><span>$$\begin{gather*}
+\left\{\left(x_{i}^{(1)}, f_{k-1}\left(x_{i}^{(2)}\right)+\tau\right),\left(x_{i}^{(2)}, f_{k-1}\left(x_{i}^{(1)}\right)-\tau\right)\right\}
+\end{gather*}$$</span><!-- Has MathJax --><br>接着，使用一棵regression tree对这些数据进行拟合，生成一个拟合函数gk(x)，然后将这次迭代更新的拟合函数更新到f(x)中，此处采用线性叠加的方式：<br><span>$$\begin{gather*}
+f_{k}(x)=\frac{k f_{k-1}(x)+\beta g_{k}(x)}{k+1}
+\end{gather*}$$</span><!-- Has MathJax --><br>其中，ß为shrinking系数。<br>为什么在每次迭代更新的时候，新的regression tree不像GBDT中那样，纯粹地去拟合梯度方向（一个离散值的向量），而是去拟合：<br><span>$$\begin{gather*}
+f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>这样一个 原始预测值+梯度更新值 后的新预测值向量呢？<br>因为在每次迭代更新的时候，只是取了部分训练数据（即所有loss值不为0的training instance中的doc pair），所以每次拟合的时候，都只是对这部分数据进行训练，得到一个regression tree，然后把这个新的拟合函数（即regression tree）添加到总的预测函数f(x)中去，即这个regression tree在预测时候是需要对所有训练数据，而不是部分数据，进行预测的。所以如果每次迭代是去拟合梯度的话（梯度方向完全有可能与当前的f(x)向量方向相差很大），在预测的时候，这个regression tree对其余数据（并没有参与这个regression tree训练的数据）的预测值会偏离它们原始值较多，而且这个偏离是不在期望之中的，因为这些数据的当前预测值已经相对靠谱了（不会对loss function有贡献）。所以，当每次拟合的目标是 原始f(x)向量 + 梯度向量 的时候，这个新的向量不会跑的太偏（即跟原始向量相差较小），这时候拟合出来的结果regression tree在对整体数据进行预测的时候，也不会跑的太偏，只是会根据梯度方向稍微有所改变，对其它并不需要更新的数据的影响也相对较小。但同时也在逐渐朝着整体的优化方向上去尝试，所以才会这么去做。（以一个队伍在山峰间移动，分别寻找各自合适位置为例）。</p>
+<h4 id="LambdaRank"><a href="#LambdaRank" class="headerlink" title="LambdaRank"></a>LambdaRank</h4><p>RankNet以错误pair最少为优化目标的RankNet算法，然而许多时候仅以错误pair数来评价排序的好坏是不够的，像NDCG或者ERR等评价指标就只关注top k个结果的排序，当我们采用RankNet算法时，往往无法以这些指标为优化目标进行迭代，所以RankNet的优化目标和IR评价指标之间还是存在gap的，如下图所示：<br><img width="500" src="/images/search_lambdaRank.png"><br>如上图所示，每个线条表示文档，蓝色表示相关文档，灰色表示不相关文档，RankNet以pairwise error的方式计算cost，左图的cost为13，右图通过把第一个相关文档下调3个位置，第二个文档上条5个位置，将cost降为11，但是像NDCG或者ERR等评价指标只关注top k个结果的排序，在优化过程中下调前面相关文档的位置不是我们想要得到的结果。图 1右图左边黑色的箭头表示RankNet下一轮的调序方向和强度，但我们真正需要的是右边红色箭头代表的方向和强度，即更关注靠前位置的相关文档的排序位置的提升。LambdaRank正是基于这个思想演化而来，其中Lambda指的就是红色箭头，代表下一次迭代优化的方向和强度，也就是梯度。<br>LambdaRank在RankNet的加速算法形式的基础上引入评价指标Z （如NDCG、ERR等），把交换两个文档的位置引起的评价指标的变化|ΔNDCG|，作为其中一个因子，实验表明对模型效果有显著的提升：<br><span>$$\begin{gather*}
+\lambda_{i j}=\frac{\partial C\left(s_{i}-s_{j}\right)}{\partial s_{i}}=\frac{-\sigma}{1+e^{\sigma\left(s_{i}-s_{j}\right)}}\left|\Delta_{N D C G}\right|
+\end{gather*}$$</span><!-- Has MathJax --><br>ΔNDCG表示将Ui和Uj进行交换，交换后排序的NDCG与交换前排序的NDCG的差值。<br>损失函数的梯度代表了文档下一次迭代优化的方向和强度，由于引入了IR评价指标，Lambda梯度更关注位置靠前的优质文档的排序位置的提升。有效的避免了下调位置靠前优质文档的位置这种情况的发生。LambdaRank相比RankNet的优势在于分解因式后训练速度变快，同时考虑了评价指标，直接对问题求解，效果更明显。</p>
+<h4 id="LambdaMART"><a href="#LambdaMART" class="headerlink" title="LambdaMART"></a>LambdaMART</h4><ol>
+<li>Mart（Multiple Additive Regression Tree，Mart就是GBDT），定义了一个框架，缺少一个梯度。</li>
+<li>LambdaRank重新定义了梯度，赋予了梯度新的物理意义。</li>
+</ol>
+<p>因此，所有可以使用梯度下降法求解的模型都可以使用这个梯度，MART就是其中一种，将梯度Lambda和MART结合就是大名鼎鼎的LambdaMART。<br>MART的原理是直接在函数空间对函数进行求解，模型结果由许多棵树组成，每棵树的拟合目标是损失函数的梯度，在LambdaMART中就是Lambda。LambdaMART的具体算法过程如下：<br><img width="500" src="/images/search_lambdaMart.png"><br>可以看出LambdaMART的框架其实就是MART，主要的创新在于中间计算的梯度使用的是Lambda，是pairwise的。MART需要设置的参数包括：树的数量M、叶子节点数L和学习率v，这3个参数可以通过验证集调节获取最优参数。<br>LambdaMART具有很多优势：</p>
+<ol>
+<li>适用于排序场景：不是传统的通过分类或者回归的方法求解排序问题，而是直接求解;</li>
+<li>损失函数可导：通过损失函数的转换，将类似于NDCG这种无法求导的IR评价指标转换成可以求导的函数，并且赋予了梯度的实际物理意义，数学解释非常漂亮;</li>
+<li>增量学习：由于每次训练可以在已有的模型上继续训练，因此适合于增量学习;</li>
+<li>组合特征：因为采用树模型，因此可以学到不同特征组合情况;</li>
+<li>特征选择：因为是基于MART模型，因此也具有MART的优势，可以学到每个特征的重要性，可以做特征选择;</li>
+<li>适用于正负样本比例失衡的数据：因为模型的训练对象具有不同label的文档pair，而不是预测每个文档的label，因此对正负样本比例失衡不敏感。</li>
+</ol>
+<blockquote>
+<p>爱奇艺实践：<br>在没有加入稀疏类特征之前，我们的模型是LambdaMART模型，在IR领域是最先进的模型，该模型是一个gbdt模型，基于boosting思想，不断增加决策树，来减小残差。该模型在很多竞赛中表现良好，因为不用过多的特征处理，树模型会考虑特征本身的数据分布，同时有很好的学习泛化能力，树结构很难兼容高维稀疏特征，比方说我们的document是上亿级的特征，很难每个节点走一次树的分割，所以对于加入稀疏特征的时候，树模型会遇到瓶颈。但是在处理高维稀疏特征的时候，像LR、FM、FFM可以认为是线性模型，特征的增加并不会对此类模型造成压力，上亿维也没关系。LR模型弱点在于特征组合能力不足，很多情况下特征组合方式比较重要，树模型从根节点到叶子节点的路径其实是一种组合方式。如下图所示：<br><img width="500" src="/images/search_iqiyi_lm.png"></p>
+</blockquote>
+<h4 id="深度模型"><a href="#深度模型" class="headerlink" title="深度模型"></a>深度模型</h4><h5 id="DNN"><a href="#DNN" class="headerlink" title="DNN"></a>DNN</h5><p>爱奇艺实现：<br><img width="500" src="/images/search_iqiyi_dnn.jpg"><br>底层是query和document的描述文本做多粒度切词，之后做embedding后加权平均，得到document和query的向量表达，拼接这两组向量，同时再做点积，（两个向量越来越相近，拼接的时候希望上层网络学到两个向量的相似性，需要有足够的样本和正负样例，所以我们自己做了点积）。除了向量特征，模型也适用了稠密特征，即利用gbdt抽取特征，与embedding特征做拼接，最后经过三个全连接层，接sigmoid函数，就可以得到样本的score，并在此基础上用ndcg的衡量标准去计算损失，从而反向优化网络结构。而在online服务侧，则直接用样本去predict得分。这个模型上线之后，效果非常明显。其中，二次搜索率降低（二次搜索率越低越好，说明用户一次搜中）。</p>
+<h5 id="Wide-amp-Deep"><a href="#Wide-amp-Deep" class="headerlink" title="Wide&amp;Deep"></a>Wide&amp;Deep</h5><p>美团点评模型框架：<br><img width="500" src="/images/search_wd_structure.png"><br>美团点评模型具体实现：<br><img width="500" src="/images/search_wd_model.png"><br>在训练时，分别对样本数据进行清洗和提权。在特征方面，对于连续特征，用Min-Max方法做归一化。在交叉特征方面，结合业务需求，提炼出多个在业务场景意义比较重大的交叉特征。用Adam做为优化器，用Cross Entropy做为损失函数。在训练期间，与Wide &amp; Deep Learning论文中不同之处在于，将组合特征作为输入层分别输入到对应的Deep组件和Wide组件中。然后在Deep部分将全部输入数据送到3个ReLU层，在最后通过Sigmoid层进行打分。训练数据7000万+，并用超过3000万的测试数据进行线下模型预估。Batch－Size设为50000，Epoch设为20。<br>线上AB实验结果：<br><img width="500" src="/images/search_wd_abtest.png"></p>
+<h5 id="LambdaDNN"><a href="#LambdaDNN" class="headerlink" title="LambdaDNN"></a>LambdaDNN</h5><p>大众点评搜索排序模型，基于TensorFlow分布式框架实现。<br><img width="500" src="/images/search_lambdaDnn.png"><br>NDCG的计算公式中，折损的权重是随着位置呈指数变化的。然而实际曝光点击率随位置变化的曲线与NDCG的理论折损值存在着较大的差异。<br>对于移动端的场景来说，用户在下拉滑动列表进行浏览时，视觉的焦点会随着滑屏、翻页而发生变动。例如用户翻到第二页时，往往会重新聚焦，因此，会发现第二页头部的曝光点击率实际上是高于第一页尾部位置的。我们尝试了两种方案去微调NDCG中的指数位置折损：<br>根据实际曝光点击率拟合折损曲线：根据实际统计到的曝光点击率数据，拟合公式替代NDCG中的指数折损公式，绘制的曲线如图12所示。<br>计算Position Bias作为位置折损：Position Bias在业界有较多的讨论，用户点击商户的过程可以分为观察和点击两个步骤：a.用户需要首先看到该商户，而看到商户的概率取决于所在的位置；b.看到商户后点击商户的概率只与商户的相关性有关。步骤a计算的概率即为Position Bias，这块内容可以讨论的东西很多，这里不再详述。<br><img width="500" src="/images/search_ndcg.png"><br>经过上述对NDCG计算改造训练出的LambdaDNN模型，相较Base树模型和Pointwise DNN模型，在业务指标上有了非常显著的提升。<br><img width="500" src="/images/search_lm_dnn_lmDnn.png"></p>
+<h5 id="LambdaDeepFM"><a href="#LambdaDeepFM" class="headerlink" title="LambdaDeepFM"></a>LambdaDeepFM</h5><p>[待补充]</p>
+<h5 id="LambdaDCN"><a href="#LambdaDCN" class="headerlink" title="LambdaDCN"></a>LambdaDCN</h5><p>Lambda梯度除了与DNN网络相结合外，也可以与绝大部分常见的网络结构相结合。为了进一步学习到更多交叉特征，美团点评团队在LambdaDNN的基础上分别尝试了LambdaDeepFM和LambdaDCN网络；其中DCN网络是一种加入Cross的并行网络结构，交叉的网络每一层的输出特征与第一层的原始输入特征进行显性的两两交叉，相当于每一层学习特征交叉的映射去拟合层之间的残差。<br><img width="500" src="/images/search_lambdaDcn.png"><br>离线的对比实验表明，Lambda梯度与DCN网络结合之后充分发挥了DCN网络的特点，简洁的多项式交叉设计有效地提升模型的训练效果。NDCG指标对比效果如下图所示：<br><img width="500" src="/images/search_dcn_compare.png"></p>
+<h4 id="补充模型"><a href="#补充模型" class="headerlink" title="补充模型"></a>补充模型</h4><h5 id="FM"><a href="#FM" class="headerlink" title="FM"></a>FM</h5><p><img width="500" src="/images/search_fm.png"></p>
+<h5 id="DSSM"><a href="#DSSM" class="headerlink" title="DSSM"></a>DSSM</h5><p><img width="500" src="/images/search_dssm.png"></p>
+<h5 id="点击模型"><a href="#点击模型" class="headerlink" title="点击模型"></a>点击模型</h5><p><img width="500" src="/images/search_click.png"></p>
+<h5 id="DBN模型"><a href="#DBN模型" class="headerlink" title="DBN模型"></a>DBN模型</h5><p><img width="500" src="/images/search_dbn.png"></p>
+<h5 id="IRGAN"><a href="#IRGAN" class="headerlink" title="IRGAN"></a>IRGAN</h5><p><img width="500" src="/images/search_irgan.png"></p>
+<h1 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h1><ol>
+<li>LambdaRank</li>
+<li>LambdaMART</li>
+<li>Wide&amp;Deep</li>
+</ol>
+<h1 id="模型组合"><a href="#模型组合" class="headerlink" title="模型组合"></a>模型组合</h1><p>爱奇艺实践：<br><img width="500" src="/images/search_model_compare.png"></p>
+<blockquote>
+<p>针对GBDT和LR模型的优缺点，做了进一步的模型组合的尝试：<br>第一种方式，用 LR 模型把高维稠密特征进行学习，学习出高维特征，把该特征和原始特征做拼接，学习 gbdt 模型。<br>该办法效果不好，提升很弱。<br><strong> 剖析缘由：</strong> 把高维特征刚在一个特征去表达，丢掉了原始的特征。<br>第二种方式，用 gbdt 去学，学习后把样本落入叶子节点信息来进来与高维稠密特征拼接，在此根底上用 LR 学习。<br>该模型效果变差。<br><strong> 剖析缘由：</strong> 点击类和穿插类特征是对排序影响最大的特征，这类特征和大量的稠密类特征做拼接时，重要性被稀释了，导致模型的学习能力变弱。</p>
+</blockquote>
+<h1 id="工程实现"><a href="#工程实现" class="headerlink" title="工程实现"></a>工程实现</h1><p><strong>Python训练+Golang部署</strong></p>
+<ol>
+<li>LambdaRank，基于xgboost实现，参考：<a href="https://github.com/dmlc/xgboost/tree/master/demo/rank" target="_blank" rel="external">https://github.com/dmlc/xgboost/tree/master/demo/rank</a></li>
+<li>LambdaMART，基于LightGBM实现，参考：<a href="https://github.com/jiangnanboy/learning_to_rank" target="_blank" rel="external">https://github.com/jiangnanboy/learning_to_rank</a></li>
+<li>Wide&amp;Deep基于TensorFlow实现，参考：<a href="https://github.com/tensorflow/ranking" target="_blank" rel="external">https://github.com/tensorflow/ranking</a></li>
+</ol>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://mp.weixin.qq.com/s/NqVP0ksfLiRLSGkuWxiz5A" target="_blank" rel="external">浅谈微视推荐系统中的特征工程</a><br><a href="https://cloud.tencent.com/developer/news/184638" target="_blank" rel="external">回顾·搜索引擎算法体系简介——排序和意图篇</a><br><a href="https://tech.meituan.com/2017/07/28/dl.html" target="_blank" rel="external">深度学习在美团推荐平台排序中的运用</a><br><a href="https://www.cnblogs.com/bentuwuying/p/6684585.html" target="_blank" rel="external">Learning to Rank算法介绍：GBRank</a><br><a href="https://www.cnblogs.com/bentuwuying/p/6683832.html" target="_blank" rel="external">Learning to Rank算法介绍：RankSVM 和 IR SVM</a><br><a href="https://tech.meituan.com/2019/01/17/dianping-search-deeplearning.html" target="_blank" rel="external">大众点评搜索基于知识图谱的深度学习排序实践</a><br><a href="https://www.cnblogs.com/bentuwuying/p/6690836.html" target="_blank" rel="external">Learning to Rank算法介绍：RankNet，LambdaRank，LambdaMart</a><br><a href="https://cloud.tencent.com/developer/article/1500313" target="_blank" rel="external">「回顾」爱奇艺搜索排序模型迭代之路</a><br><a href="https://blog.csdn.net/v_JULY_v/article/details/81410574" target="_blank" rel="external">通俗理解kaggle比赛大杀器xgboost</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/18/Learning-to-rank算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1701,161 +1973,6 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/20/论文简读-Get-To-The-Point-Summarization-with-Pointer-Generator-Networks/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/20/论文简读-Get-To-The-Point-Summarization-with-Pointer-Generator-Networks/" itemprop="url">论文简读-Get To The Point: Summarization with Pointer-Generator Networks</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-20T17:00:19+08:00">
-                2019-02-20
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-<p>摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语。抽取式更为简单，并且在语法和准确性方面可以保证基本的效果。但如果希望拥有神奇的能力，例如 “paraphrasing, generalization, or the incorporation of real-world knowledge”，就需要抽象式模型了。本文的工作对2016年提出的copyNet进行了许多改进，关于copyNet的介绍可以参考：</p>
-<blockquote>
-<p><a href="http://octopuscoder.github.io/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/" target="_blank" rel="external">http://octopuscoder.github.io/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/</a></p>
-</blockquote>
-<p>copyNet在解码阶段会出现多次重复的情况，Pointer-Generator Networks使用Coverage mechanism来解决这个问题，下面具体介绍模型实现细节。</p>
-<h2 id="Sequence-to-sequence-attentional-model"><a href="#Sequence-to-sequence-attentional-model" class="headerlink" title="Sequence-to-sequence attentional model"></a>Sequence-to-sequence attentional model</h2><p>文中首先使用Seq2Seq模型，并结合Attention实现了baseline model，如下图所示：<br><img src="/images/Baselinesequence2sequence.png" alt="rnn-encoder"><br>文中提到其attention分布计算方式与Bahdanau[1]在机器翻译中的公式类似，这里补充说明一下，attention机制在NLP领域首次应用正是Bahdanau等人的工作。本文公式如下：<br><img src="/images/attentiondistribution.png" alt="rnn-encoder"><br>其中<span>$h_t$</span><!-- Has MathJax -->表示encoder hidden states，<span>$s_t$</span><!-- Has MathJax -->表示decoder state。v，<span>$W_h$</span><!-- Has MathJax -->，<span>$W_s$</span><!-- Has MathJax -->和<span>$b_{attn}$</span><!-- Has MathJax -->均为可学习的参数。<br>但本文并未说明<span>$s_t$</span><!-- Has MathJax -->的计算方式，如果按照Bahdanau一文中的计算方式，貌似有些问题。不妨回顾一下：<br><img src="/images/Bahdanau.png" alt="rnn-encoder"><br>这里暂时偷个懒，公式中的符号就不一一介绍了，可以对比本文的表示方法，基本类似。可以看到，Bahdanau一文中先计算<span>$c_{i}$</span><!-- Has MathJax -->，然后利用<span>$c_{i}$</span><!-- Has MathJax -->，<span>$y_{i-1}$</span><!-- Has MathJax -->和<span>$s_{i-1}$</span><!-- Has MathJax -->来计算<span>$s_{i}$</span><!-- Has MathJax -->。而本文在计算context vectors时已经使用了<span>$s_{t}$</span><!-- Has MathJax -->。而如果本文<span>$s_{t}$</span><!-- Has MathJax -->计算方式与Bahdanau一文中一致的话，不免有一些矛盾。而公式1中如果是<span>$s_{t-1}$</span><!-- Has MathJax -->的话就一致了，此处存疑。<br>Attention distribution表示的是源句子单词的权值分布，用于在解码时有侧重的产生下一个单词。下一步，利用attention distribution产生context vector :<br><img src="/images/contextvector.png" alt="rnn-encoder"><br>vocab概率分布<span>$P_{vocab}$</span><!-- Has MathJax -->由context vector和decoder state <span>$s_t$</span><!-- Has MathJax -->拼接后产生：<br><img src="/images/Pvocab.png" alt="rnn-encoder"><br>其中V, V’, b和b’是可学习的参数。<span>$P_{vocab}$</span><!-- Has MathJax -->是词表中所有词的概率分布，而预测词语w的概率为：<br><span>$$\begin{gather*}
-p\left(w\right) =P_{vocab}\left(w\right)
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<p>训练过程中，每一个时间t的loss由目标word <span>$W^{\ast }_{t}$</span><!-- Has MathJax -->的negative log likelihood计算得出：<br><span>$$\begin{gather*}
-loss_{t}=-\log P\left( w^{*}_{t}\right)
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<p>所有输入序列的总loss为：<br><span>$$\begin{gather*}
-loss=\dfrac {1}{T}\Sigma ^{T}_{t=0}loss_{t}
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<h2 id="Pointer-generator-network"><a href="#Pointer-generator-network" class="headerlink" title="Pointer-generator network"></a>Pointer-generator network</h2><p>Pointer-generator network可以看作baseline model与pointer network[2]的结合。<br><img src="/images/pointergenerator.png" alt="rnn-encoder"><br>decoder阶段可以利用pointer从源文本copy，也可以从一个固定的词表中生成。模型在每个时间t计算生成概率<span>$p_{gen}$</span><!-- Has MathJax -->，公式如下：<br><img src="/images/Pgen.png" alt="rnn-encoder"><br>公式中各参数说明参考上文符号，其中<span>$x_{t}$</span><!-- Has MathJax -->表示decoder输入，<span>$b_{ptr}$</span><!-- Has MathJax -->表示可学习参数。在生成词语时，<span>$p_{gen}$</span><!-- Has MathJax -->作为soft switch选择是根据<span>$P_{vocab}$</span><!-- Has MathJax -->从词表中抽取，还是根据注意力分布<span>$a^t$</span><!-- Has MathJax -->从输入序列中抽取。两个词表构成extended vocabulary，生成单词时的联合概率计算公式为：<br><img src="/images/Pwunion.png" alt="rnn-encoder"><br>如果w是一个out-of-vocabulary (OOV)单词，则<span>$P_{vocab}(w)$</span><!-- Has MathJax -->=0；同意，如果w在输入文档中没有出现，那么<span>$\Sigma _{i:w_{i}=w}a^{t}_{i}$</span><!-- Has MathJax -->=0。Pointer-generator模型的主要优势就是可以产生OOV单词。</p>
-<h2 id="Coverage-mechanism"><a href="#Coverage-mechanism" class="headerlink" title="Coverage mechanism"></a>Coverage mechanism</h2><p>Sequence-to-sequence模型在生成句子或摘要时普遍存在重复的问题，在关于copy-net介绍中也提到了这一点。该模型利用coverage mechanism来解决重复的问题，保留一个coverage vector <span>$c^t$</span><!-- Has MathJax -->，由所有之前decoder时间步的注意力分布相加获得，计算公式如下：<br><img src="/images/coveragevector.png" alt="rnn-encoder"><br>直观看来，<span>$c^t$</span><!-- Has MathJax -->代表了源文档中各个词语截至目前由attention mechanism所决定的“受关注程度”。Coverage vector作为一个额外的信息输入attention mechanism，则公式（1）变为：<br><img src="/images/changingequation1.png" alt="rnn-encoder"><br><span>$w_c$</span><!-- Has MathJax -->是一个可学习参数，这使attention mechanism当前决策受到之前决策<span>$c^t$</span><!-- Has MathJax -->的影响，从而使attention mechanism不总是关注一个位置，避免产生重复的文本。<br>loss函数方面，该文定义了coverage loss来对重复关注同样的位置进行惩罚：<br><img src="/images/coverageloss.png" alt="rnn-encoder"><br>coverage loss是有界的，<span>$covloss_{t}\leq \sum _{i}a^{i}_{t}=1$</span><!-- Has MathJax -->。最终，coverage loss通过一个超参数$\lambda$来进行权衡，与原来的loss函数组合为新的loss函数：<br><img src="/images/compositeloss.png" alt="rnn-encoder"><br>直观上，可以这样理解。模型希望从loss角度对持续受到关注的位置进行惩罚，如果当前时刻某个位置受到的关注很多，不妨假设<span>$a^{t}_{i}&gt;c^{t}_{i}$</span><!-- Has MathJax -->，那么就要对其进行惩罚，惩罚程度为其累计收到的关注度，惩罚较大。而如果当前时刻某个位置受到的关注很少，不妨假设<span>$a^{t}_{i}&lt;c^{t}_{i}$</span><!-- Has MathJax -->，那么就对其进行较小的惩罚，取不妨假设<span>$a^{t}_{i}$</span><!-- Has MathJax -->。通过超参数$\lambda$来调和两方面的loss。</p>
-<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p>github地址：</p>
-<blockquote>
-<p><a href="https://github.com/abisee/pointer-generator" target="_blank" rel="external">https://github.com/abisee/pointer-generator</a></p>
-</blockquote>
-<p>由于Tensorflow升级，使部分代码需要更新，可以参考本人修改后的分支：</p>
-<blockquote>
-<p><a href="https://github.com/octopusCoder/pointer-generator" target="_blank" rel="external">https://github.com/octopusCoder/pointer-generator</a></p>
-</blockquote>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p>[1] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Ben- gio. 2015. Neural machine translation by jointly learning to align and translate. In International Con- ference on Learning Representations.<br>[2] Oriol Vinyals, Meire Fortunato, and Navdeep Jaitly. 2015. Pointer networks. In Neural Information Pro- cessing Systems.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1909,7 +2026,7 @@ loss=\dfrac {1}{T}\Sigma ^{T}_{t=0}loss_{t}
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1955,7 +2072,7 @@ loss=\dfrac {1}{T}\Sigma ^{T}_{t=0}loss_{t}
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

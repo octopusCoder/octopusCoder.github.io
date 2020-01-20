@@ -257,6 +257,145 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/23/LeetCode-134-Gas-Station/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/08/23/LeetCode-134-Gas-Station/" itemprop="url">LeetCode-Gas Station</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-23T10:19:49+08:00">
+                2016-08-23
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>There are N gas stations along a circular route, where the amount of gas at station i is gas[i].<br>You have a car with an unlimited gas tank and it costs cost[i] of gas to travel from station i to its next station (i+1). You begin the journey with an empty tank at one of the gas stations.<br>Return the starting gas station’s index if you can travel around the circuit once, otherwise return -1.<br>Note:<br>The solution is guaranteed to be unique.</p>
+</blockquote>
+<h1 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h1><p>如果gas总和大于cost总和，那么一定有一种解法。<br>在知道这个假设的前提下解题并不难，一次遍历，当油量无法达到时更新可能的起始点，最后比较有油和缺油的量即可，关键是如何证明？<br>当然，可以用严谨的数学公式去推导，不过理解起来总是需要点时间。不妨做个类比，假设你去买东西，手里有3，5，7等不同面值的钞票，商品的价格有4，4，1等等，我们都知道，如果手里钱的总数大于商品价格总数，那自然可以将所有商品都买到(走完)，这与本题是不是一个道理？只是提供个想法，正确性可以讨论和验证。</p>
+<h1 id="AC代码"><a href="#AC代码" class="headerlink" title="AC代码"></a>AC代码</h1><pre><code>//c++
+class Solution {
+public:
+    int canCompleteCircuit(vector&lt;int&gt;&amp; gas, vector&lt;int&gt;&amp; cost) {
+        int start=0,tank=0,lack=0;
+        for(int i=0;i&lt;gas.size();++i)
+        {
+            if((tank=tank+gas[i]-cost[i])&lt;0){
+               start=i+1;lack+=tank;tank=0;  
+            }
+        }
+        return tank+lack&lt;0?-1:start;
+    }
+};
+</code></pre>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/22/数据传输中/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -551,7 +690,7 @@
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -597,7 +736,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2019</span>
+  <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
