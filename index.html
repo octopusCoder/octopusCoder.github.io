@@ -463,9 +463,9 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
 
-<p>[TOC]</p>
-<p><strong><em>待进一步整理</em></strong></p>
-<h1 id="算法框架"><a href="#算法框架" class="headerlink" title="算法框架"></a>算法框架</h1><p>典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包括展现日志、点击日志和Query日志。<br><img width="500" src="/images/search_structure.png"></p>
+<p>[toc]</p>
+<p><strong><em>[待进一步整理]</em></strong></p>
+<h1 id="算法框架"><a href="#算法框架" class="headerlink" title="算法框架"></a>算法框架</h1><p>典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包括展现日志、点击日志和Query日志。<br><img width="700" src="/images/search_structure.png"></p>
 <h1 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h1><h2 id="泛特征"><a href="#泛特征" class="headerlink" title="泛特征"></a>泛特征</h2><p>Query特征：Query的时效性、长度、主题、词权重等。<br>Doc特征：文章分类、长度、点赞数等。<br>User特征：年龄、性别等。<br>Query-Doc匹配特征：类别匹配特征、BM25、FM模型。<br>点击特征：CTR、首次点击等。</p>
 <h1 id="日志设计"><a href="#日志设计" class="headerlink" title="日志设计"></a>日志设计</h1><p>展现日志：理论上可根据经验进行人工标注打分，并且作为模型的启动训练数据。<br>点击日志：用户的点击行为日志，可以用于Query日志挖掘，进行查询扩展等，例如多个query搜索结果用户都点击了同一篇文档，则可认为这些query相似。<br>Query日志：用于和点击／转化数据做联合分析。</p>
 <h1 id="模型介绍"><a href="#模型介绍" class="headerlink" title="模型介绍"></a>模型介绍</h1><p>相关性模型：Learning to Rank模型</p>
@@ -474,11 +474,11 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>按照模型结构划分，可分为线性排序模型、树模型、深度学习模型，以及组合模型（GBDT+LR，Deep&amp;Wide）。</li>
 </ol>
 <p>时效性模型：[待补充]。<br>个性化模型：逻辑回归(Logistic Regression）。<br>点击模型：深度置信网络(DeepBeliefNetworks)。</p>
-<h2 id="相关性模型"><a href="#相关性模型" class="headerlink" title="相关性模型"></a>相关性模型</h2><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><img width="500" src="/images/search_kinds.png"></p>
+<h2 id="相关性模型"><a href="#相关性模型" class="headerlink" title="相关性模型"></a>相关性模型</h2><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><img width="600" src="/images/search_kinds.png"></p>
 <h3 id="迭代过程"><a href="#迭代过程" class="headerlink" title="迭代过程"></a>迭代过程</h3><p><img width="500" src="/images/search_process.png"></p>
 <h3 id="主流模型及评测指标"><a href="#主流模型及评测指标" class="headerlink" title="主流模型及评测指标"></a>主流模型及评测指标</h3><p><img width="500" src="/images/search_evalute.png"></p>
-<h3 id="主流模型对比"><a href="#主流模型对比" class="headerlink" title="主流模型对比"></a>主流模型对比</h3><p><img width="500" src="/images/serach_model_compare.png"></p>
-<h3 id="模型详情"><a href="#模型详情" class="headerlink" title="模型详情"></a>模型详情</h3><h4 id="RankSVM"><a href="#RankSVM" class="headerlink" title="RankSVM"></a>RankSVM</h4><p>RankSVM(2003)，将排序问题转化为pairwise的分类问题，然后使用SVM分类模型进行学习并求解，举例说明，两组query及其召回的documents，其中query-doc的相关程度等级分为三档，如下图所示：<br><img width="500" src="/images/search_ranksvm1.png"><br>同一个query下的不同相关度的doc的feature vector可以进行组合，形成新的feature vector：x1-x2，x1-x3，x2-x3。同时label也会被重新赋值，例如L1-L2，L1-L3，L2-L3。这几个feature vector的label被赋值成分类问题中的positive label。进一步，为了形成一个标准的分类问题，我们还需要有negative samples，这里我们就使用前述的几个新的positive feature vector的反方向向量作为相应的negative samples：x2-x1，x3-x1，x3-x2。另外，需要注意的是，我们在组合形成新的feature vector的时候，不能使用在原始排序问题中处于相同相似度等级的两个feature vector，也不能使用处于不同query下的两个feature vector。<br><img width="500" src="/images/search_ranksvm2.png"></p>
+<h3 id="主流模型对比"><a href="#主流模型对比" class="headerlink" title="主流模型对比"></a>主流模型对比</h3><p><img width="700" src="/images/serach_model_compare.png"></p>
+<h3 id="模型详情"><a href="#模型详情" class="headerlink" title="模型详情"></a>模型详情</h3><h4 id="RankSVM"><a href="#RankSVM" class="headerlink" title="RankSVM"></a>RankSVM</h4><p>RankSVM(2003)，将排序问题转化为pairwise的分类问题，然后使用SVM分类模型进行学习并求解，举例说明，两组query及其召回的documents，其中query-doc的相关程度等级分为三档，如下图所示：<br><img width="700" src="/images/search_ranksvm1.png"><br>同一个query下的不同相关度的doc的feature vector可以进行组合，形成新的feature vector：x1-x2，x1-x3，x2-x3。同时label也会被重新赋值，例如L1-L2，L1-L3，L2-L3。这几个feature vector的label被赋值成分类问题中的positive label。进一步，为了形成一个标准的分类问题，我们还需要有negative samples，这里我们就使用前述的几个新的positive feature vector的反方向向量作为相应的negative samples：x2-x1，x3-x1，x3-x2。另外，需要注意的是，我们在组合形成新的feature vector的时候，不能使用在原始排序问题中处于相同相似度等级的两个feature vector，也不能使用处于不同query下的两个feature vector。<br><img width="700" src="/images/search_ranksvm2.png"></p>
 <h4 id="RankNet"><a href="#RankNet" class="headerlink" title="RankNet"></a>RankNet</h4><p>微软(2005)提出，属于pairwise算法，从概率的角度来解决排序问题。RankNet的核心是提出了一种概率损失函数来学习Ranking Function，并应用Ranking Function对文档进行排序。这里的Ranking Function可以是任意对参数可微的模型，也就是说，该概率损失函数并不依赖于特定的机器学习模型，在论文中，RankNet是基于神经网络实现的。除此之外，GBDT等模型也可以应用于该框架。<br>对于任意一个doc对(Ui,Uj)，模型输出的score分别为si和sj，那么根据模型的预测，Ui比Uj与Query更相关的概率为Pij。由于RankNet使用的模型一般为神经网络，根据经验sigmoid函数能提供一个比较好的概率评估。<br>那么根据模型的预测，Ui比Uj与Query更相关的概率为：<br><span>$$\begin{gather*}
 P_{i j}=P\left(U_{i}&gt;U_{j}\right)=\frac{1}{1+e^{-\sigma\left(s_{i}-s_{j}\right)}}
 \end{gather*}$$</span><!-- Has MathJax --><br><strong><em>RankNet证明了如果知道一个待排序文档的排列中相邻两个文档之间的排序概率，则通过推导可以算出每两个文档之间的排序概率。因此对于一个待排序文档序列，只需计算相邻文档之间的排序概率，不需要计算所有pair，减少计算量。</em></strong><br>对于训练数据中的Ui和Uj，它们都包含有一个与Query相关性的真实label，比如Ui与Query的相关性label为good，Uj与Query的相关性label为bad，那么显然Ui比Uj更相关。我们定义Ui比Uj更相关的真实概率为Sij：<br><span>$$\begin{gather*}
@@ -495,7 +495,7 @@ C_{i j} &amp;=-\frac{1}{2}\left(1+S_{i j}\right) \log \frac{1}{1+e^{-\sigma\left
 C=\log \left(1+e^{-\sigma\left(s_{i}-s_{j}\right)}\right)
 \end{gather*}$$</span><!-- Has MathJax --><br>当Sij=-1，有：<br><span>$$\begin{gather*}
 C=\log \left(1+e^{-\sigma\left(s_{j}-s_{i}\right)}\right)
-\end{gather*}$$</span><!-- Has MathJax --><br>下图展示了当Sij分别取1，0，-1的时候cost function以si-sj为变量的函数图像：<br><img src="https://wesure.lexiangla.com/assets/1efce98e374911ea940e0a58ac132127" alt=""><br>可以看到当Sij=1时，模型预测的si比sj越大，其代价越小；Sij=−1时，si比sj越小，代价越小；Sij=0时，代价的最小值在si与sj相等处取得。<br>该损失函数有下面两个特点：</p>
+\end{gather*}$$</span><!-- Has MathJax --><br>下图展示了当Sij分别取1，0，-1的时候cost function以si-sj为变量的函数图像：<br><img width="700" src="/images/search_fun_pic.png"><br>可以看到当Sij=1时，模型预测的si比sj越大，其代价越小；Sij=−1时，si比sj越小，代价越小；Sij=0时，代价的最小值在si与sj相等处取得。<br>该损失函数有下面两个特点：</p>
 <ol>
 <li>当两个相关性不同的文档算出来的模型分数相同时，损失函数的值大于0，仍会对这对pair做惩罚，使他们的排序位置区分开。</li>
 <li>损失函数是一个类线性函数，可以有效减少异常样本数据对模型的影响，因此具有鲁棒性。</li>
@@ -567,7 +567,7 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 <li>Mart（Multiple Additive Regression Tree，Mart就是GBDT），定义了一个框架，缺少一个梯度。</li>
 <li>LambdaRank重新定义了梯度，赋予了梯度新的物理意义。</li>
 </ol>
-<p>因此，所有可以使用梯度下降法求解的模型都可以使用这个梯度，MART就是其中一种，将梯度Lambda和MART结合就是大名鼎鼎的LambdaMART。<br>MART的原理是直接在函数空间对函数进行求解，模型结果由许多棵树组成，每棵树的拟合目标是损失函数的梯度，在LambdaMART中就是Lambda。LambdaMART的具体算法过程如下：<br><img width="500" src="/images/search_lambdaMart.png"><br>可以看出LambdaMART的框架其实就是MART，主要的创新在于中间计算的梯度使用的是Lambda，是pairwise的。MART需要设置的参数包括：树的数量M、叶子节点数L和学习率v，这3个参数可以通过验证集调节获取最优参数。<br>LambdaMART具有很多优势：</p>
+<p>因此，所有可以使用梯度下降法求解的模型都可以使用这个梯度，MART就是其中一种，将梯度Lambda和MART结合就是大名鼎鼎的LambdaMART。<br>MART的原理是直接在函数空间对函数进行求解，模型结果由许多棵树组成，每棵树的拟合目标是损失函数的梯度，在LambdaMART中就是Lambda。LambdaMART的具体算法过程如下：<br><img width="700" src="/images/search_lambdaMart.png"><br>可以看出LambdaMART的框架其实就是MART，主要的创新在于中间计算的梯度使用的是Lambda，是pairwise的。MART需要设置的参数包括：树的数量M、叶子节点数L和学习率v，这3个参数可以通过验证集调节获取最优参数。<br>LambdaMART具有很多优势：</p>
 <ol>
 <li>适用于排序场景：不是传统的通过分类或者回归的方法求解排序问题，而是直接求解;</li>
 <li>损失函数可导：通过损失函数的转换，将类似于NDCG这种无法求导的IR评价指标转换成可以求导的函数，并且赋予了梯度的实际物理意义，数学解释非常漂亮;</li>
@@ -577,24 +577,25 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 <li>适用于正负样本比例失衡的数据：因为模型的训练对象具有不同label的文档pair，而不是预测每个文档的label，因此对正负样本比例失衡不敏感。</li>
 </ol>
 <blockquote>
-<p>爱奇艺实践：<br>在没有加入稀疏类特征之前，我们的模型是LambdaMART模型，在IR领域是最先进的模型，该模型是一个gbdt模型，基于boosting思想，不断增加决策树，来减小残差。该模型在很多竞赛中表现良好，因为不用过多的特征处理，树模型会考虑特征本身的数据分布，同时有很好的学习泛化能力，树结构很难兼容高维稀疏特征，比方说我们的document是上亿级的特征，很难每个节点走一次树的分割，所以对于加入稀疏特征的时候，树模型会遇到瓶颈。但是在处理高维稀疏特征的时候，像LR、FM、FFM可以认为是线性模型，特征的增加并不会对此类模型造成压力，上亿维也没关系。LR模型弱点在于特征组合能力不足，很多情况下特征组合方式比较重要，树模型从根节点到叶子节点的路径其实是一种组合方式。如下图所示：<br><img width="500" src="/images/search_iqiyi_lm.png"></p>
+<p>爱奇艺实践：<br>在没有加入稀疏类特征之前，我们的模型是LambdaMART模型，在IR领域是最先进的模型，该模型是一个gbdt模型，基于boosting思想，不断增加决策树，来减小残差。该模型在很多竞赛中表现良好，因为不用过多的特征处理，树模型会考虑特征本身的数据分布，同时有很好的学习泛化能力，树结构很难兼容高维稀疏特征，比方说我们的document是上亿级的特征，很难每个节点走一次树的分割，所以对于加入稀疏特征的时候，树模型会遇到瓶颈。但是在处理高维稀疏特征的时候，像LR、FM、FFM可以认为是线性模型，特征的增加并不会对此类模型造成压力，上亿维也没关系。LR模型弱点在于特征组合能力不足，很多情况下特征组合方式比较重要，树模型从根节点到叶子节点的路径其实是一种组合方式。如下图所示：</p>
 </blockquote>
-<h4 id="深度模型"><a href="#深度模型" class="headerlink" title="深度模型"></a>深度模型</h4><h5 id="DNN"><a href="#DNN" class="headerlink" title="DNN"></a>DNN</h5><p>爱奇艺实现：<br><img width="500" src="/images/search_iqiyi_dnn.jpg"><br>底层是query和document的描述文本做多粒度切词，之后做embedding后加权平均，得到document和query的向量表达，拼接这两组向量，同时再做点积，（两个向量越来越相近，拼接的时候希望上层网络学到两个向量的相似性，需要有足够的样本和正负样例，所以我们自己做了点积）。除了向量特征，模型也适用了稠密特征，即利用gbdt抽取特征，与embedding特征做拼接，最后经过三个全连接层，接sigmoid函数，就可以得到样本的score，并在此基础上用ndcg的衡量标准去计算损失，从而反向优化网络结构。而在online服务侧，则直接用样本去predict得分。这个模型上线之后，效果非常明显。其中，二次搜索率降低（二次搜索率越低越好，说明用户一次搜中）。</p>
-<h5 id="Wide-amp-Deep"><a href="#Wide-amp-Deep" class="headerlink" title="Wide&amp;Deep"></a>Wide&amp;Deep</h5><p>美团点评模型框架：<br><img width="500" src="/images/search_wd_structure.png"><br>美团点评模型具体实现：<br><img width="500" src="/images/search_wd_model.png"><br>在训练时，分别对样本数据进行清洗和提权。在特征方面，对于连续特征，用Min-Max方法做归一化。在交叉特征方面，结合业务需求，提炼出多个在业务场景意义比较重大的交叉特征。用Adam做为优化器，用Cross Entropy做为损失函数。在训练期间，与Wide &amp; Deep Learning论文中不同之处在于，将组合特征作为输入层分别输入到对应的Deep组件和Wide组件中。然后在Deep部分将全部输入数据送到3个ReLU层，在最后通过Sigmoid层进行打分。训练数据7000万+，并用超过3000万的测试数据进行线下模型预估。Batch－Size设为50000，Epoch设为20。<br>线上AB实验结果：<br><img width="500" src="/images/search_wd_abtest.png"></p>
-<h5 id="LambdaDNN"><a href="#LambdaDNN" class="headerlink" title="LambdaDNN"></a>LambdaDNN</h5><p>大众点评搜索排序模型，基于TensorFlow分布式框架实现。<br><img width="500" src="/images/search_lambdaDnn.png"><br>NDCG的计算公式中，折损的权重是随着位置呈指数变化的。然而实际曝光点击率随位置变化的曲线与NDCG的理论折损值存在着较大的差异。<br>对于移动端的场景来说，用户在下拉滑动列表进行浏览时，视觉的焦点会随着滑屏、翻页而发生变动。例如用户翻到第二页时，往往会重新聚焦，因此，会发现第二页头部的曝光点击率实际上是高于第一页尾部位置的。我们尝试了两种方案去微调NDCG中的指数位置折损：<br>根据实际曝光点击率拟合折损曲线：根据实际统计到的曝光点击率数据，拟合公式替代NDCG中的指数折损公式，绘制的曲线如图12所示。<br>计算Position Bias作为位置折损：Position Bias在业界有较多的讨论，用户点击商户的过程可以分为观察和点击两个步骤：a.用户需要首先看到该商户，而看到商户的概率取决于所在的位置；b.看到商户后点击商户的概率只与商户的相关性有关。步骤a计算的概率即为Position Bias，这块内容可以讨论的东西很多，这里不再详述。<br><img width="500" src="/images/search_ndcg.png"><br>经过上述对NDCG计算改造训练出的LambdaDNN模型，相较Base树模型和Pointwise DNN模型，在业务指标上有了非常显著的提升。<br><img width="500" src="/images/search_lm_dnn_lmDnn.png"></p>
+<p><img width="700" src="/images/search_iqiyi_lm.png"></p>
+<h4 id="深度模型"><a href="#深度模型" class="headerlink" title="深度模型"></a>深度模型</h4><h5 id="DNN"><a href="#DNN" class="headerlink" title="DNN"></a>DNN</h5><p>爱奇艺实现：<br><img width="700" src="/images/search_iqiyi_dnn.jpg"><br>底层是query和document的描述文本做多粒度切词，之后做embedding后加权平均，得到document和query的向量表达，拼接这两组向量，同时再做点积，（两个向量越来越相近，拼接的时候希望上层网络学到两个向量的相似性，需要有足够的样本和正负样例，所以我们自己做了点积）。除了向量特征，模型也适用了稠密特征，即利用gbdt抽取特征，与embedding特征做拼接，最后经过三个全连接层，接sigmoid函数，就可以得到样本的score，并在此基础上用ndcg的衡量标准去计算损失，从而反向优化网络结构。而在online服务侧，则直接用样本去predict得分。这个模型上线之后，效果非常明显。其中，二次搜索率降低（二次搜索率越低越好，说明用户一次搜中）。</p>
+<h5 id="Wide-amp-Deep"><a href="#Wide-amp-Deep" class="headerlink" title="Wide&amp;Deep"></a>Wide&amp;Deep</h5><p>美团点评模型框架：<br><img width="700" src="/images/search_wd_structure.png"><br>美团点评模型具体实现：<br><img width="700" src="/images/search_wd_model.png"><br>在训练时，分别对样本数据进行清洗和提权。在特征方面，对于连续特征，用Min-Max方法做归一化。在交叉特征方面，结合业务需求，提炼出多个在业务场景意义比较重大的交叉特征。用Adam做为优化器，用Cross Entropy做为损失函数。在训练期间，与Wide &amp; Deep Learning论文中不同之处在于，将组合特征作为输入层分别输入到对应的Deep组件和Wide组件中。然后在Deep部分将全部输入数据送到3个ReLU层，在最后通过Sigmoid层进行打分。训练数据7000万+，并用超过3000万的测试数据进行线下模型预估。Batch－Size设为50000，Epoch设为20。<br>线上AB实验结果：<br><img width="700" src="/images/search_wd_abtest.png"></p>
+<h5 id="LambdaDNN"><a href="#LambdaDNN" class="headerlink" title="LambdaDNN"></a>LambdaDNN</h5><p>大众点评搜索排序模型，基于TensorFlow分布式框架实现。<br><img width="700" src="/images/search_lambdaDnn.png"><br>NDCG的计算公式中，折损的权重是随着位置呈指数变化的。然而实际曝光点击率随位置变化的曲线与NDCG的理论折损值存在着较大的差异。<br>对于移动端的场景来说，用户在下拉滑动列表进行浏览时，视觉的焦点会随着滑屏、翻页而发生变动。例如用户翻到第二页时，往往会重新聚焦，因此，会发现第二页头部的曝光点击率实际上是高于第一页尾部位置的。我们尝试了两种方案去微调NDCG中的指数位置折损：<br>根据实际曝光点击率拟合折损曲线：根据实际统计到的曝光点击率数据，拟合公式替代NDCG中的指数折损公式，绘制的曲线如图12所示。<br>计算Position Bias作为位置折损：Position Bias在业界有较多的讨论，用户点击商户的过程可以分为观察和点击两个步骤：a.用户需要首先看到该商户，而看到商户的概率取决于所在的位置；b.看到商户后点击商户的概率只与商户的相关性有关。步骤a计算的概率即为Position Bias，这块内容可以讨论的东西很多，这里不再详述。<br><img width="700" src="/images/search_ndcg.png"><br>经过上述对NDCG计算改造训练出的LambdaDNN模型，相较Base树模型和Pointwise DNN模型，在业务指标上有了非常显著的提升。<br><img width="700" src="/images/search_lm_dnn_lmDnn.png"></p>
 <h5 id="LambdaDeepFM"><a href="#LambdaDeepFM" class="headerlink" title="LambdaDeepFM"></a>LambdaDeepFM</h5><p>[待补充]</p>
-<h5 id="LambdaDCN"><a href="#LambdaDCN" class="headerlink" title="LambdaDCN"></a>LambdaDCN</h5><p>Lambda梯度除了与DNN网络相结合外，也可以与绝大部分常见的网络结构相结合。为了进一步学习到更多交叉特征，美团点评团队在LambdaDNN的基础上分别尝试了LambdaDeepFM和LambdaDCN网络；其中DCN网络是一种加入Cross的并行网络结构，交叉的网络每一层的输出特征与第一层的原始输入特征进行显性的两两交叉，相当于每一层学习特征交叉的映射去拟合层之间的残差。<br><img width="500" src="/images/search_lambdaDcn.png"><br>离线的对比实验表明，Lambda梯度与DCN网络结合之后充分发挥了DCN网络的特点，简洁的多项式交叉设计有效地提升模型的训练效果。NDCG指标对比效果如下图所示：<br><img width="500" src="/images/search_dcn_compare.png"></p>
-<h4 id="补充模型"><a href="#补充模型" class="headerlink" title="补充模型"></a>补充模型</h4><h5 id="FM"><a href="#FM" class="headerlink" title="FM"></a>FM</h5><p><img width="500" src="/images/search_fm.png"></p>
-<h5 id="DSSM"><a href="#DSSM" class="headerlink" title="DSSM"></a>DSSM</h5><p><img width="500" src="/images/search_dssm.png"></p>
-<h5 id="点击模型"><a href="#点击模型" class="headerlink" title="点击模型"></a>点击模型</h5><p><img width="500" src="/images/search_click.png"></p>
-<h5 id="DBN模型"><a href="#DBN模型" class="headerlink" title="DBN模型"></a>DBN模型</h5><p><img width="500" src="/images/search_dbn.png"></p>
-<h5 id="IRGAN"><a href="#IRGAN" class="headerlink" title="IRGAN"></a>IRGAN</h5><p><img width="500" src="/images/search_irgan.png"></p>
+<h5 id="LambdaDCN"><a href="#LambdaDCN" class="headerlink" title="LambdaDCN"></a>LambdaDCN</h5><p>Lambda梯度除了与DNN网络相结合外，也可以与绝大部分常见的网络结构相结合。为了进一步学习到更多交叉特征，美团点评团队在LambdaDNN的基础上分别尝试了LambdaDeepFM和LambdaDCN网络；其中DCN网络是一种加入Cross的并行网络结构，交叉的网络每一层的输出特征与第一层的原始输入特征进行显性的两两交叉，相当于每一层学习特征交叉的映射去拟合层之间的残差。<br><img width="700" src="/images/search_lambdaDcn.png"><br>离线的对比实验表明，Lambda梯度与DCN网络结合之后充分发挥了DCN网络的特点，简洁的多项式交叉设计有效地提升模型的训练效果。NDCG指标对比效果如下图所示：<br><img width="500" src="/images/search_dcn_compare.png"></p>
+<h4 id="补充模型"><a href="#补充模型" class="headerlink" title="补充模型"></a>补充模型</h4><h5 id="FM"><a href="#FM" class="headerlink" title="FM"></a>FM</h5><p><img width="700" src="/images/search_fm.png"></p>
+<h5 id="DSSM"><a href="#DSSM" class="headerlink" title="DSSM"></a>DSSM</h5><p><img width="700" src="/images/search_dssm.png"></p>
+<h5 id="点击模型"><a href="#点击模型" class="headerlink" title="点击模型"></a>点击模型</h5><p><img width="700" src="/images/search_click.png"></p>
+<h5 id="DBN模型"><a href="#DBN模型" class="headerlink" title="DBN模型"></a>DBN模型</h5><p><img width="700" src="/images/search_dbn.png"></p>
+<h5 id="IRGAN"><a href="#IRGAN" class="headerlink" title="IRGAN"></a>IRGAN</h5><p><img width="700" src="/images/search_irgan.png"></p>
 <h1 id="模型选择"><a href="#模型选择" class="headerlink" title="模型选择"></a>模型选择</h1><ol>
 <li>LambdaRank</li>
 <li>LambdaMART</li>
 <li>Wide&amp;Deep</li>
 </ol>
-<h1 id="模型组合"><a href="#模型组合" class="headerlink" title="模型组合"></a>模型组合</h1><p>爱奇艺实践：<br><img width="500" src="/images/search_model_compare.png"></p>
+<h1 id="模型组合"><a href="#模型组合" class="headerlink" title="模型组合"></a>模型组合</h1><p>爱奇艺实践：<br><img width="700" src="/images/search_model_compare.png"></p>
 <blockquote>
 <p>针对GBDT和LR模型的优缺点，做了进一步的模型组合的尝试：<br>第一种方式，用 LR 模型把高维稠密特征进行学习，学习出高维特征，把该特征和原始特征做拼接，学习 gbdt 模型。<br>该办法效果不好，提升很弱。<br><strong> 剖析缘由：</strong> 把高维特征刚在一个特征去表达，丢掉了原始的特征。<br>第二种方式，用 gbdt 去学，学习后把样本落入叶子节点信息来进来与高维稠密特征拼接，在此根底上用 LR 学习。<br>该模型效果变差。<br><strong> 剖析缘由：</strong> 点击类和穿插类特征是对排序影响最大的特征，这类特征和大量的稠密类特征做拼接时，重要性被稀释了，导致模型的学习能力变弱。</p>
 </blockquote>
