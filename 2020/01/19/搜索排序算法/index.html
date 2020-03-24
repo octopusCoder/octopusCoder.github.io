@@ -95,12 +95,12 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] [TOC] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特">
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包">
 <meta property="og:type" content="article">
 <meta property="og:title" content="搜索排序算法">
 <meta property="og:url" content="http://yoursite.com/2020/01/19/搜索排序算法/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] [TOC] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/search_structure.png">
 <meta property="og:image" content="http://yoursite.com/images/search_kinds.png">
@@ -128,10 +128,10 @@
 <meta property="og:image" content="http://yoursite.com/images/search_dbn.png">
 <meta property="og:image" content="http://yoursite.com/images/search_irgan.png">
 <meta property="og:image" content="http://yoursite.com/images/search_model_compare.png">
-<meta property="og:updated_time" content="2020-01-20T12:42:35.000Z">
+<meta property="og:updated_time" content="2020-03-24T06:48:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搜索排序算法">
-<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] [TOC] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包">
 <meta name="twitter:image" content="http://yoursite.com/images/search_structure.png">
 
 
@@ -365,9 +365,8 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
 
 <p><strong><em>[待进一步整理]</em></strong></p>
-<p>[TOC]</p>
 <h1 id="算法框架"><a href="#算法框架" class="headerlink" title="算法框架"></a>算法框架</h1><p>典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包括展现日志、点击日志和Query日志。<br><img width="700" src="/images/search_structure.png"></p>
-<h1 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h1><h2 id="泛特征"><a href="#泛特征" class="headerlink" title="泛特征"></a>泛特征</h2><p>Query特征：Query的时效性、长度、主题、词权重等。<br>Doc特征：文章分类、长度、点赞数等。<br>User特征：年龄、性别等。<br>Query-Doc匹配特征：类别匹配特征、BM25、FM模型。<br>点击特征：CTR、首次点击等。</p>
+<h1 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h1><h2 id="泛特征"><a href="#泛特征" class="headerlink" title="泛特征"></a>泛特征</h2><p>Query特征：意图分类、关键词、词权重等。<br>Doc特征：文章分类、长度、点赞数等。<br>User特征：年龄、性别等。<br>Query-Doc匹配特征：类别匹配、BM25。<br>点击特征：CTR、首次点击等。</p>
 <h1 id="日志设计"><a href="#日志设计" class="headerlink" title="日志设计"></a>日志设计</h1><p>展现日志：理论上可根据经验进行人工标注打分，并且作为模型的启动训练数据。<br>点击日志：用户的点击行为日志，可以用于Query日志挖掘，进行查询扩展等，例如多个query搜索结果用户都点击了同一篇文档，则可认为这些query相似。<br>Query日志：用于和点击／转化数据做联合分析。</p>
 <h1 id="模型介绍"><a href="#模型介绍" class="headerlink" title="模型介绍"></a>模型介绍</h1><p>相关性模型：Learning to Rank模型</p>
 <ol>
@@ -375,16 +374,17 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>按照模型结构划分，可分为线性排序模型、树模型、深度学习模型，以及组合模型（GBDT+LR，Deep&amp;Wide）。</li>
 </ol>
 <p>时效性模型：[待补充]。<br>个性化模型：逻辑回归(Logistic Regression）。<br>点击模型：深度置信网络(DeepBeliefNetworks)。</p>
-<h2 id="相关性模型"><a href="#相关性模型" class="headerlink" title="相关性模型"></a>相关性模型</h2><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><img width="600" src="/images/search_kinds.png"></p>
+<h2 id="相关性模型"><a href="#相关性模型" class="headerlink" title="相关性模型"></a>相关性模型</h2><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><img width="700" src="/images/search_kinds.png"></p>
 <h3 id="迭代过程"><a href="#迭代过程" class="headerlink" title="迭代过程"></a>迭代过程</h3><p><img width="500" src="/images/search_process.png"></p>
-<h3 id="主流模型及评测指标"><a href="#主流模型及评测指标" class="headerlink" title="主流模型及评测指标"></a>主流模型及评测指标</h3><p><img width="500" src="/images/search_evalute.png"></p>
-<h3 id="主流模型对比"><a href="#主流模型对比" class="headerlink" title="主流模型对比"></a>主流模型对比</h3><p><img width="700" src="/images/serach_model_compare.png"></p>
+<h3 id="主流模型及评测指标"><a href="#主流模型及评测指标" class="headerlink" title="主流模型及评测指标"></a>主流模型及评测指标</h3><p><img width="700" src="/images/search_evalute.png"></p>
+<h3 id="主流模型对比"><a href="#主流模型对比" class="headerlink" title="主流模型对比"></a>主流模型对比</h3><p><img height="500" src="/images/serach_model_compare.png"></p>
+<p>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</p>
 <h3 id="模型详情"><a href="#模型详情" class="headerlink" title="模型详情"></a>模型详情</h3><h4 id="RankSVM"><a href="#RankSVM" class="headerlink" title="RankSVM"></a>RankSVM</h4><p>RankSVM(2003)，将排序问题转化为pairwise的分类问题，然后使用SVM分类模型进行学习并求解，举例说明，两组query及其召回的documents，其中query-doc的相关程度等级分为三档，如下图所示：<br><img width="700" src="/images/search_ranksvm1.png"><br>同一个query下的不同相关度的doc的feature vector可以进行组合，形成新的feature vector：x1-x2，x1-x3，x2-x3。同时label也会被重新赋值，例如L1-L2，L1-L3，L2-L3。这几个feature vector的label被赋值成分类问题中的positive label。进一步，为了形成一个标准的分类问题，我们还需要有negative samples，这里我们就使用前述的几个新的positive feature vector的反方向向量作为相应的negative samples：x2-x1，x3-x1，x3-x2。另外，需要注意的是，我们在组合形成新的feature vector的时候，不能使用在原始排序问题中处于相同相似度等级的两个feature vector，也不能使用处于不同query下的两个feature vector。<br><img width="700" src="/images/search_ranksvm2.png"></p>
 <h4 id="RankNet"><a href="#RankNet" class="headerlink" title="RankNet"></a>RankNet</h4><p>微软(2005)提出，属于pairwise算法，从概率的角度来解决排序问题。RankNet的核心是提出了一种概率损失函数来学习Ranking Function，并应用Ranking Function对文档进行排序。这里的Ranking Function可以是任意对参数可微的模型，也就是说，该概率损失函数并不依赖于特定的机器学习模型，在论文中，RankNet是基于神经网络实现的。除此之外，GBDT等模型也可以应用于该框架。<br>对于任意一个doc对(Ui,Uj)，模型输出的score分别为si和sj，那么根据模型的预测，Ui比Uj与Query更相关的概率为Pij。由于RankNet使用的模型一般为神经网络，根据经验sigmoid函数能提供一个比较好的概率评估。<br>那么根据模型的预测，Ui比Uj与Query更相关的概率为：<br><span>$$\begin{gather*}
 P_{i j}=P\left(U_{i}&gt;U_{j}\right)=\frac{1}{1+e^{-\sigma\left(s_{i}-s_{j}\right)}}
 \end{gather*}$$</span><!-- Has MathJax --><br><strong><em>RankNet证明了如果知道一个待排序文档的排列中相邻两个文档之间的排序概率，则通过推导可以算出每两个文档之间的排序概率。因此对于一个待排序文档序列，只需计算相邻文档之间的排序概率，不需要计算所有pair，减少计算量。</em></strong><br>对于训练数据中的Ui和Uj，它们都包含有一个与Query相关性的真实label，比如Ui与Query的相关性label为good，Uj与Query的相关性label为bad，那么显然Ui比Uj更相关。我们定义Ui比Uj更相关的真实概率为Sij：<br><span>$$\begin{gather*}
 \bar{p}_{i j}=\frac{1}{2}\left(1+S_{i j}\right)
-\end{gather*}$$</span><!-- Has MathJax --><br>如果Ui比Uj更相关，那么Sij=1；如果Ui不如Uj相关，那么Sij=−1；如果Ui、Uj与Query的相关程度相同，那么Sij=0。通常，两个doc的相关度可由人工标注或者从搜索日志中得到。<br>对于一个排序，RankNet从各个doc的相对关系来评价排序结果的好坏，排序的效果越好，那么有错误相对关系的doc pair就越少。所谓错误的相对关系即如果根据模型输出Ui排在Uj前面，但真实label为Ui的相关性小于Uj，那么就记一个错误pair，RankNet本质上就是以错误的pair最少为优化目标。而在抽象成cost function时，RankNet实际上是引入了概率的思想：不是直接判断Ui排在Uj前面，而是说Ui以一定的概率P排在Uj前面，即是以预测概率与真实概率的差距最小作为优化目标。最后，RankNet使用Cross Entropy作为cost function，来衡量预测相关性概率对真实相关性概率的拟合程度：<br><span>$$\begin{gather*}
+\end{gather*}$$</span><!-- Has MathJax --><br>如果$U_i$比$U_j$更相关，那么Sij=1；如果Ui不如Uj相关，那么Sij=−1；如果$U_i$、$U_j$与Query的相关程度相同，那么Sij=0。通常，两个doc的相关度可由人工标注或者从搜索日志中得到。<br>对于一个排序，RankNet从各个doc的相对关系来评价排序结果的好坏，排序的效果越好，那么有错误相对关系的doc pair就越少。所谓错误的相对关系即如果根据模型输出Ui排在Uj前面，但真实label为Ui的相关性小于Uj，那么就记一个错误pair，RankNet本质上就是以错误的pair最少为优化目标。而在抽象成cost function时，RankNet实际上是引入了概率的思想：不是直接判断Ui排在Uj前面，而是说Ui以一定的概率P排在Uj前面，即是以预测概率与真实概率的差距最小作为优化目标。最后，RankNet使用Cross Entropy作为cost function，来衡量预测相关性概率对真实相关性概率的拟合程度：<br><span>$$\begin{gather*}
 C=-\bar{P}_{i j} \log P_{i j}-\left(1-\bar{P}_{i j}\right) \log \left(1-P_{i j}\right)
 \end{gather*}$$</span><!-- Has MathJax --><br>该损失函数有以下两个特点：<br>进一步化简后有：<br><span>$$\begin{gather*}
 \begin{aligned}

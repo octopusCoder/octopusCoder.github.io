@@ -103,8 +103,8 @@
 <meta property="og:description" content="简介互联网搜索诞生初期，检索模型使用的特征相对简单，这些特征主要基于query与doc之间的相关度来对文档进行排序。另一种传统排序模型是重要性排序模型，此时模型不考虑query ，而仅仅根据文档（网页）之间的图结构来判断doc的重要程度，例如PageRank排序模型。而随着互联网不断发展，海量数据的产生，更多复杂有效的特征被用于搜索排序，人工调参已不能满足需求，此时机器学习开始在搜索排序领域得到应">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/rank-system.jpg">
-<meta property="og:image" content="http://yoursite.com/images/l2r-models.png">
-<meta property="og:updated_time" content="2019-11-18T08:11:13.000Z">
+<meta property="og:image" content="http://yoursite.com/images/search_kinds.png">
+<meta property="og:updated_time" content="2020-03-24T03:57:32.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Learning to rank算法">
 <meta name="twitter:description" content="简介互联网搜索诞生初期，检索模型使用的特征相对简单，这些特征主要基于query与doc之间的相关度来对文档进行排序。另一种传统排序模型是重要性排序模型，此时模型不考虑query ，而仅仅根据文档（网页）之间的图结构来判断doc的重要程度，例如PageRank排序模型。而随着互联网不断发展，海量数据的产生，更多复杂有效的特征被用于搜索排序，人工调参已不能满足需求，此时机器学习开始在搜索排序领域得到应">
@@ -364,8 +364,8 @@
 <li>优化基于评价指标的 ranking error 的连续可微的上界，如 SVM-MAP，SVM-NDCG，PermuRank。</li>
 <li>使用可以优化非平滑目标函数的优化技术，如 AdaRank，RankGP。非直接相关的损失函数则不再使用与评价相关的loss来优化模型，而是设计能衡量模型输出与真实排列之间差异的 loss，如此获得的模型在评价指标上也能获得不错的性能。例如 ：ListNet，ListMLE，StructRank和BoltzRank。</li>
 </ul>
-<h3 id="主要模型分类"><a href="#主要模型分类" class="headerlink" title="主要模型分类"></a>主要模型分类</h3><p>按照这三种类型，可以将主要模型做如下梳理：<br><img src="/images/l2r-models.png" alt=""><br>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</p>
-<h3 id="xgboost"><a href="#xgboost" class="headerlink" title="xgboost"></a>xgboost</h3><p>下面以xgboost模型为例，说明如何完成排序。大致过程如下：<br><strong>训练</strong></p>
+<h3 id="主要模型分类"><a href="#主要模型分类" class="headerlink" title="主要模型分类"></a>主要模型分类</h3><p>按照这三种类型，可以将主要模型做如下梳理：<br><img width="600" src="/images/search_kinds.png"><br>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</p>
+<h3 id="XGBoost"><a href="#XGBoost" class="headerlink" title="XGBoost"></a>XGBoost</h3><p>下面以xgboost模型为例，说明如何完成排序。大致过程如下：<br><strong>训练</strong></p>
 <ol>
 <li>获取训练数据；</li>
 <li>构造特征候选集，完成训练样本准备；</li>
@@ -537,7 +537,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索"><span class="nav-number">2.</span> <span class="nav-text">搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#机器学习排序系统"><span class="nav-number">3.</span> <span class="nav-text">机器学习排序系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Learning-to-rank"><span class="nav-number">4.</span> <span class="nav-text">Learning to rank</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主要模型分类"><span class="nav-number">4.1.</span> <span class="nav-text">主要模型分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xgboost"><span class="nav-number">4.2.</span> <span class="nav-text">xgboost</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索"><span class="nav-number">2.</span> <span class="nav-text">搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#机器学习排序系统"><span class="nav-number">3.</span> <span class="nav-text">机器学习排序系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Learning-to-rank"><span class="nav-number">4.</span> <span class="nav-text">Learning to rank</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主要模型分类"><span class="nav-number">4.1.</span> <span class="nav-text">主要模型分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XGBoost"><span class="nav-number">4.2.</span> <span class="nav-text">XGBoost</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>
