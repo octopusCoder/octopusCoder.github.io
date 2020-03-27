@@ -476,7 +476,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 </ol>
 <p>时效性模型：[待补充]。<br>个性化模型：逻辑回归(Logistic Regression）。<br>点击模型：深度置信网络(DeepBeliefNetworks)。</p>
 <h2 id="相关性模型"><a href="#相关性模型" class="headerlink" title="相关性模型"></a>相关性模型</h2><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><img width="700" src="/images/search_kinds.png"></p>
-<h3 id="迭代过程"><a href="#迭代过程" class="headerlink" title="迭代过程"></a>迭代过程</h3><p><img width="500" src="/images/search_process.png"></p>
+<h3 id="迭代过程"><a href="#迭代过程" class="headerlink" title="迭代过程"></a>迭代过程</h3><p><img width="700" src="/images/search_process.png"></p>
 <h3 id="主流模型及评测指标"><a href="#主流模型及评测指标" class="headerlink" title="主流模型及评测指标"></a>主流模型及评测指标</h3><p><img width="700" src="/images/search_evalute.png"></p>
 <h3 id="主流模型对比"><a href="#主流模型对比" class="headerlink" title="主流模型对比"></a>主流模型对比</h3><p><img height="500" src="/images/serach_model_compare.png"></p>
 <p>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</p>
@@ -484,7 +484,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <h4 id="RankNet"><a href="#RankNet" class="headerlink" title="RankNet"></a>RankNet</h4><p>微软(2005)提出，属于pairwise算法，从概率的角度来解决排序问题。RankNet的核心是提出了一种概率损失函数来学习Ranking Function，并应用Ranking Function对文档进行排序。这里的Ranking Function可以是任意对参数可微的模型，也就是说，该概率损失函数并不依赖于特定的机器学习模型，在论文中，RankNet是基于神经网络实现的。除此之外，GBDT等模型也可以应用于该框架。<br>对于任意一个doc对(Ui,Uj)，模型输出的score分别为si和sj，那么根据模型的预测，Ui比Uj与Query更相关的概率为Pij。由于RankNet使用的模型一般为神经网络，根据经验sigmoid函数能提供一个比较好的概率评估。<br>那么根据模型的预测，Ui比Uj与Query更相关的概率为：<br><span>$$\begin{gather*}
 P_{i j}=P\left(U_{i}&gt;U_{j}\right)=\frac{1}{1+e^{-\sigma\left(s_{i}-s_{j}\right)}}
 \end{gather*}$$</span><!-- Has MathJax --><br><strong><em>RankNet证明了如果知道一个待排序文档的排列中相邻两个文档之间的排序概率，则通过推导可以算出每两个文档之间的排序概率。因此对于一个待排序文档序列，只需计算相邻文档之间的排序概率，不需要计算所有pair，减少计算量。</em></strong><br>对于训练数据中的Ui和Uj，它们都包含有一个与Query相关性的真实label，比如Ui与Query的相关性label为good，Uj与Query的相关性label为bad，那么显然Ui比Uj更相关。我们定义Ui比Uj更相关的真实概率为Sij：<br><span>$$\begin{gather*}
-\bar{p}_{i j}=\frac{1}{2}\left(1+S_{i j}\right)
+\bar{P}_{i j}=\frac{1}{2}\left(1+S_{i j}\right)
 \end{gather*}$$</span><!-- Has MathJax --><br>如果$U_i$比$U_j$更相关，那么Sij=1；如果Ui不如Uj相关，那么Sij=−1；如果$U_i$、$U_j$与Query的相关程度相同，那么Sij=0。通常，两个doc的相关度可由人工标注或者从搜索日志中得到。<br>对于一个排序，RankNet从各个doc的相对关系来评价排序结果的好坏，排序的效果越好，那么有错误相对关系的doc pair就越少。所谓错误的相对关系即如果根据模型输出Ui排在Uj前面，但真实label为Ui的相关性小于Uj，那么就记一个错误pair，RankNet本质上就是以错误的pair最少为优化目标。而在抽象成cost function时，RankNet实际上是引入了概率的思想：不是直接判断Ui排在Uj前面，而是说Ui以一定的概率P排在Uj前面，即是以预测概率与真实概率的差距最小作为优化目标。最后，RankNet使用Cross Entropy作为cost function，来衡量预测相关性概率对真实相关性概率的拟合程度：<br><span>$$\begin{gather*}
 C=-\bar{P}_{i j} \log P_{i j}-\left(1-\bar{P}_{i j}\right) \log \left(1-P_{i j}\right)
 \end{gather*}$$</span><!-- Has MathJax --><br>该损失函数有以下两个特点：<br>进一步化简后有：<br><span>$$\begin{gather*}
@@ -557,7 +557,7 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 \end{aligned}
 \end{gather*}$$</span><!-- Has MathJax --><br>当我们收集到所有loss值不为0的training instance后，我们便得到了其对应的更新值：<br><span>$$\begin{gather*}
 \left\{\left(x_{i}^{(1)}, f_{k-1}\left(x_{i}^{(2)}\right)+\tau\right),\left(x_{i}^{(2)}, f_{k-1}\left(x_{i}^{(1)}\right)-\tau\right)\right\}
-\end{gather*}$$</span><!-- Has MathJax --><br>接着，使用一棵regression tree对这些数据进行拟合，生成一个拟合函数gk(x)，然后将这次迭代更新的拟合函数更新到f(x)中，此处采用线性叠加的方式：<br><span>$$\begin{gather*}
+\end{gather*}$$</span><!-- Has MathJax --><br>接着，使用一棵regression tree对这些数据进行拟合，生成一个拟合函数$g_{k}(x)$，然后将这次迭代更新的拟合函数更新到f(x)中，此处采用线性叠加的方式：<br><span>$$\begin{gather*}
 f_{k}(x)=\frac{k f_{k-1}(x)+\beta g_{k}(x)}{k+1}
 \end{gather*}$$</span><!-- Has MathJax --><br>其中，ß为shrinking系数。<br>为什么在每次迭代更新的时候，新的regression tree不像GBDT中那样，纯粹地去拟合梯度方向（一个离散值的向量），而是去拟合：<br><span>$$\begin{gather*}
 f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
@@ -569,7 +569,29 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 <li>Mart（Multiple Additive Regression Tree，Mart就是GBDT），定义了一个框架，缺少一个梯度。</li>
 <li>LambdaRank重新定义了梯度，赋予了梯度新的物理意义。</li>
 </ol>
-<p>因此，所有可以使用梯度下降法求解的模型都可以使用这个梯度，MART就是其中一种，将梯度Lambda和MART结合就是大名鼎鼎的LambdaMART。<br>MART的原理是直接在函数空间对函数进行求解，模型结果由许多棵树组成，每棵树的拟合目标是损失函数的梯度，在LambdaMART中就是Lambda。LambdaMART的具体算法过程如下：<br><img width="700" src="/images/search_lambdaMart.png"><br>可以看出LambdaMART的框架其实就是MART，主要的创新在于中间计算的梯度使用的是Lambda，是pairwise的。MART需要设置的参数包括：树的数量M、叶子节点数L和学习率v，这3个参数可以通过验证集调节获取最优参数。<br>LambdaMART具有很多优势：</p>
+<p>因此，所有可以使用梯度下降法求解的模型都可以使用这个梯度，MART就是其中一种，将梯度Lambda和MART结合就是大名鼎鼎的LambdaMART。<br>MART的原理是直接在函数空间对函数进行求解，模型结果由许多棵树组成，每棵树的拟合目标是损失函数的梯度，在LambdaMART中就是Lambda。LambdaMART的具体算法过程如下：<br><img width="700" src="/images/search_lambdaMart.png"><br>可以看出LambdaMART的框架其实就是MART，主要的创新在于中间计算的梯度使用的是Lambda，是pairwise的。MART需要设置的参数包括：树的数量M、叶子节点数L和学习率v，这3个参数可以通过验证集调节获取最优参数。</p>
+<p>MART输出值的计算：</p>
+<ol>
+<li><p>首先设置每棵树的最大叶子数，基分类器通过最小平方损失进行分裂，达到最大叶子数量时停止分裂</p>
+</li>
+<li><p>使用牛顿法得到叶子的输出，计算效用函数对模型得分的二阶导$\frac{\partial \lambda<em>{i}}{\partial s</em>{i}}=\frac{\partial^{2} C}{\partial^{2} s_{i}}$</p>
+<span>$$\begin{gather*}
+
+\frac{\partial^{2} C}{\partial^{2} s_{i}}=\sum_{\{i, j\} \rightleftharpoons I} \sigma^{2}\left|\triangle Z_{i j}\right| \rho_{i j}\left(1-\rho_{i j}\right)&NegativeMediumSpace;
+
+\end{gather*}$$</span><!-- Has MathJax -->
+</li>
+<li><p>得到第m颗树的第k个叶子的输出值:</p>
+<span>$$\begin{gather*}
+
+\gamma_{k m}=\frac{\sum_{x_{i} \in R_{k m}} \frac{\partial C}{\partial s_{i}}}{\sum_{x_{i} \in R_{k m}} \frac{\partial^{2} C}{\partial^{2} s_{i}}}=\frac{-\sum_{x_{i} \in R_{k m}} \sum_{\{i, j\} \rightleftharpoons I}\left|\triangle Z_{i j}\right| \rho_{i j}}{\sum_{x_{i} \in R_{k m}} \sum_{\{i, j\} \rightleftharpoons I}\left|\Delta Z_{i j}\right| \sigma \rho_{i j}\left(1-\rho_{i j}\right)}&NegativeMediumSpace;
+
+\end{gather*}$$</span><!-- Has MathJax -->
+</li>
+<li><p>$x<em>i$为第i个样本，$x</em>{i} \in R_{k m}$意味着落入该叶子的样本，这些样本共同解决了该叶子的输出值。</p>
+</li>
+</ol>
+<p>LambdaMART具有很多优势：</p>
 <ol>
 <li>适用于排序场景：不是传统的通过分类或者回归的方法求解排序问题，而是直接求解;</li>
 <li>损失函数可导：通过损失函数的转换，将类似于NDCG这种无法求导的IR评价指标转换成可以求导的函数，并且赋予了梯度的实际物理意义，数学解释非常漂亮;</li>
@@ -578,6 +600,9 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 <li>特征选择：因为是基于MART模型，因此也具有MART的优势，可以学到每个特征的重要性，可以做特征选择;</li>
 <li>适用于正负样本比例失衡的数据：因为模型的训练对象具有不同label的文档pair，而不是预测每个文档的label，因此对正负样本比例失衡不敏感。</li>
 </ol>
+<p><strong>LambdaMART是不是很好懂？</strong></p>
+<p><img width="300" src="/images/Emoticon1.png"></p>
+<p>有较多博客、资料在此戛然而止，好像上述资料已经足够理解LambdaMART了，这也让我一度怀疑自己的IQ，基础和我一样不太好的兄弟们可以进入另一篇博客，我们从提升树、梯度提升树和梯度提升决策树说起，并结合Ranklib源码和具体的例子，以及微软的相关技术报告一起来看看LambdaMART的<a href="">真相</a>。</p>
 <blockquote>
 <p>爱奇艺实践：<br>在没有加入稀疏类特征之前，我们的模型是LambdaMART模型，在IR领域是最先进的模型，该模型是一个gbdt模型，基于boosting思想，不断增加决策树，来减小残差。该模型在很多竞赛中表现良好，因为不用过多的特征处理，树模型会考虑特征本身的数据分布，同时有很好的学习泛化能力，树结构很难兼容高维稀疏特征，比方说我们的document是上亿级的特征，很难每个节点走一次树的分割，所以对于加入稀疏特征的时候，树模型会遇到瓶颈。但是在处理高维稀疏特征的时候，像LR、FM、FFM可以认为是线性模型，特征的增加并不会对此类模型造成压力，上亿维也没关系。LR模型弱点在于特征组合能力不足，很多情况下特征组合方式比较重要，树模型从根节点到叶子节点的路径其实是一种组合方式。如下图所示：</p>
 </blockquote>
