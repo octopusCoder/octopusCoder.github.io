@@ -129,7 +129,7 @@
 <meta property="og:image" content="http://yoursite.com/images/search_dbn.png">
 <meta property="og:image" content="http://yoursite.com/images/search_irgan.png">
 <meta property="og:image" content="http://yoursite.com/images/search_model_compare.png">
-<meta property="og:updated_time" content="2020-03-27T03:52:01.000Z">
+<meta property="og:updated_time" content="2020-03-27T09:18:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搜索排序算法">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包">
@@ -474,7 +474,7 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 <ol>
 <li><p>首先设置每棵树的最大叶子数，基分类器通过最小平方损失进行分裂，达到最大叶子数量时停止分裂</p>
 </li>
-<li><p>使用牛顿法得到叶子的输出，计算效用函数对模型得分的二阶导$\frac{\partial \lambda<em>{i}}{\partial s</em>{i}}=\frac{\partial^{2} C}{\partial^{2} s_{i}}$</p>
+<li><p>使用牛顿法得到叶子的输出，计算效用函数对模型得分的二阶导<span>$\frac{\partial \lambda_{i}}{\partial s_{i}}=\frac{\partial^{2} C}{\partial^{2} s_{i}}$</span><!-- Has MathJax --></p>
 <span>$$\begin{gather*}
 
 \frac{\partial^{2} C}{\partial^{2} s_{i}}=\sum_{\{i, j\} \rightleftharpoons I} \sigma^{2}\left|\triangle Z_{i j}\right| \rho_{i j}\left(1-\rho_{i j}\right)&NegativeMediumSpace;
@@ -488,7 +488,7 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 
 \end{gather*}$$</span><!-- Has MathJax -->
 </li>
-<li><p>$x<em>i$为第i个样本，$x</em>{i} \in R_{k m}$意味着落入该叶子的样本，这些样本共同解决了该叶子的输出值。</p>
+<li><p><span>$x_i$</span><!-- Has MathJax -->为第i个样本，<span>$x_{i} \in R_{k m}$</span><!-- Has MathJax -->意味着落入该叶子的样本，这些样本共同决定了该叶子的输出值。</p>
 </li>
 </ol>
 <p>LambdaMART具有很多优势：</p>
@@ -566,6 +566,10 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/27/LambdaMART从放弃到入门/" rel="prev" title="LambdaMART从放弃到入门">
+                LambdaMART从放弃到入门 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -645,7 +649,7 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

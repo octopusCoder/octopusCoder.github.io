@@ -257,6 +257,222 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/03/LeetCode-279-Perfect-Squares/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/09/03/LeetCode-279-Perfect-Squares/" itemprop="url">LeetCode-279.Perfect Squares</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-03T10:34:15+08:00">
+                2016-09-03
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>Given a positive integer n, find the least number of perfect square numbers<br>(for example, 1, 4, 9, 16, …) which sum to n.<br>For example, given n = 12, return 3 because 12 = 4 + 4 + 4; given n = 13, return 2 because 13 = 4 + 9.</p>
+</blockquote>
+<h1 id="算法思想"><a href="#算法思想" class="headerlink" title="算法思想"></a>算法思想</h1><ol>
+<li>动态规划。当然我们会首先尝试贪心，例如12，贪心的结果是12=9+1+1+1，可见贪心不能得到最优解，所以只能上动规了。关于动规，思想和编码都不难，不过我想结合编码讨论一下设计模式的东西，也就是在面向对象编程中如何设计一个函数，使函数调用更加高效，其中也涉及一些内存使用优化的问题，开另一篇文章讨论。</li>
+<li>数学方法。一个会数学的程序猿可以变身金刚…数学对于效率的提升不能更酷，运行时间先卖个关子，最后再给出。</li>
+<li>广度优先搜索。最少个数，对应空间搜索树的最小深度，很多类似的最小问题都可以用广度优先搜索解决，不过这题BFS并不适合，效率不高，代码较长，且有很多细节容易出错，不建议使用。</li>
+</ol>
+<h1 id="编码与解释"><a href="#编码与解释" class="headerlink" title="编码与解释"></a>编码与解释</h1><h5 id="1-动态规划：见另一篇文章。"><a href="#1-动态规划：见另一篇文章。" class="headerlink" title="1. 动态规划：见另一篇文章。"></a>1. 动态规划：见另一篇文章。</h5><h5 id="2-数学方法。"><a href="#2-数学方法。" class="headerlink" title="2. 数学方法。"></a>2. 数学方法。</h5><blockquote>
+<p>四平方定理：每个正整数均可表示为4个整数的平方和。<br>更多：<a href="https://zh.wikipedia.org/wiki/四平方和定理" target="_blank" rel="external">https://zh.wikipedia.org/wiki/四平方和定理</a><br>三平方定理：每个自然数均可表示为3个整数的平方和，当且仅当该数不能表示为n=pow(4,a)*(8b+7),a,b是整数。<br>更多<a href="https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem" target="_blank" rel="external">https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem</a></p>
+</blockquote>
+<p>有了两个定理后，作为一个菜鸡程序员，应该也能搞定代码。注意两个小细节：<br><strong>1.使用&amp;,==等不明确优先级的运算符时，最好加上括号！</strong><br><strong>2.不要忘记单独对结果为2时的判断，见代码注释处//check</strong></p>
+<pre><code>//cpp
+class Solution {
+public:
+    int numSquares(int n) {
+        if(n&lt;=0) return 0;
+        if(isSqure(n)) return 1;
+        while((n&amp;3)==0) n&gt;&gt;=2;
+        if((n&amp;7)==7) return 4;
+        int sqrt_n=(int)sqrt(n);
+        for(int i=1;i&lt;=sqrt_n;++i){//check
+            if(isSqure(n-i*i)) return 2;
+        } 
+        return 3;
+    }
+    bool isSqure(int n)
+    {
+        int sqrt_n=(int)sqrt(n);
+        return sqrt_n*sqrt_n==n?1:0;
+    }
+};
+</code></pre><h5 id="3-广度优先搜索"><a href="#3-广度优先搜索" class="headerlink" title="3.广度优先搜索"></a>3.广度优先搜索</h5><p>搜索树大致形状：</p>
+<blockquote>
+<pre><code>             0 
+  1       4      9     16
+2 5...   5...  10..  17...
+</code></pre></blockquote>
+<p>无论是广度优先还是深度优先(回溯常用)，关键都是要画出空间搜索树。三个细节要注意：<br><strong>注释1：提高效率，跳过同层已计算过的节点。</strong><br><strong>注释2：为什么不能使用else？结合空间搜索树考虑，else的情况包括cur+i&lt;n&amp;&amp;num[cur+i-1]!=0，什么意思呢，表示该节点对应的该值在之前已经考虑过，但是能直接从这里break吗？不能！因为该值只是被计算过，不代表该节点右边的兄弟节点应该被跳过。这些兄弟节点仍然应该被计算。</strong><br><strong>注释3：队列q.pop()的在循环中的正确位置</strong></p>
+<pre><code>//cpp
+class Solution {
+public:
+    int numSquares(int n) {
+        if(n&lt;=0) return 0;
+        vector&lt;int&gt; num(n,0);
+        vector&lt;int&gt; ps;
+        for(int i=1;i&lt;=n/i;++i)
+        {
+            ps.push_back(i*i);
+            num[i*i-1]=1;
+        }
+        if(ps.back()==n) return 1;
+        queue&lt;int&gt; q;
+        for(int &amp;i:ps) q.push(i);
+        int numSq=1;
+    while(!q.empty())
+    {
+        ++numSq;
+        int size=q.size();
+            while(size--)
+            {
+                int cur=q.front();
+                for(int &amp;i:ps)
+                {
+                    if(cur+i==n) return numSq;
+                    else if(cur+i&lt;n&amp;&amp;num[cur+i-1]==0)//1
+                    {
+                        q.push(cur+i);
+                        num[cur+i-1]=numSq;
+                    }
+                    else if(cur+i&gt;n) break;//2
+                }
+                q.pop();//3
+            }
+        }
+        return numSq;
+    }
+};
+</code></pre><p>运行时间对比(600 test cases)：</p>
+<table>
+<thead>
+<tr>
+<th>动态规划(优化版)</th>
+<th style="text-align:center">数学</th>
+<th style="text-align:right">广度优先</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>16ms</td>
+<td style="text-align:center">3ms</td>
+<td style="text-align:right">68ms</td>
+</tr>
+</tbody>
+</table>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/23/LeetCode-134-Gas-Station/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -690,7 +906,7 @@ public:
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

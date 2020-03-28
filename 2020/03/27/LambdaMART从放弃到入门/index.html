@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        来到这篇文章您只需要办三件事：  理解 Lambda； 理解MART； 理解LambdaMART。  关于Lambda要从RankNet说起，详细内容可以参考搜索排序算法)。 这篇文章主要来解决第2和第3个问题。 什么是MARTMAR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LambdaMART从放弃到入门">
+<meta property="og:url" content="http://yoursite.com/2020/03/27/LambdaMART从放弃到入门/index.html">
+<meta property="og:site_name" content="小菜鸡">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        来到这篇文章您只需要办三件事：  理解 Lambda； 理解MART； 理解LambdaMART。  关于Lambda要从RankNet说起，详细内容可以参考搜索排序算法)。 这篇文章主要来解决第2和第3个问题。 什么是MARTMAR">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/letfly.png">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=m">
+<meta property="og:image" content="http://yoursite.com/images/boostingTree.png">
+<meta property="og:image" content="http://yoursite.com/images/GBRT.png">
+<meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
+<meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
+<meta property="og:updated_time" content="2020-03-28T16:58:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LambdaMART从放弃到入门">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        来到这篇文章您只需要办三件事：  理解 Lambda； 理解MART； 理解LambdaMART。  关于Lambda要从RankNet说起，详细内容可以参考搜索排序算法)。 这篇文章主要来解决第2和第3个问题。 什么是MARTMAR">
+<meta name="twitter:image" content="http://yoursite.com/images/letfly.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/03/27/LambdaMART从放弃到入门/"/>
+
+
+
+
+
+  <title>LambdaMART从放弃到入门 | 小菜鸡</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-106410509-1', 'auto');
+  ga('send', 'pageview');
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小菜鸡</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/27/LambdaMART从放弃到入门/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LambdaMART从放弃到入门</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-27T11:53:17+08:00">
+                2020-03-27
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<p> <img src="/images/letfly.png" alt=""></p>
+<p>来到这篇文章您只需要办三件事：</p>
+<ol>
+<li>理解 Lambda；</li>
+<li>理解MART；</li>
+<li>理解LambdaMART。</li>
+</ol>
+<p>关于Lambda要从RankNet说起，详细内容可以参考<a href="[http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/](http://octopuscoder.github.io/2020/01/19/搜索排序算法/">搜索排序算法</a>)。</p>
+<p>这篇文章主要来解决第2和第3个问题。</p>
+<h1 id="什么是MART"><a href="#什么是MART" class="headerlink" title="什么是MART"></a>什么是MART</h1><p>MART(Multiple Additive Regression Tree)的另一个名字叫GBDT(Gradient Boosting Decision Tree)，理解GBDT要从BT开始。</p>
+<p>##提升树（boosting tree）</p>
+<p>BT(Boosting Tree)提升树是以<strong>决策树</strong>为基本学习器的提升方法，它被认为是统计学习中性能最好的方法之一。对于分类问题，提升树的决策树是二叉决策树，对于回归问题，提升树中的决策是二叉回归树。</p>
+<p>提升树模型可以表示为决策树为基学习器的加法模型：</p>
+<span>$$\begin{gather*}
+f(\overrightarrow{\mathbf{x}})=f_{M}(\overrightarrow{\mathbf{x}})=\sum_{m=1}^{M} h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>其中<span>$h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)$</span><!-- Has MathJax -->表示第 <img src="https://www.zhihu.com/equation?tex=m" alt="[公式]"> 个决策树，<span>$\Theta_{m}$</span><!-- Has MathJax -->为第m个决策树的参数，M为决策树的数量。</p>
+<p><strong>提升树</strong>采用<strong>前向分步算法</strong>:</p>
+<ul>
+<li>首先确定初始提升树<span>$f_{0}(\overrightarrow{\mathbf{x}})=0$</span><!-- Has MathJax -->。</li>
+<li>第m步模型为：<span>$f_{m}(\overrightarrow{\mathbf{x}})=f_{m-1}(\overrightarrow{\mathbf{x}})+h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)$</span><!-- Has MathJax -->，其中<span>$h_{m}(\cdot)$</span><!-- Has MathJax -->为待求的第m棵决策树。</li>
+<li>通过经验风险极小化确定第m棵决策树的参数$\Theta<em>{m}$: $\hat{\Theta}</em>{m}=\arg \min <em>{\Theta</em>{m}} \sum<em>{i=1}^{N} L\left(\bar{y}</em>{i}, f<em>{m}\left(\overrightarrow{\mathbf{x}}</em>{i}\right)\right)$。这里没有引入正则项，而XGBoost中引入了正则项。</li>
+</ul>
+<p>不同问题的提升树学习算法主要区别在于使用的损失函数不同，（设预测值为<span>$\tilde{y}$</span><!-- Has MathJax --> ，真实值为<span>$\hat{y}$</span><!-- Has MathJax -->):</p>
+<ul>
+<li>回归问题：通常使用平方误差损失函数<span>$L(\tilde{y}, \hat{y})=(\tilde{y}-\hat{y})^{2}$</span><!-- Has MathJax -->。</li>
+<li>分类问题：通常使用指数损失函数：<span>$L(\tilde{y}, \hat{y})=e^{-\tilde{y} \hat{y}}$</span><!-- Has MathJax --></li>
+</ul>
+<p><strong>提升树</strong>的学习<strong>思想</strong>有点类似一打高尔夫球，先粗略的打一杆，然后在之前的基础上逐步靠近球洞，也就是说<strong>每一棵树学习的是之前所有树预测值和的残差</strong>，这个<strong>残差</strong>就是一个加预测值后得到真实值的累加量。</p>
+<p>例如在回归问题中，提升树采用平方误差损失函数，此时：</p>
+<span>$$\begin{gather*}
+\begin{aligned}
+L\left(\tilde{y}, f_{m}(\overrightarrow{\mathbf{x}})\right) &amp;=L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathbf{x}})+h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)\right) \\
+=\left(\tilde{y}-f_{m-1}(\overrightarrow{\mathbf{x}})-h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)\right)^{2} &amp;=\left(r-h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)\right)^{2}
+\end{aligned}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>其中<span>$r=\tilde{y}-f_{m-1}(\overrightarrow{\mathbf{x}})$</span><!-- Has MathJax -->为当前模型拟合数据的残差。所以对回归问题的提升树算法，第m个决策树 <span>$h_{m}(\cdot)$</span><!-- Has MathJax -->只需要简单拟合当前模型的残差。</p>
+<p>回归提升树算法如下：</p>
+<p> <img src="/images/boostingTree.png" alt=""></p>
+<p>##梯度提升树(GBT)</p>
+<p>上面所讲的提升树中，当损失函数是<strong>平方损失函数</strong>和<strong>指数损失函数</strong>时，每一步优化都很简单。因为平方损失函数和指数损失函数的求导非常简单。当损失函数是一般函数时，往往每一步优化不是很容易。针对这个问题，<code>Freidman</code>提出了<strong>梯度提升树算法(GBT)</strong>。</p>
+<blockquote>
+<p> <strong>梯度提升树(GBT)</strong>的一个核心思想是<strong>利用损失函数的负梯度在当前模型的值作为残差的近似值</strong>，本质上是<strong>对损失函数进行一阶泰勒展开</strong>，从而拟合一个回归树。</p>
+</blockquote>
+<p><strong>泰勒展开公式：</strong><br><span>$$begin{gather*}
+TaylorExpansion:f(x+\Delta x) \simeq f(x)+f^{\prime}(x) \Delta x+\frac{1}{2} f^{\prime \prime}(x) \Delta x^{2}
+\end{gather*}$$</span><!-- Has MathJax --><br>将损失函数使用<strong>一阶泰勒展开公式</strong>(<span>$\Delta x$</span><!-- Has MathJax -->相当于这里的<span>$h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right))$</span><!-- Has MathJax -->：</p>
+<span>$$\begin{gather*}
+L\left(\tilde{y}, f_{m}(\overrightarrow{\mathrm{x}})\right)=L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathrm{x}})+h_{m}\left(\overrightarrow{\mathrm{x}} ; \Theta_{m}\right)\right)=L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathrm{x}})\right)+\frac{\partial L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathrm{x}})\right)}{\partial f_{m-1}(\overrightarrow{\mathrm{x}})} h_{m}\left(\overrightarrow{\mathrm{x}} ; \Theta_{m}\right)
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>则有：</p>
+<span>$$\begin{gather*}
+\Delta L=L\left(\tilde{y}, f_{m}(\overrightarrow{\mathbf{x}})\right)-L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathbf{x}})\right)=\frac{\partial L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathbf{x}})\right)}{\partial f_{m-1}(\overrightarrow{\mathbf{x}})} h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>要使得损失函数降低，则根据梯度下降的思想让损失函数对<span>$h_{m}\left(\overrightarrow{\mathbf{x}} ; \mathbf{\Theta}_{m}\right)$</span><!-- Has MathJax -->进行求导，按照负梯度更新改值，则损失函数是下降的，即：</p>
+<span>$h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)=-\frac{\partial L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathbf{x}})\right)}{\partial f_{m-1}(\overrightarrow{\mathbf{x}})}$</span><!-- Has MathJax -->
+<ul>
+<li>对于平方损失函数，它就是通常意义的残差。</li>
+<li>对于一般损失函数，它就是残差的近似。</li>
+</ul>
+<p>这里我们相当于获得了样本的标签，接下来就是用这个标签来训练决策树。</p>
+<p>另外，梯度提升树用于分类模型时，是<strong>梯度提升决策树<code>GBDT</code></strong>；用于回归模型时，是<strong>梯度提升回归树<code>GBRT</code>，</strong>二者的区别主要是损失函数不同。</p>
+<p><strong>GBRT</strong>算法的伪代码如下：</p>
+<p> <img src="/images/GBRT.png" alt=""></p>
+<p>另外，Freidman从bagging策略受到启发，采用<strong>随机梯度提升</strong>来修改了原始的梯度提升算法，即每一轮迭代中，新的决策树拟合的是原始训练集的一个子集（而并不是原始训练集）的残差，这个子集是通过对原始训练集的无放回随机采样而来，类似于自助采样法。这种方法<strong>引入了随机性，有助于改善过拟合</strong>，另一个好处是<strong>未被采样的另一部分字集可以用来计算包外估计误差</strong>。</p>
+<p>这时我们再看一下LambdaMART算法的流程：</p>
+<p><img src="/images/LambdaMART2.png" alt=""></p>
+<p>对比GBRT和LambdaMART算法流程可以发现两者非常相似，主要区别是LambdaMART将GBRT中要拟合的负梯度替换为Lambda梯度，而LambdaMART对排序的最核心的改进正是这个Lambda梯度，具体介绍可以参考<a href="[http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/](http://octopuscoder.github.io/2020/01/19/搜索排序算法/">搜索排序算法</a>)中关于RankNet和LambdaRank的介绍。</p>
+<h2 id="XBGoost"><a href="#XBGoost" class="headerlink" title="XBGoost"></a>XBGoost</h2><p>这里既然提到了提升树和梯度提升树，那么顺便也介绍一下大名鼎鼎的XGBoost，这部分介绍完后我们再探LambdaMART的一些细节。</p>
+<p><strong>Xgboost</strong>也使用与提升树相同的<strong>前向分步算法，</strong>其区别在于：Xgboost通过<strong>结构风险最小化</strong>来确定下一个决策树的参数$$\Theta_{m}$$：</p>
+<span>$\hat{\Theta}_{m}=\arg \min _{\Theta_{m}} \sum_{i=1}^{N} L\left(\tilde{y}_{i}, f_{m}\left(\overrightarrow{\mathbf{x}}_{i}\right)\right)+\Omega\left(h_{m}(\overrightarrow{\mathbf{x}})\right)$</span><!-- Has MathJax -->
+<p>其中：</p>
+<ul>
+<li><span>$\Omega\left(h_{m}\right)$</span><!-- Has MathJax -->为第m个决策树的正则化项，这是XGBoost和GBT的一个重要区别。</li>
+<li><span>$\mathcal{L}=\sum_{i=1}^{N} L\left(\tilde{y}_{i}, f_{m}\left(\overrightarrow{\mathbf{x}}_{i}\right)\right)+\Omega\left(h_{m}(\overrightarrow{\mathbf{x}})\right)$</span><!-- Has MathJax -->为目标函数。</li>
+</ul>
+<p>与提升树不同的是<strong>，Xgboost</strong>还使用了<strong>二阶泰勒展开</strong>，定义：</p>
+<span>$\hat{y}_{i}^{&lt;m-1&gt;}=f_{m-1}\left(\overrightarrow{\mathbf{x}}_{i}\right), \quad g_{i}=\frac{\partial L\left(\tilde{y}_{i}, \hat{y}_{i}^{&lt;m-1&gt;}\right)}{\partial \hat{y}_{i}^{&lt;m-1&gt;}}, \quad h_{i}=\frac{\partial^{2} L\left(\tilde{y}_{i}, \hat{y}_{i}^{&lt;m-1&gt;}\right)}{\partial^{2} \hat{y}_{i}^{&lt;m-1&gt;}}$</span><!-- Has MathJax -->
+<p>其中，<span>$g_{i}, h_{i}$</span><!-- Has MathJax -->分别是损失函数<span>$L\left(\tilde{y}_{i}, \hat{y}_{i}^{&lt;m-1&gt;}\right)$</span><!-- Has MathJax -->对<span>$\hat{y}_{i}^{&lt;m-1&gt;}$</span><!-- Has MathJax -->的一阶导数和二阶导数。再看<strong>泰勒展开式</strong>：</p>
+<p>Taylor expansion <span>$f(x+\Delta x) \simeq f(x)+f^{\prime}(x) \Delta x+\frac{1}{2} f^{\prime \prime}(x) \Delta x^{2}$</span><!-- Has MathJax --></p>
+<p>因此我们对损失函数二阶泰勒展开有（<span>$\Delta x$</span><!-- Has MathJax -->相当于这里的<span>$h_{m}(\overrightarrow{\mathbf{x}})$</span><!-- Has MathJax -->）</p>
+<span>$$\begin{gather*}
+\begin{aligned} \mathcal{L} &amp;=\sum_{i=1}^{N} L\left(\tilde{y}_{i}, f_{m}\left(\overrightarrow{\mathbf{x}}_{i}\right)\right)+\Omega\left(h_{m}(\overrightarrow{\mathbf{x}})\right)=\sum_{i=1}^{N} L\left(\tilde{y}_{i}, \hat{y}_{i}^{&lt;m-1&gt;}+h_{m}\left(\overrightarrow{\mathbf{x}}_{i}\right)\right)+\Omega\left(h_{m}(\overrightarrow{\mathbf{x}})\right) \\ &amp; \simeq \sum_{i=1}^{N}\left[L\left(\tilde{y}_{i}, \hat{y}_{i}^{&lt;m-1&gt;}\right)+g_{i} h_{m}\left(\overrightarrow{\mathbf{x}}_{i}\right)+\frac{1}{2} h_{i} h_{m}^{2}\left(\overrightarrow{\mathbf{x}}_{i}\right)\right]+\Omega\left(h_{m}(\overrightarrow{\mathbf{x}})\right)+\text { constant } \end{aligned}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p><strong>提升树(GBT)</strong>只使用了一阶泰勒展开。而XGBoost的正则化项由两部分组成：</p>
+<span>$\Omega\left(h_{m}(\overrightarrow{\mathbf{x}})\right)=\gamma T+\frac{1}{2} \lambda \sum_{j=1}^{T} w_{j}^{2}$</span><!-- Has MathJax -->
+<p>该部分表示<strong>决策树的复杂度，</strong>其中T为叶节点的个数，$w_{j}$为每个叶节点的输出值，$\gamma, \lambda \geq 0$为系数，控制这两个部分的比重。</p>
+<ul>
+<li>叶结点越多，则决策树越复杂。</li>
+<li>每个叶结点输出值的绝对值越大，则决策树越复杂。</li>
+</ul>
+<blockquote>
+<p>该复杂度是一个经验公式。事实上还有很多其他的定义复杂度的方式，只是这个公式效果还不错。</p>
+</blockquote>
+<p><strong>Xgboost</strong>相比与<strong>GBDT</strong>：</p>
+<ol>
+<li><p>传统GBDT在优化时只用到一阶导数信息，xgboost则对代价函数进行了<strong>二阶泰勒展开，同时用到了一阶和二阶导数</strong>。顺便提一下，xgboost工具支持自定义代价函数，只要函数可一阶和二阶求导。例如，xgboost支持线性分类器，这个时候xgboost相当于带L1和L2正则化项的逻辑斯蒂回归（分类问题）或者线性回归（回归问题）</p>
+</li>
+<li><p>xgboost在<strong>代价函数里加入了正则项，用于控制模型的复杂度</strong>。正则项里包含了树的叶子节点个数、每个叶子节点上输出的score的L2模的平方和。从Bias-variance tradeoff角度来讲，正则项降低了模型的variance，使学习出来的模型更加简单，防止过拟合，这也是xgboost优于传统GBDT的一个特性。</p>
+</li>
+<li><p><strong>列抽样（column subsampling）</strong>。xgboost借鉴了随机森林的做法，支持列抽样（即每次的输入特征不是全部特征），不仅能降低过拟合，还能减少计算，这也是xgboost异于传统gbdt的一个特性。</p>
+</li>
+<li><p><strong>并行化处理</strong>：在训练之前，预先对每个特征内部进行了排序找出候选切割点，然后保存为block结构，后面的迭代中重复地使用这个结构，大大减小计算量。在进行节点的分裂时，需要计算每个特征的增益，最终选增益最大的那个特征去做分裂，那么各个特征的增益计算就可以开多线程进行，即在不同的特征属性上采用多线程并行方式寻找最佳分割点。</p>
+</li>
+</ol>
+<p><strong>相比于GBDT，Xgboost最重要的优点还是用到了二阶泰勒展开信息和加入正则项</strong> 。</p>
+<h2 id="LambdaMART"><a href="#LambdaMART" class="headerlink" title="LambdaMART"></a>LambdaMART</h2><p>LambdaMART算法的流程：</p>
+<p><img src="/images/LambdaMART2.png" alt=""></p>
+<p>叶子结点输出值的计算采用牛顿迭代法，对于一个函数<span>$g(\gamma)$</span><!-- Has MathJax -->，为了找到$\gamma$使得函数$g$取得极小（大）值采用牛顿迭代法的迭代步骤为：</p>
+<span>$\gamma_{n+1}=\gamma_{n}-\frac{g^{\prime}\left(\gamma_{n}\right)}{g^{\prime \prime}\left(\gamma_{n}\right)}$</span><!-- Has MathJax -->
+<p>相应地，LambdaMART第m棵树中第k个叶子结点的输出值计算公式为：</p>
+<span>$\gamma_{k m}=\frac{\sum_{x_{i} \in R_{k m}} \frac{\partial C}{\partial s_{i}}}{\sum_{x_{i} \in R_{k m}} \frac{\partial^{2} C}{\partial s_{i}^{2}}}=\frac{-\sum_{x_{i} \in R_{k m}} \sum_{\{i, j\} \rightleftharpoons I}\left|\Delta Z_{i j}\right| \rho_{i j}}{\sum_{x_{i} \in R_{k m}} \sum_{\{i, j\} \rightleftharpoons I}\left|\Delta Z_{i j}\right| \sigma \rho_{i j}\left(1-\rho_{i j}\right)}$</span><!-- Has MathJax -->
+<p>具体原理可以参考<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/MSR-TR-2010-82.pdf" target="_blank" rel="external">From RankNet to LambdaRank to LambdaMART: An Overview</a></p>
+<p>下面我们基于Ranklib源码和一个具体的例子来进一步理解LambdaMART算法的过程。Ranklib是Learning to Rank领域的一个优秀的开源算法库，实现了MART,RankNet,RankBoost,LambdaMart,Random Forest等模型，代码为Java。我们这里基于微软发布的LambdaMART来进行介绍，LambdaMART.java中的LambdaMART.learn()是学习流程的管控函数，学习过程主要有下面四步构成：</p>
+<ol>
+<li><p>计算deltaNDCG以及lambda;</p>
+</li>
+<li><p>以lambda作为label训练一棵regression tree;</p>
+</li>
+<li><p>在tree的每个叶子节点通过预测的regression lambda值还原出gamma，即最终输出得分；</p>
+</li>
+<li><p>用3的模型预测所有训练集合上的得分（+learningRate*gamma）,然后用这个得分对每个query的结果排序，计算新的每个query的base ndcg，以此为基础回到第1步，组成森林。</p>
+</li>
+</ol>
+<p>重复这个步骤，直到满足下列两个收敛条件之一：</p>
+<ol>
+<li><p>树的个数达到训练参数设置；</p>
+</li>
+<li><p>Random Forest在validation集合上没有变好。</p>
+</li>
+</ol>
+<p>下面用一组实际的数据来说明整个计算过程，假设我们有10个query的训练数据，每个query下有10个doc，每个query-doc对有10个feature，如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="number">0</span> qid:<span class="number">1830</span> <span class="number">1</span>:<span class="number">0.002736</span> <span class="number">2</span>:<span class="number">0.000000</span> <span class="number">3</span>:<span class="number">0.000000</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.002736</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">0</span> qid:<span class="number">1830</span> <span class="number">1</span>:<span class="number">0.025992</span> <span class="number">2</span>:<span class="number">0.125000</span> <span class="number">3</span>:<span class="number">0.000000</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.027360</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">0</span> qid:<span class="number">1830</span> <span class="number">1</span>:<span class="number">0.001368</span> <span class="number">2</span>:<span class="number">0.000000</span> <span class="number">3</span>:<span class="number">0.000000</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.001368</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">1</span> qid:<span class="number">1830</span> <span class="number">1</span>:<span class="number">0.188782</span> <span class="number">2</span>:<span class="number">0.375000</span> <span class="number">3</span>:<span class="number">0.333333</span> <span class="number">4</span>:<span class="number">1.000000</span> <span class="number">5</span>:<span class="number">0.195622</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">1</span> qid:<span class="number">1830</span> <span class="number">1</span>:<span class="number">0.077975</span> <span class="number">2</span>:<span class="number">0.500000</span> <span class="number">3</span>:<span class="number">0.666667</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.086183</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">0</span> qid:<span class="number">1830</span> <span class="number">1</span>:<span class="number">0.075239</span> <span class="number">2</span>:<span class="number">0.125000</span> <span class="number">3</span>:<span class="number">0.333333</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.077975</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">1</span> qid:<span class="number">1830</span> <span class="number">1</span>:<span class="number">0.079343</span> <span class="number">2</span>:<span class="number">0.250000</span> <span class="number">3</span>:<span class="number">0.666667</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.084815</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">1</span> qid:<span class="number">1830</span> <span class="number">1</span>:<span class="number">0.147743</span> <span class="number">2</span>:<span class="number">0.000000</span> <span class="number">3</span>:<span class="number">0.000000</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.147743</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">0</span> qid:<span class="number">1830</span> <span class="number">1</span>:<span class="number">0.058824</span> <span class="number">2</span>:<span class="number">0.000000</span> <span class="number">3</span>:<span class="number">0.000000</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.058824</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">0</span> qid:<span class="number">1830</span> <span class="number">1</span>:<span class="number">0.071135</span> <span class="number">2</span>:<span class="number">0.125000</span> <span class="number">3</span>:<span class="number">0.333333</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.073871</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">1</span> qid:<span class="number">1840</span> <span class="number">1</span>:<span class="number">0.007364</span> <span class="number">2</span>:<span class="number">0.200000</span> <span class="number">3</span>:<span class="number">1.000000</span> <span class="number">4</span>:<span class="number">0.500000</span> <span class="number">5</span>:<span class="number">0.013158</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">1</span> qid:<span class="number">1840</span> <span class="number">1</span>:<span class="number">0.097202</span> <span class="number">2</span>:<span class="number">0.000000</span> <span class="number">3</span>:<span class="number">0.000000</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.096491</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line"><span class="number">2</span> qid:<span class="number">1840</span> <span class="number">1</span>:<span class="number">0.169367</span> <span class="number">2</span>:<span class="number">0.000000</span> <span class="number">3</span>:<span class="number">0.500000</span> <span class="number">4</span>:<span class="number">0.000000</span> <span class="number">5</span>:<span class="number">0.169591</span> <span class="number">6</span>:<span class="number">0.000000</span> <span class="number">7</span>:<span class="number">0.000000</span> <span class="number">8</span>:<span class="number">0.000000</span> <span class="number">9</span>:<span class="number">0.000000</span> <span class="number">10</span>:<span class="number">0.000000</span></div><div class="line">......</div></pre></td></tr></table></figure>
+<p>为了简便，省略了余下的数据。上面的数据格式是按照Ranklib readme中要求的格式组织，除了行号之外，第一列是query-doc对的实际label（人工标注数据），第二列是qid，后面10列都是feature。</p>
+<p>这份数据每组qid中的doc初始顺序可以是随机的，也可以是从实际的系统中获得的顺序，总之这个是计算ndcg的初始状态。对于qid=1830，它的10个doc的初始顺序的label序列是：0, 0, 0, 1, 1, 0, 1, 1, 0, 0(实际中label可以扩展为1，2，3，4等，根据数据自行决定)。dcg的计算公式为：</p>
+<span>$d c g(i)=\frac{2^{l a b e l(i)}-1}{\log _{2}(i+1)}$</span><!-- Has MathJax -->
+<p>i表示当前doc在这个qid下的位置（从1开始，避免分母为0），label(i)是doc(i)的标注值。而一个query的dcg则是其下所有doc的加和：</p>
+<span>$d c g(q u e r y)=\sum_{i} \frac{2^{l a b e l(i)}-1}{\log _{2}(i+1)}$</span><!-- Has MathJax -->
+<p>根据上式可以计算初始状态下每个qid的dcg：</p>
+<span>$\begin{aligned} d c g(q i d=1830) &amp;=\frac{2^{0}-1}{\log _{2}(1+1)}+\frac{2^{0}-1}{\log _{2}(2+1)}+\ldots+\frac{2^{0}-1}{\log _{2}(10+1)} \\ &amp;=0+0+0+0.431+0.387+0+0.333+0.315+0 \\ &amp;+0=1.466 \end{aligned}$</span><!-- Has MathJax -->
+<p>要计算ndcg，还需要计算理想集的dcg，将初始状态按照label排序，qid=1830得到的序列是1,1,1,1,0,0,0,0,0,0，计算dcg:</p>
+<span>$$\begin{gather*}
+ideal_dcg(qid =1830) $=\frac{2^{1}-1}{\log _{2}(1+1)}+\frac{2^{1}-1}{\log _{2}(2+1)}+\ldots$
+$\begin{aligned}+\frac{2^{0}-1}{\log _{2}(10+1)} &amp; \\ &amp;=1+0.631+0.5+0.431+0+0+0+0+0+0 \\ &amp;=2.562 \end{aligned}$
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>两者相除得到初始状态下qid=1830的ndcg:</p>
+<span>$n d c g(q i d=1830)=\frac{d c g(q i d=1830)}{i d e a l_{-} n d c g(q i d=1830)}=\frac{1.466}{2.562}=0.572$</span><!-- Has MathJax -->
+<p>下面要计算每一个doc的deltaNDCG，公式如下：</p>
+<span>$$\begin{gather*}
+\begin{array}{c}
+\operatorname{deltaNDCG}(i, j) \\
+=| \text {ndcg(original sequence) }-n d \operatorname{cs}(\operatorname{swap}(i, j) \text { sequence }) |
+\end{array}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>deltaNDCG(i,j)是将位置i和位置j的位置互换后产生的ndcg变化（其他位置均不变），显然有相同label的deltaNDCG(i,j)=0。在qid=1830的初始序列0, 0, 0, 1, 1, 0, 1, 1, 0, 0，由于前3的label都一样，所以deltaNDCG(1,2)=deltaNDCG(1,3)=0，不为0的是deltaNDCG(1,4), deltaNDCG(1,5), deltaNDCG(1,7), deltaNDCG(1,8)。将1，4位置互换，序列变为1, 0, 0, 0, 1, 0, 1, 1, 0, 0，计算得到dcg=2.036，整个deltaNDCG(1,4)的计算过程如下：</p>
+<span>$$\begin{gather*}
+\begin{array}{l}
+\qquad \begin{array}{l}
+d \operatorname{cg}(q i d=1830, \operatorname{swap}(1,4))=\frac{2^{1}-1}{\log _{2}(1+1)}+\frac{2^{0}-1}{\log _{2}(2+1)}+\ldots \\
++\frac{2^{0}-1}{\log _{2}(10+1)}
+\end{array} \\
+=1+0+0+0+0.387+0+0.333+0.315+0+0 \\
+=2.036
+\end{array}
+\end{gather*}$$</span><!-- Has MathJax -->
+<span>$$\begin{gather*}
+\begin{array}{l}
+n d c g(\sin a p(1,4))=\frac{d c g(\sin a p(1,4))}{i d e a l_{-} d c g}=\frac{2.036}{2.562}=0.795 \\
+\text {deltaNDCG}(1,4)=\operatorname{detal} N D C G(4,1) \\
+=| \text {ndcg}(\text {original sequence})-\text {ndcg}(\operatorname{swap}(1,4)) | \\
+=|0.572-0.795|=0.222
+\end{array}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>同样过程可以计算出deltaNDCG(1,5)=0.239, deltaNDCG(1,7)=0.260, deltaNDCG(1,8)=0.267等。</p>
+<p>进一步，要计算lambda(i)，根据paper，还需要ρ值，ρ可以理解为doci比docj差的概率，其计算公式为：</p>
+<span>$\rho_{i j}=\frac{1}{1+e^{\sigma\left(s_{i}-s_{j}\right)}}$</span><!-- Has MathJax -->
+<p>参考<a href="[http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/](http://octopuscoder.github.io/2020/01/19/搜索排序算法/">搜索排序算法</a>)中关于LambdaRank的介绍：</p>
+<span>$\lambda_{i j}=\frac{\partial C\left(s_{i}-s_{j}\right)}{\partial s_{i}}=\frac{-\sigma}{1+e^{\sigma\left(s_{i}-s_{j}\right)}}\left|\Delta_{N D C G}\right|$</span><!-- Has MathJax -->
+<p>Ranklib中直接取σ=1，如下图，蓝，红，绿三种颜色分别对应σ=1，2，4时ρ函数的曲线情形（横坐标是$s_i-s_j$）:</p>
+<p>初始时，模型为空，所有模型预测得分都是0，所以$s_i=s<em>j=0$，$ρ</em>{ij}=1/2$，lambda(i,j)的计算公式为：</p>
+<span>$\lambda_{i j}=\rho_{i j} *|\operatorname{deltaNDCG}(i, j)|$</span><!-- Has MathJax -->
+<p>上式为Ranklib中实际使用的公式，而在paper中，还需要再乘以-σ，在σ=1时，就是符号正好相反，这两种方式是等价的，符号并不影响模型训练结果（其实大可以把代码中lambda的值前面加一个负号，只是注意在每轮计算train, valid和最后计算test的ndcg的时候，模型预测的得分modelScores要按升序排列——越负的doc越好，而不是源代码中按降序。最后训练出的模型是一样的，这说明这两种方式完全对称，所以符号的问题可以省略。甚至不乘以-σ，更符合人的习惯——分数越大越好，降序排列结果。）：</p>
+<span>$\lambda_{i}=\sum_{j(l a b e l(i)&gt;l a b e l(j))} \lambda_{i j}-\sum_{j(label(i)&lt;label(j))} \lambda_{i j}$</span><!-- Has MathJax -->
+<p>计算<span>$\lambda_{1}$</span><!-- Has MathJax -->，由于label(1)=0，qid=1830中的其他doc的label都大于或者等于0，所以<span>$\lambda_{1}$</span><!-- Has MathJax -->的计算中所有的<span>$\lambda_{1,j}$</span><!-- Has MathJax -->都为负项。将之前计算的各<span>$deltaNDCG(1,j)$</span><!-- Has MathJax -->代入，且初始状态下<span>$&rho;_{ij}=1/2$</span><!-- Has MathJax -->，所以:</p>
+<span>$$\begin{gather*}
+begin{aligned}
+&amp;\lambda_{1}=-0.5 *(\text {deltaNDCG}(1,3)+\operatorname{deltaNDCG}(1,4)\\
+&amp;+\operatorname{deltaNDCG}(1,6)+\operatorname{deltaNDCG}(1,7))\\
+&amp;=-0.5 *(0.222+0.239+0.260+0.267)=-0.495
+\end{aligned}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>可以计算出初始状态下qid=1830各个doc的lambda值，如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">qId=<span class="number">1830</span>    <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">-0.111</span>  <span class="number">-0.120</span>  <span class="number">0.000</span>   <span class="number">-0.130</span>  <span class="number">-0.134</span>  <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="keyword">lambda</span>(<span class="number">1</span>): <span class="number">-0.495</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">-0.039</span>  <span class="number">-0.048</span>  <span class="number">0.000</span>   <span class="number">-0.058</span>  <span class="number">-0.062</span>  <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="keyword">lambda</span>(<span class="number">2</span>): <span class="number">-0.206</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">-0.014</span>  <span class="number">-0.022</span>  <span class="number">0.000</span>   <span class="number">-0.033</span>  <span class="number">-0.036</span>  <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="keyword">lambda</span>(<span class="number">3</span>): <span class="number">-0.104</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">0.111</span>   <span class="number">0.039</span>   <span class="number">0.014</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.015</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.025</span>   <span class="number">0.028</span>   <span class="keyword">lambda</span>(<span class="number">4</span>): <span class="number">0.231</span> </div><div class="line">qId=<span class="number">1830</span>    <span class="number">0.120</span>   <span class="number">0.048</span>   <span class="number">0.022</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.006</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.017</span>   <span class="number">0.019</span>   <span class="keyword">lambda</span>(<span class="number">5</span>): <span class="number">0.231</span> </div><div class="line">qId=<span class="number">1830</span>    <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">-0.015</span>  <span class="number">-0.006</span>  <span class="number">0.000</span>   <span class="number">-0.004</span>  <span class="number">-0.008</span>  <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="keyword">lambda</span>(<span class="number">6</span>): <span class="number">-0.033</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">0.130</span>   <span class="number">0.058</span>   <span class="number">0.033</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.004</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.006</span>   <span class="number">0.009</span>   <span class="keyword">lambda</span>(<span class="number">7</span>): <span class="number">0.240</span> </div><div class="line">qId=<span class="number">1830</span>    <span class="number">0.134</span>   <span class="number">0.062</span>   <span class="number">0.036</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.008</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.003</span>   <span class="number">0.005</span>   <span class="keyword">lambda</span>(<span class="number">8</span>): <span class="number">0.247</span> </div><div class="line">qId=<span class="number">1830</span>    <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">-0.025</span>  <span class="number">-0.017</span>  <span class="number">0.000</span>   <span class="number">-0.006</span>  <span class="number">-0.003</span>  <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="keyword">lambda</span>(<span class="number">9</span>): <span class="number">-0.051</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="number">-0.028</span>  <span class="number">-0.019</span>  <span class="number">0.000</span>   <span class="number">-0.009</span>  <span class="number">-0.005</span>  <span class="number">0.000</span>   <span class="number">0.000</span>   <span class="keyword">lambda</span>(<span class="number">10</span>): <span class="number">-0.061</span></div></pre></td></tr></table></figure>
+<p>上表中每一列都是考虑了符号的<span>$\lambda_{i,j}$</span><!-- Has MathJax -->，即如果label(i)<label(j)，则为负值，反之为正值，每行结尾的<span>$\lambda_i$<!-- Has MathJax -->是前面的加和，即为最终的<span>$\lambda_i$</span><!-- Has MathJax -->。可以看到，<span>$\lambda_i$</span><!-- Has MathJax -->在系统中表达了<span>$doc_i$</span><!-- Has MathJax -->上升或者下降的强度，label越高，位置越后，<span>$\lambda_i$</span><!-- Has MathJax -->为正值，越大，表示趋向上升的方向，力度也越大；label越小，位置越靠前，<span>$\lambda_i$</span><!-- Has MathJax -->为负值，越小，表示趋向下降的方向，力度也大（<span>$\lambda_i$</span><!-- Has MathJax -->的绝对值表达了上升、下降的强度）。</label(j)，则为负值，反之为正值，每行结尾的<span></p>
+<p>完成各doc的<span>$\lambda$</span><!-- Has MathJax -->值计算后，Regression Tree便开始以每个doc的<span>$\lambda$</span><!-- Has MathJax -->值为目标，训练模型。并在最后对叶子节点上的样本 <span>$\lambda$</span><!-- Has MathJax -->均值还原成 𝛾 ，乘以learningRate加到此前的Regression Trees上，更新score，重新对query下的doc按score排序，再次计算deltaNDCG以及 λ ，如此迭代下去直至树的数目达到参数设定或者在validation集上不再持续变好（一般实践来说不在模型训练时设置validation集合，因为validation集合一般比训练集合小很多，很容易收敛，达不到效果，不如训练时一步到位，然后另起test集合做结果评估）。</p>
+<p>Regression Tree的训练最主要的就是决定如何分裂节点。lambdaMART采用最朴素的最小二乘法，也就是最小化平方误差和来分裂节点：即对于某个选定的feature，选定一个值val，所有&lt;=val的样本分到左子节点，&gt;val的分到右子节点。然后分别对左右两个节点计算平方误差和，并加在一起作为这次分裂的代价。遍历所有feature以及所有可能的分裂点val(每个feature按值排序，每个不同的值都是可能的分裂点)，在这些分裂中找到代价最小的。</p>
+<p>继续上面的例子，假设样本只有上面计算出 λ 的10个：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">qId=<span class="number">1830</span> features <span class="keyword">and</span> lambdas</div><div class="line">qId=<span class="number">1830</span>    <span class="number">1</span>:<span class="number">0.003</span> <span class="number">2</span>:<span class="number">0.000</span> <span class="number">3</span>:<span class="number">0.000</span> <span class="number">4</span>:<span class="number">0.000</span> <span class="number">5</span>:<span class="number">0.003</span> <span class="number">6</span>:<span class="number">0.000</span> <span class="number">7</span>:<span class="number">0.000</span> <span class="number">8</span>:<span class="number">0.000</span> <span class="number">9</span>:<span class="number">0.000</span> <span class="number">10</span>:<span class="number">0.000</span>    <span class="keyword">lambda</span>(<span class="number">1</span>):<span class="number">-0.495</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">1</span>:<span class="number">0.026</span> <span class="number">2</span>:<span class="number">0.125</span> <span class="number">3</span>:<span class="number">0.000</span> <span class="number">4</span>:<span class="number">0.000</span> <span class="number">5</span>:<span class="number">0.027</span> <span class="number">6</span>:<span class="number">0.000</span> <span class="number">7</span>:<span class="number">0.000</span> <span class="number">8</span>:<span class="number">0.000</span> <span class="number">9</span>:<span class="number">0.000</span> <span class="number">10</span>:<span class="number">0.000</span>    <span class="keyword">lambda</span>(<span class="number">2</span>):<span class="number">-0.206</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">1</span>:<span class="number">0.001</span> <span class="number">2</span>:<span class="number">0.000</span> <span class="number">3</span>:<span class="number">0.000</span> <span class="number">4</span>:<span class="number">0.000</span> <span class="number">5</span>:<span class="number">0.001</span> <span class="number">6</span>:<span class="number">0.000</span> <span class="number">7</span>:<span class="number">0.000</span> <span class="number">8</span>:<span class="number">0.000</span> <span class="number">9</span>:<span class="number">0.000</span> <span class="number">10</span>:<span class="number">0.000</span>    <span class="keyword">lambda</span>(<span class="number">3</span>):<span class="number">-0.104</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">1</span>:<span class="number">0.189</span> <span class="number">2</span>:<span class="number">0.375</span> <span class="number">3</span>:<span class="number">0.333</span> <span class="number">4</span>:<span class="number">1.000</span> <span class="number">5</span>:<span class="number">0.196</span> <span class="number">6</span>:<span class="number">0.000</span> <span class="number">7</span>:<span class="number">0.000</span> <span class="number">8</span>:<span class="number">0.000</span> <span class="number">9</span>:<span class="number">0.000</span> <span class="number">10</span>:<span class="number">0.000</span>    <span class="keyword">lambda</span>(<span class="number">4</span>):<span class="number">0.231</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">1</span>:<span class="number">0.078</span> <span class="number">2</span>:<span class="number">0.500</span> <span class="number">3</span>:<span class="number">0.667</span> <span class="number">4</span>:<span class="number">0.000</span> <span class="number">5</span>:<span class="number">0.086</span> <span class="number">6</span>:<span class="number">0.000</span> <span class="number">7</span>:<span class="number">0.000</span> <span class="number">8</span>:<span class="number">0.000</span> <span class="number">9</span>:<span class="number">0.000</span> <span class="number">10</span>:<span class="number">0.000</span>    <span class="keyword">lambda</span>(<span class="number">5</span>):<span class="number">0.231</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">1</span>:<span class="number">0.075</span> <span class="number">2</span>:<span class="number">0.125</span> <span class="number">3</span>:<span class="number">0.333</span> <span class="number">4</span>:<span class="number">0.000</span> <span class="number">5</span>:<span class="number">0.078</span> <span class="number">6</span>:<span class="number">0.000</span> <span class="number">7</span>:<span class="number">0.000</span> <span class="number">8</span>:<span class="number">0.000</span> <span class="number">9</span>:<span class="number">0.000</span> <span class="number">10</span>:<span class="number">0.000</span>    <span class="keyword">lambda</span>(<span class="number">6</span>):<span class="number">-0.033</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">1</span>:<span class="number">0.079</span> <span class="number">2</span>:<span class="number">0.250</span> <span class="number">3</span>:<span class="number">0.667</span> <span class="number">4</span>:<span class="number">0.000</span> <span class="number">5</span>:<span class="number">0.085</span> <span class="number">6</span>:<span class="number">0.000</span> <span class="number">7</span>:<span class="number">0.000</span> <span class="number">8</span>:<span class="number">0.000</span> <span class="number">9</span>:<span class="number">0.000</span> <span class="number">10</span>:<span class="number">0.000</span>    <span class="keyword">lambda</span>(<span class="number">7</span>):<span class="number">0.240</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">1</span>:<span class="number">0.148</span> <span class="number">2</span>:<span class="number">0.000</span> <span class="number">3</span>:<span class="number">0.000</span> <span class="number">4</span>:<span class="number">0.000</span> <span class="number">5</span>:<span class="number">0.148</span> <span class="number">6</span>:<span class="number">0.000</span> <span class="number">7</span>:<span class="number">0.000</span> <span class="number">8</span>:<span class="number">0.000</span> <span class="number">9</span>:<span class="number">0.000</span> <span class="number">10</span>:<span class="number">0.000</span>    <span class="keyword">lambda</span>(<span class="number">8</span>):<span class="number">0.247</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">1</span>:<span class="number">0.059</span> <span class="number">2</span>:<span class="number">0.000</span> <span class="number">3</span>:<span class="number">0.000</span> <span class="number">4</span>:<span class="number">0.000</span> <span class="number">5</span>:<span class="number">0.059</span> <span class="number">6</span>:<span class="number">0.000</span> <span class="number">7</span>:<span class="number">0.000</span> <span class="number">8</span>:<span class="number">0.000</span> <span class="number">9</span>:<span class="number">0.000</span> <span class="number">10</span>:<span class="number">0.000</span>    <span class="keyword">lambda</span>(<span class="number">9</span>):<span class="number">-0.051</span></div><div class="line">qId=<span class="number">1830</span>    <span class="number">1</span>:<span class="number">0.071</span> <span class="number">2</span>:<span class="number">0.125</span> <span class="number">3</span>:<span class="number">0.333</span> <span class="number">4</span>:<span class="number">0.000</span> <span class="number">5</span>:<span class="number">0.074</span> <span class="number">6</span>:<span class="number">0.000</span> <span class="number">7</span>:<span class="number">0.000</span> <span class="number">8</span>:<span class="number">0.000</span> <span class="number">9</span>:<span class="number">0.000</span> <span class="number">10</span>:<span class="number">0.000</span>    <span class="keyword">lambda</span>(<span class="number">10</span>):<span class="number">-0.061</span></div></pre></td></tr></table></figure>
+<p>上表中除了第一列是qid，最后一列是lambda外，其余都是feature，比如我们选择feature(1)的0.059做分裂点，则左子节点&lt;=0.059的doc有: 1, 2, 3, 9；而&gt;0.059的被安排到右子节点，doc有4, 5, 6, 7, 8, 10。由此左右两个子节点的lambda均值分别为：</p>
+<span>$\bar{\lambda}_{L}=\frac{\lambda_{1}+\lambda_{2}+\lambda_{3}+\lambda 9}{4}=\frac{-0.495-0.206-0.104-0.051}{4}=-0.214$</span><!-- Has MathJax -->
+<span>$$\begin{gather*}
+\begin{array}{l}
+\lambda_{R}^{-}=\frac{\lambda_{4}+\lambda_{5}+\lambda_{6}+\lambda 7+\lambda_{8}+\lambda_{10}}{6} \\
+=\frac{0.231+0.231-0.033+0.240+0.247-0.061}{6}=0.143
+\end{array}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>继续计算左右子节点的平方误差和：</p>
+<span>$$\begin{gather*}
+\begin{aligned}
+&amp;s_{L}=\sum_{i \in L}\left(\lambda_{i}-\bar{\lambda}_{L}\right)^{2}=(-0.495+0.214)^{2}\\
+&amp;+(-0.206+0.214)^{2}+(-0.104+0.214)^{2}\\
+&amp;+(-0.051+0.214)^{2}=0.118\\
+&amp;s_{R}=\sum_{i \in R}\left(\lambda_{i}-\bar{\lambda}_{R}\right)^{2}=(0.231-0.143)^{2}\\
+&amp;+(0.231-0.143)^{2}+(-0.033-0.143)^{2}\\
+&amp;+(0.240-0.143)^{2}+(0.247-0.143)^{2}\\
+&amp;+(0.016-0.143)^{2}=0.083
+\end{aligned}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>因此将feature(1)的0.059作为分裂点时的均方差（分裂代价）是：</p>
+<span>$$\begin{gather*}
+\cos t_{0.059 @ \text { feature}(1)}=s_{L}+s_{R}=0.118+0.083=0.201
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>我们可以像上面那样遍历所有feature的不同值，尝试分裂，计算Cost，最终选择所有可能分裂中最小Cost的那一个作为分裂点。然后将 𝑠𝐿sL 和 𝑠𝑅sR 分别作为左右子节点的属性存储起来，并把分裂的样本也分别存储到左右子节点中，然后维护一个队列，始终按平方误差和 s 降序插入新分裂出的节点，每次从该队列头部拿出一个节点（并基于这个节点上的样本）进行分裂（即最大均方差优先分裂），直到树的分裂次数达到参数设定（训练时传入的leaf值，叶子节点的个数与分裂次数等价）。这样就完成了一棵Regression Tree的训练。</p>
+<p>上面讲述了一棵树的标准分裂过程，此外，树的分裂还包含了其他参数设定，例如叶子节点上的最少样本数，比如我们设定为3，则在feature(1)处，0.001和0.003两个值都不能作为分裂点，因为用它们做分裂点，左子树的样本数分别是1和2，均&lt;3。叶子节点的最少样本数越小，模型则拟合得越好，当然也容易过拟合（over-fitting）；反之如果设置得越大，模型则可能欠拟合（under-fitting），实践中可以使用cross validation的办法来寻找最佳的参数设定。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://zhuanlan.zhihu.com/p/57814935" target="_blank" rel="external">GBT、GBDT、GBRT与Xgboost</a></p>
+<p><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/MSR-TR-2010-82.pdf" target="_blank" rel="external">From RankNet to LambdaRank to LambdaMART: An Overview</a></p>
+<p><a href="https://www.cnblogs.com/wowarsenal/p/3900359.html" target="_blank" rel="external">LambdaMART简介——基于Ranklib源码</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/19/搜索排序算法/" rel="next" title="搜索排序算法">
+                <i class="fa fa-chevron-left"></i> 搜索排序算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="/images/avatar.gif"
+              alt="Jeb" />
+          
+            <p class="site-author-name" itemprop="name">Jeb</p>
+            <p class="site-description motion-element" itemprop="description">我菜故我在</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是MART"><span class="nav-number">1.</span> <span class="nav-text">什么是MART</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#XBGoost"><span class="nav-number">1.1.</span> <span class="nav-text">XBGoost</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LambdaMART"><span class="nav-number">1.2.</span> <span class="nav-text">LambdaMART</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jeb</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
