@@ -470,7 +470,8 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>理解MART；</li>
 <li>理解LambdaMART。</li>
 </ol>
-<h1 id="Lambda"><a href="#Lambda" class="headerlink" title="Lambda"></a>Lambda</h1><p>关于Lambda梯度RankNet说起，RankNet提出了一种概率损失函数来学习Ranking Function，并应用Ranking Function对文档进行排序。LambdaRank在RankNet的基础上引入评价指标Z （如NDCG、ERR等），其损失函数的梯度代表了文档下一次迭代优化的方向和强度，由于引入了IR评价指标，Lambda梯度更关注位置靠前的优质文档的排序位置的提升，有效的避免了下调位置靠前优质文档的位置这种情况的发生。LambdaRank相比RankNet的优势在于分解因式后训练速度变快，同时考虑了评价指标，直接对问题求解，效果更明显。 详细内容可以参考<a href="[http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/](http://octopuscoder.github.io/2020/01/19/搜索排序算法/">搜索排序算法</a>。</p>
+<p><strong>【待进一步整理】</strong></p>
+<h1 id="Lambda"><a href="#Lambda" class="headerlink" title="Lambda"></a>Lambda</h1><p>关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking Function，并应用Ranking Function对文档进行排序。LambdaRank在RankNet的基础上引入评价指标Z （如NDCG、ERR等），其损失函数的梯度代表了文档下一次迭代优化的方向和强度，由于引入了IR评价指标，Lambda梯度更关注位置靠前的优质文档的排序位置的提升，有效的避免了下调位置靠前优质文档的位置这种情况的发生。LambdaRank相比RankNet的优势在于分解因式后训练速度变快，同时考虑了评价指标，直接对问题求解，效果更明显。 详细内容可以参考<a href="[http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/](http://octopuscoder.github.io/2020/01/19/搜索排序算法/">搜索排序算法</a>。</p>
 <h1 id="MART"><a href="#MART" class="headerlink" title="MART"></a>MART</h1><p>MART(Multiple Additive Regression Tree)的另一个名字叫GBDT(Gradient Boosting Decision Tree)，理解GBDT要从BT开始。</p>
 <h2 id="提升树"><a href="#提升树" class="headerlink" title="提升树"></a>提升树</h2><p>BT(Boosting Tree)提升树是以<strong>决策树</strong>为基本学习器的提升方法，它被认为是统计学习中性能最好的方法之一。对于分类问题，提升树的决策树是二叉决策树，对于回归问题，提升树中的决策是二叉回归树。</p>
 <p>提升树模型可以表示为决策树为基学习器的加法模型：</p>
