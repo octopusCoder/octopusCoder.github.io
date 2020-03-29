@@ -107,7 +107,7 @@
 <meta property="og:image" content="http://yoursite.com/images/GBRT.png">
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
-<meta property="og:updated_time" content="2020-03-29T10:02:57.000Z">
+<meta property="og:updated_time" content="2020-03-29T10:09:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LambdaMART从放弃到入门">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  Lambda关于Lambda梯度RankNet说起，RankNet提出了一种概率损失函数来学习Ranking Function，并应用">
@@ -443,7 +443,7 @@ L\left(\tilde{y}, f_{m}(\overrightarrow{\mathrm{x}})\right)=L\left(\tilde{y}, f_
 </li>
 </ol>
 <p><strong>相比于GBDT，Xgboost最重要的优点还是用到了二阶泰勒展开信息和加入正则项</strong> 。</p>
-<h2 id="LambdaMART"><a href="#LambdaMART" class="headerlink" title="LambdaMART"></a>LambdaMART</h2><p>LambdaMART算法的流程：</p>
+<h1 id="LambdaMART"><a href="#LambdaMART" class="headerlink" title="LambdaMART"></a>LambdaMART</h1><p>LambdaMART算法的流程：</p>
 <p><img src="/images/LambdaMART2.png" alt=""></p>
 <p>叶子结点输出值的计算采用牛顿迭代法，对于一个函数<span>$g(\gamma)$</span><!-- Has MathJax -->，为了找到$\gamma$使得函数$g$取得极小（大）值采用牛顿迭代法的迭代步骤为：</p>
 <span>$$\begin{gather*}
@@ -523,7 +523,7 @@ dcg(q i d=1830, \operatorname{swap}(1,4))=\frac{2^{1}-1}{\log _{2}(1+1)}+\frac{2
 \end{gather*}$$</span><!-- Has MathJax -->
 <span>$$\begin{gather*}
 \begin{array}{l}
-n d c g(\swap(1,4))=\frac{d c g(\swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.795 \\
+n d c g(swap(1,4))=\frac{d c g(swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.795 \\
 \text {deltaNDCG}(1,4)=\operatorname{detal} N D C G(4,1) \\
 =| \text {ndcg}(\text {original sequence})-\text {ndcg}(\operatorname{swap}(1,4)) | \\
 =|0.572-0.795|=0.222
@@ -751,7 +751,7 @@ n d c g(\swap(1,4))=\frac{d c g(\swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lambda"><span class="nav-number">1.</span> <span class="nav-text">Lambda</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MART"><span class="nav-number">2.</span> <span class="nav-text">MART</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#提升树"><span class="nav-number">2.1.</span> <span class="nav-text">提升树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XBGoost"><span class="nav-number">2.2.</span> <span class="nav-text">XBGoost</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LambdaMART"><span class="nav-number">2.3.</span> <span class="nav-text">LambdaMART</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lambda"><span class="nav-number">1.</span> <span class="nav-text">Lambda</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MART"><span class="nav-number">2.</span> <span class="nav-text">MART</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#提升树"><span class="nav-number">2.1.</span> <span class="nav-text">提升树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XBGoost"><span class="nav-number">2.2.</span> <span class="nav-text">XBGoost</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LambdaMART"><span class="nav-number">3.</span> <span class="nav-text">LambdaMART</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>
