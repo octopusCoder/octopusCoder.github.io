@@ -257,152 +257,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/25/Language-Model-based-on-BERT/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/25/Language-Model-based-on-BERT/" itemprop="url">Language Model based on BERT</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-25T19:22:22+08:00">
-                2019-03-25
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="BERT"><a href="#BERT" class="headerlink" title="BERT"></a>BERT</h2><p>2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。2018年1月3日微软亚洲研究院提交的R-NET模型在EM值（Exact Match表示预测答案和真实答案完全匹配）上以82.650的最高分领先，并率先超越人类分数82.304。而当谷歌一出手，便知有没有，目前SQuAD排行榜上已经被BERT霸屏，排行前列的模型几乎全部基于BERT。关于通用语言模型的介绍，可以参考另一篇翻译的博客，以及张俊林老师的介绍，参考链接附在本文末尾。</p>
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>谷歌已开放源码：</p>
-<blockquote>
-<p><a href="https://github.com/google-research/bert" target="_blank" rel="external">https://github.com/google-research/bert</a></p>
-</blockquote>
-<p>其中create_pretraining_data.py用于创建训练数据，run_pretraining.py用于进行预训练。此外，谷歌还提供了二阶段fine tunning的训练代码，run_classifier.py用于句子分类任务，run_squad.py用于机器阅读理解任务，可直接使用。而基于BERT的语言模型可直接对预训练模型进行改造后获得，参考链接：</p>
-<blockquote>
-<p><a href="https://github.com/xu-song/bert-as-language-model" target="_blank" rel="external">https://github.com/xu-song/bert-as-language-model</a></p>
-</blockquote>
-<p>作者主要对get_masked_lm_output函数进行了改造，具体地，计算masked lm loss时不使用masked_lm_weights，参考代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">#原代码</div><div class="line">def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,</div><div class="line">                         label_ids, label_weights):</div><div class="line">  &quot;&quot;&quot;Get loss and log probs for the masked LM.&quot;&quot;&quot;</div><div class="line">  input_tensor = gather_indexes(input_tensor, positions)</div><div class="line"></div><div class="line">  with tf.variable_scope(&quot;cls/predictions&quot;):</div><div class="line">    # We apply one more non-linear transformation before the output layer.</div><div class="line">    # This matrix is not used after pre-training.</div><div class="line">    with tf.variable_scope(&quot;transform&quot;):</div><div class="line">      input_tensor = tf.layers.dense(</div><div class="line">          input_tensor,</div><div class="line">          units=bert_config.hidden_size,</div><div class="line">          activation=modeling.get_activation(bert_config.hidden_act),</div><div class="line">          kernel_initializer=modeling.create_initializer(</div><div class="line">              bert_config.initializer_range))</div><div class="line">      input_tensor = modeling.layer_norm(input_tensor)</div><div class="line"></div><div class="line">    # The output weights are the same as the input embeddings, but there is</div><div class="line">    # an output-only bias for each token.</div><div class="line">    output_bias = tf.get_variable(</div><div class="line">        &quot;output_bias&quot;,</div><div class="line">        shape=[bert_config.vocab_size],</div><div class="line">        initializer=tf.zeros_initializer())</div><div class="line">    logits = tf.matmul(input_tensor, output_weights, transpose_b=True)</div><div class="line">    logits = tf.nn.bias_add(logits, output_bias)</div><div class="line">    log_probs = tf.nn.log_softmax(logits, axis=-1)</div><div class="line"></div><div class="line">    label_ids = tf.reshape(label_ids, [-1])</div><div class="line">    label_weights = tf.reshape(label_weights, [-1])</div><div class="line"></div><div class="line">    one_hot_labels = tf.one_hot(</div><div class="line">        label_ids, depth=bert_config.vocab_size, dtype=tf.float32)</div><div class="line"></div><div class="line">    # The `positions` tensor might be zero-padded (if the sequence is too</div><div class="line">    # short to have the maximum number of predictions). The `label_weights`</div><div class="line">    # tensor has a value of 1.0 for every real prediction and 0.0 for the</div><div class="line">    # padding predictions.</div><div class="line">    per_example_loss = -tf.reduce_sum(log_probs * one_hot_labels, axis=[-1])</div><div class="line">    numerator = tf.reduce_sum(label_weights * per_example_loss)</div><div class="line">    denominator = tf.reduce_sum(label_weights) + 1e-5</div><div class="line">    loss = numerator / denominator</div><div class="line"></div><div class="line">  return (loss, per_example_loss, log_probs)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">#改造后代码</div><div class="line">def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,</div><div class="line">                         label_ids):</div><div class="line">  &quot;&quot;&quot;Get loss and log probs for the masked LM.&quot;&quot;&quot;</div><div class="line">  input_tensor = gather_indexes(input_tensor, positions)</div><div class="line"></div><div class="line">  with tf.variable_scope(&quot;cls/predictions&quot;):</div><div class="line">    # We apply one more non-linear transformation before the output layer.</div><div class="line">    # This matrix is not used after pre-training.</div><div class="line">    with tf.variable_scope(&quot;transform&quot;):</div><div class="line">      input_tensor = tf.layers.dense(</div><div class="line">          input_tensor,</div><div class="line">          units=bert_config.hidden_size,</div><div class="line">          activation=modeling.get_activation(bert_config.hidden_act),</div><div class="line">          kernel_initializer=modeling.create_initializer(</div><div class="line">              bert_config.initializer_range))</div><div class="line">      input_tensor = modeling.layer_norm(input_tensor)</div><div class="line"></div><div class="line">    # The output weights are the same as the input embeddings, but there is</div><div class="line">    # an output-only bias for each token.</div><div class="line">    output_bias = tf.get_variable(</div><div class="line">        &quot;output_bias&quot;,</div><div class="line">        shape=[bert_config.vocab_size],</div><div class="line">        initializer=tf.zeros_initializer())</div><div class="line">    logits = tf.matmul(input_tensor, output_weights, transpose_b=True)</div><div class="line">    logits = tf.nn.bias_add(logits, output_bias)</div><div class="line">    log_probs = tf.nn.log_softmax(logits, axis=-1)</div><div class="line"></div><div class="line">    label_ids = tf.reshape(label_ids, [-1])</div><div class="line"></div><div class="line">    one_hot_labels = tf.one_hot(</div><div class="line">        label_ids, depth=bert_config.vocab_size, dtype=tf.float32)</div><div class="line">    per_example_loss = -tf.reduce_sum(log_probs * one_hot_labels, axis=[-1])</div><div class="line">    loss = tf.reshape(per_example_loss, [-1, tf.shape(positions)[1]])</div><div class="line">    # TODO: dynamic gather from per_example_loss</div><div class="line">  return loss</div></pre></td></tr></table></figure>
-<p>Python中可直接构造输入，然后利用Tensorflow高级API来获得结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">result = estimator.predict(input_fn=predict_input_fn)</div></pre></td></tr></table></figure></p>
-<p>estimator.predict的预测结果在model_fn_builder中指定：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">if mode == tf.estimator.ModeKeys.PREDICT:</div><div class="line">    output_spec = tf.contrib.tpu.TPUEstimatorSpec(</div><div class="line">    mode=mode, predictions=masked_lm_example_loss, scaffold_fn=scaffold_fn)  # 输出mask_word的score</div></pre></td></tr></table></figure></p>
-<p>BERT作为语言模型时，一个不便之处是需要逐个计算每个token的prob，然后计算句子的ppl。</p>
-<blockquote>
-<p>ppl: 自然语言处理领域（NLP）中，衡量语言模型好坏的指标。根据每个词来估计一句话出现的概率，并用句子长度作normalize，ppl值越小，表示该句子越合理。</p>
-</blockquote>
-<p>结果解析，ppl计算代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">def parse_result(result, all_tokens, output_file=None):</div><div class="line">  with tf.gfile.GFile(output_file, &quot;w&quot;) as writer:</div><div class="line">    tf.logging.info(&quot;***** Predict results *****&quot;)</div><div class="line">    i = 0</div><div class="line">    sentences = []</div><div class="line">    for word_loss in result:</div><div class="line">      # start of a sentence</div><div class="line">      if all_tokens[i] == &quot;[CLS]&quot;:</div><div class="line">        sentence = &#123;&#125;</div><div class="line">        tokens = []</div><div class="line">        sentence_loss = 0.0</div><div class="line">        word_count_per_sent = 0</div><div class="line">        i += 1</div><div class="line"></div><div class="line">      # add token</div><div class="line">      tokens.append(&#123;&quot;token&quot;: tokenization.printable_text(all_tokens[i]),</div><div class="line">                     &quot;prob&quot;: float(np.exp(-word_loss[0])) &#125;)</div><div class="line">      sentence_loss += word_loss[0]</div><div class="line">      word_count_per_sent += 1</div><div class="line">      i += 1</div><div class="line"></div><div class="line">      token_count_per_word = 0</div><div class="line">      while is_subtoken(all_tokens[i]):</div><div class="line">        token_count_per_word += 1</div><div class="line">        tokens.append(&#123;&quot;token&quot;: tokenization.printable_text(all_tokens[i]),</div><div class="line">                       &quot;prob&quot;: float(np.exp(-word_loss[token_count_per_word]))&#125;)</div><div class="line">        sentence_loss += word_loss[token_count_per_word]</div><div class="line">        i += 1</div><div class="line"></div><div class="line">      # end of a sentence</div><div class="line">      if all_tokens[i] == &quot;[SEP]&quot;:</div><div class="line">        sentence[&quot;tokens&quot;] = tokens</div><div class="line">        sentence[&quot;ppl&quot;] = float(np.exp(sentence_loss / word_count_per_sent))</div><div class="line">        sentences.append(sentence)</div><div class="line">        i += 1</div><div class="line"></div><div class="line">    if output_file is not None:</div><div class="line">      tf.logging.info(&quot;Saving results to %s&quot; % output_file)</div><div class="line">      writer.write(json.dumps(sentences, indent=2, ensure_ascii=False))</div></pre></td></tr></table></figure></p>
-<h2 id="模型训练、导出和部署"><a href="#模型训练、导出和部署" class="headerlink" title="模型训练、导出和部署"></a>模型训练、导出和部署</h2><p>由于预训练模型中masked lm loss节点并未命名，所以添加name后需要启动很短暂的预训练，同时将模型导出。get_masked_lm_output函数参考bert-as-language-model中的代码进行相应改造。Tensorflow版本升级后，使用estimator接受输入，原来我们最爱的placeholder找不到了，而在部署模型时，仍需要使用placeholder接受输入，可在run_pretraining.py导出模型时添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">if FLAGS.do_export:</div><div class="line">    estimator._export_to_tpu = False</div><div class="line">    name_to_features = [(&quot;input_ids&quot;, tf.int32), (&quot;input_mask&quot;, tf.int32),</div><div class="line">                            (&quot;segment_ids&quot;, tf.int32), (&quot;masked_lm_positions&quot;, tf.int32), (&quot;masked_lm_ids&quot;, tf.int32),</div><div class="line">                            (&quot;masked_lm_weights&quot;, tf.float32), (&quot;next_sentence_labels&quot;, tf.int32)]</div><div class="line">    feature_placeholders = &#123;name: tf.placeholder(dtype, [1, FLAGS.max_seq_length],</div><div class="line">                                                     name=&apos;bert/&apos; + name + &quot;_placeholder&quot;) for name, dtype in</div><div class="line">                                name_to_features&#125;</div><div class="line">    serving_input_fn = tf.estimator.export.build_raw_serving_input_receiver_fn(feature_placeholders)</div><div class="line">    path = estimator.export_savedmodel(&quot;./export/&quot;, serving_input_fn)</div></pre></td></tr></table></figure></p>
-<p>本文部署模型使用golang语言，基于tfgo实现模型的加载和tensorflow对应节点的计算。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//模型加载</div><div class="line">model := tg.LoadModel(*modleDir, []string&#123;&quot;serve&quot;&#125;, nil)</div></pre></td></tr></table></figure></p>
-<p>参考run_pretraining.py导出模型时的代码，golang程序中需要构造7个输入，而masked_lm_weights和next_sentence_labels对于语言模型没有影响，可按自己喜爱构造。以下面的例子说明一下输入的构造标准：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">//输入句子</div><div class="line">何异浮云过太空</div><div class="line">//处理后的句子</div><div class="line">[[CLS] 何 异 浮 云 过 太 空 [SEP]]</div><div class="line">------------------------token 1-----------------------------</div><div class="line">//input_ids</div><div class="line">[101 103 2460 3859 756 6814 1922 4958 102 0 0 0 ...]</div><div class="line">//input_mask</div><div class="line">[1 1 1 1 1 1 1 1 1 0 0 0 ...]</div><div class="line">//segment_ids</div><div class="line">[0 0 0 ...]</div><div class="line">//masked_lm_positions</div><div class="line">[1 0 0 0 ...]</div><div class="line">//masked_lm_ids</div><div class="line">[862 0 0 0 0 0 ...]</div><div class="line">------------------------token 2----------------------------</div><div class="line">[101 862 103 3859 756 6814 1922 4958 102 0 0 0 ...]</div><div class="line">[1 1 1 1 1 1 1 1 1 0 0 0 ...]</div><div class="line">[0 0 0 ...]</div><div class="line">[2 0 0 0 ...]</div><div class="line">[2460 0 0 0 ...]</div></pre></td></tr></table></figure></p>
-<p>Golang程序计算句子ppl：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">for i := 1; i &lt; ids_len - 1; i++&#123;</div><div class="line">	...</div><div class="line">	result := model.Exec([]tf.Output&#123;</div><div class="line">				model.Op(&quot;cls/predictions/lm_loss&quot;, 0),</div><div class="line">			&#125;, map[tf.Output]*tf.Tensor&#123;</div><div class="line">				model.Op(&quot;bert/input_ids_placeholder&quot;, 0):           inputX1,</div><div class="line">				model.Op(&quot;bert/input_mask_placeholder&quot;, 0):           inputX2,</div><div class="line">				model.Op(&quot;bert/segment_ids_placeholder&quot;, 0):           inputX3,</div><div class="line">				model.Op(&quot;bert/masked_lm_positions_placeholder&quot;, 0):           inputX4,</div><div class="line">				model.Op(&quot;bert/masked_lm_ids_placeholder&quot;, 0):           inputX5,</div><div class="line">				model.Op(&quot;bert/masked_lm_weights_placeholder&quot;, 0):           inputX6,</div><div class="line">				model.Op(&quot;bert/next_sentence_labels_placeholder&quot;, 0):           inputX7,</div><div class="line">			&#125;)</div><div class="line">	</div><div class="line">	val := result[0].Value().([][]float32)[0][0]</div><div class="line">	sentence_loss += float64(val)</div><div class="line">	...</div><div class="line">&#125;</div><div class="line"></div><div class="line">ppl := math.Pow(math.E, sentence_loss / float64(ids_len))</div></pre></td></tr></table></figure></p>
-<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><blockquote>
-<p><a href="https://zhuanlan.zhihu.com/p/49271699" target="_blank" rel="external">从Word Embedding到Bert模型</a><br><a href="https://zhuanlan.zhihu.com/p/56865533" target="_blank" rel="external">效果惊人的GPT 2.0模型</a><br><a href="http://octopuscoder.github.io/2019/03/11/通用语言模型/" target="_blank" rel="external">通用语言模型</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/11/通用语言模型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1953,6 +1807,145 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/27/论文简读-Reading-Wikipedia-to-Answer-Open-Domain-Questions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/07/27/论文简读-Reading-Wikipedia-to-Answer-Open-Domain-Questions/" itemprop="url">论文简读-Reading Wikipedia to Answer Open-Domain Questions</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-27T16:30:19+08:00">
+                2017-07-27
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<p>ACL 2017入选论文，作者为来自斯坦福的Danqi Chen(cs224n助教)。Facebook于2017.7.27日开放源码，项目名为DrQA。</p>
+<blockquote>
+<p>GitHub地址：<a href="https://github.com/facebookresearch/DrQA" target="_blank" rel="external">https://github.com/facebookresearch/DrQA</a></p>
+</blockquote>
+<p>DrQA的主要任务是大规模机器阅读（MRS）。DrQA会在一个非常庞大的非结构化文档语料库中寻找问题的答案。这个系统最大的挑战是文档检索与文本的机器理解如何更好的结合。</p>
+<p><img src="/images/rwaodq-model.png" alt="模型结构图"></p>
+<h2 id="文档检索"><a href="#文档检索" class="headerlink" title="文档检索"></a>文档检索</h2><p>采用基于二元语法哈希（bigram hashing）和TF-IDF匹配的搜索方法。</p>
+<h2 id="文档阅读理解"><a href="#文档阅读理解" class="headerlink" title="文档阅读理解"></a>文档阅读理解</h2><p>篇章和问题均采用三层双向LSTM，128个hidden units进行编码。</p>
+<h3 id="篇章编码"><a href="#篇章编码" class="headerlink" title="篇章编码"></a>篇章编码</h3><h4 id="Word-embedding"><a href="#Word-embedding" class="headerlink" title="Word embedding"></a>Word embedding</h4><p>GloVe, 300-dimensional</p>
+<h4 id="Exact-match"><a href="#Exact-match" class="headerlink" title="Exact match."></a>Exact match.</h4><p>篇章中的某个词的原始、全部转换为小写和形态上是否匹配。</p>
+<h4 id="Token-features"><a href="#Token-features" class="headerlink" title="Token features."></a>Token features.</h4><p><img src="/images/tf.png" alt="tf"></p>
+<h4 id="Aligned-question-embedding"><a href="#Aligned-question-embedding" class="headerlink" title="Aligned question embedding."></a>Aligned question embedding.</h4><p>与问题计算注意力权重后获得的特征。</p>
+<p><img src="/images/aij.png" alt="aij"></p>
+<h3 id="问题编码"><a href="#问题编码" class="headerlink" title="问题编码"></a>问题编码</h3><p>使用一个需要学习的权值向量计算问题各个单词的注意力权重，然后加权求和作为问题的整体表示。<br><img src="/images/bj.png" alt="bj"></p>
+<h3 id="预测"><a href="#预测" class="headerlink" title="预测"></a>预测</h3><p><img src="/images/pred.png" alt="pred"><br>获得篇章单词与问题的相似度结果后，选择Pstart(i)×Pend(i′)最大的作为答案开始坐标和结束坐标，坐标之间即为答案，同时可利用i ≤ i′ ≤ i+15限制答案长度。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -2006,7 +1999,7 @@ s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
