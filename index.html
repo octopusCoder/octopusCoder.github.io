@@ -511,8 +511,7 @@ L\left(\tilde{y}, f_{m}(\overrightarrow{\mathbf{x}})\right) &amp;=L\left(\tilde{
 <p>其中<span>$r=\tilde{y}-f_{m-1}(\overrightarrow{\mathbf{x}})$</span><!-- Has MathJax -->为当前模型拟合数据的残差。所以对回归问题的提升树算法，第m个决策树 <span>$h_{m}(\cdot)$</span><!-- Has MathJax -->只需要简单拟合当前模型的残差。</p>
 <p>回归提升树算法如下：</p>
 <p> <img src="/images/boostingTree.png" alt=""></p>
-<p>##梯度提升树(GBT)</p>
-<p>上面所讲的提升树中，当损失函数是<strong>平方损失函数</strong>和<strong>指数损失函数</strong>时，每一步优化都很简单。因为平方损失函数和指数损失函数的求导非常简单。当损失函数是一般函数时，往往每一步优化不是很容易。针对这个问题，<code>Freidman</code>提出了<strong>梯度提升树算法(GBT)</strong>。</p>
+<h2 id="梯度提升树-GBT"><a href="#梯度提升树-GBT" class="headerlink" title="梯度提升树(GBT)"></a>梯度提升树(GBT)</h2><p>上面所讲的提升树中，当损失函数是<strong>平方损失函数</strong>和<strong>指数损失函数</strong>时，每一步优化都很简单。因为平方损失函数和指数损失函数的求导非常简单。当损失函数是一般函数时，往往每一步优化不是很容易。针对这个问题，<code>Freidman</code>提出了<strong>梯度提升树算法(GBT)</strong>。</p>
 <blockquote>
 <p> <strong>梯度提升树(GBT)</strong>的一个核心思想是<strong>利用损失函数的负梯度在当前模型的值作为残差的近似值</strong>，本质上是<strong>对损失函数进行一阶泰勒展开</strong>，从而拟合一个回归树。</p>
 </blockquote>
