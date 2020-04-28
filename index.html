@@ -481,7 +481,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>理解LambdaMART。</li>
 </ol>
 <p><strong>【待进一步整理】</strong></p>
-<h1 id="Lambda"><a href="#Lambda" class="headerlink" title="Lambda"></a>Lambda</h1><p>关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking Function，并应用Ranking Function对文档进行排序。LambdaRank在RankNet的基础上引入评价指标Z （如NDCG、ERR等），其损失函数的梯度代表了文档下一次迭代优化的方向和强度，由于引入了IR评价指标，Lambda梯度更关注位置靠前的优质文档的排序位置的提升，有效的避免了下调位置靠前优质文档的位置这种情况的发生。LambdaRank相比RankNet的优势在于分解因式后训练速度变快，同时考虑了评价指标，直接对问题求解，效果更明显。 详细内容可以参考<a href="[http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/](http://octopuscoder.github.io/2020/01/19/搜索排序算法/">搜索排序算法</a>。</p>
+<h1 id="Lambda"><a href="#Lambda" class="headerlink" title="Lambda"></a>Lambda</h1><p>关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking Function，并应用Ranking Function对文档进行排序。LambdaRank在RankNet的基础上引入评价指标Z （如NDCG、ERR等），其损失函数的梯度代表了文档下一次迭代优化的方向和强度，由于引入了IR评价指标，Lambda梯度更关注位置靠前的优质文档的排序位置的提升，有效的避免了下调位置靠前优质文档的位置这种情况的发生。LambdaRank相比RankNet的优势在于分解因式后训练速度变快，同时考虑了评价指标，直接对问题求解，效果更明显。 详细内容可以参考<a href="https://octopuscoder.github.io/2020/01/19/搜索排序算法/" target="_blank" rel="external">搜索排序算法</a>。</p>
 <h1 id="MART"><a href="#MART" class="headerlink" title="MART"></a>MART</h1><p>MART(Multiple Additive Regression Tree)的另一个名字叫GBDT(Gradient Boosting Decision Tree)，理解GBDT要从BT开始。</p>
 <h2 id="提升树"><a href="#提升树" class="headerlink" title="提升树"></a>提升树</h2><p>BT(Boosting Tree)提升树是以<strong>决策树</strong>为基本学习器的提升方法，它被认为是统计学习中性能最好的方法之一。对于分类问题，提升树的决策树是二叉决策树，对于回归问题，提升树中的决策是二叉回归树。</p>
 <p>提升树模型可以表示为决策树为基学习器的加法模型：</p>
@@ -515,6 +515,15 @@ L\left(\tilde{y}, f_{m}(\overrightarrow{\mathbf{x}})\right) &amp;=L\left(\tilde{
 <blockquote>
 <p> <strong>梯度提升树(GBT)</strong>的一个核心思想是<strong>利用损失函数的负梯度在当前模型的值作为残差的近似值</strong>，本质上是<strong>对损失函数进行一阶泰勒展开</strong>，从而拟合一个回归树。</p>
 </blockquote>
+<p><strong>如何理解用负梯度近似残差</strong></p>
+<ol>
+<li><p>在对目标函数进行优化时，负梯度往往是函数下降最快的方向，自然也是GBDT目标函数下降最快的方向，所以用梯度去拟合首先是没什么问题的（并不是拟合梯度，只是用梯度去拟合）；GBDT本来中的g代表gradient，本来就是用梯度拟合；</p>
+</li>
+<li><p>用残差去拟合，只是目标函数是均方误差的一种特殊情况，CART中采用均方误差，符合这种情况。</p>
+</li>
+<li><p>为什么不直接使用残差拟合？目标函数除了loss可能还有正则项，正则中有参数和变量，很多情况下只拟合残差loss变小但是正则变大，目标函数不一定就小，这时候就要用梯度了，梯度的本质也是一种方向导数，综合了各个方向（参数）的变化，选择了一个总是最优（下降最快）的方向；</p>
+</li>
+</ol>
 <p><strong>泰勒展开公式：</strong><br><span>$$\begin{gather*}
 TaylorExpansion:f(x+\Delta x) \simeq f(x)+f^{\prime}(x) \Delta x+\frac{1}{2} f^{\prime \prime}(x) \Delta x^{2}
 \end{gather*}$$</span><!-- Has MathJax --><br>将损失函数使用<strong>一阶泰勒展开公式</strong>(<span>$\Delta x$</span><!-- Has MathJax -->相当于这里的<span>$h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right))$</span><!-- Has MathJax -->：</p>
@@ -525,7 +534,14 @@ L\left(\tilde{y}, f_{m}(\overrightarrow{\mathrm{x}})\right)=L\left(\tilde{y}, f_
 <span>$$\begin{gather*}
 \Delta L=L\left(\tilde{y}, f_{m}(\overrightarrow{\mathbf{x}})\right)-L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathbf{x}})\right)=\frac{\partial L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathbf{x}})\right)}{\partial f_{m-1}(\overrightarrow{\mathbf{x}})} h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)
 \end{gather*}$$</span><!-- Has MathJax -->
-<p>要使得损失函数降低，则根据梯度下降的思想让损失函数对<span>$h_{m}\left(\overrightarrow{\mathbf{x}} ; \mathbf{\Theta}_{m}\right)$</span><!-- Has MathJax -->进行求导，按照负梯度更新改值，则损失函数是下降的，即：<span>$h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)=-\frac{\partial L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathbf{x}})\right)}{\partial f_{m-1}(\overrightarrow{\mathbf{x}})}$</span><!-- Has MathJax --></p>
+<p>要使得损失函数降低，则根据梯度下降的思想让损失函数对<span>$h_{m}\left(\overrightarrow{\mathbf{x}} ; \mathbf{\Theta}_{m}\right)$</span><!-- Has MathJax -->进行求导，按照负梯度更新该值，则损失函数是下降的，即：<span>$h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)=-\frac{\partial L\left(\tilde{y}, f_{m-1}(\overrightarrow{\mathbf{x}})\right)}{\partial f_{m-1}(\overrightarrow{\mathbf{x}})}$</span><!-- Has MathJax --></p>
+<p>这里进一步解释一下，对于函数f：<br><span>$$\begin{gather*}
+f\left(\theta_{k+1}\right) \approx f\left(\theta_{k}\right)+\frac{\partial f\left(\theta_{k}\right)}{\partial \theta_{k}}\left(\theta_{k+1}-\theta_{k}\right)
+\end{gather*}$$</span><!-- Has MathJax --><br>使用梯度下降算法时，<span>$\theta_{k+1}=\theta_{k+1}-\eta \frac{\partial f\left(\theta_{k}\right)}{\partial \theta_{k}}$</span><!-- Has MathJax -->。</p>
+<p>而在GBDT中，我们对损失函数进行展开：<span>$L\left(y, F_{m}(x)\right) \approx L\left(y, F_{m-1}(x)\right)+\frac{\partial L\left(y, F_{m-1}(x)\right)}{\partial F_{m-1}(x)}\left(F_{m}(x)-F_{m-1}(x)\right)$</span><!-- Has MathJax --></p>
+<p>即，<span>$L\left(y, F_{m}(x)\right) \approx L\left(y, F_{m-1}(x)\right)+\frac{\partial L\left(y, F_{m-1}(x)\right)}{\partial F_{m-1}(x)} T_{m}(x)$</span><!-- Has MathJax --></p>
+<p>在优化<span>$L(y, F(x))$</span><!-- Has MathJax -->时，应用梯度下降算法时，有：<span>$F_{m}(x)=F_{m-1}(x)-\eta \frac{\partial L\left(y, F_{m-1}(x)\right)}{\partial F_{m-1}(x)}$</span><!-- Has MathJax --></p>
+<p>则有<span>$T_{m}(x)=-\eta \frac{\partial L\left(y, F_{m-1}(x)\right)}{\partial F_{m-1}(x)}$</span><!-- Has MathJax --> ，即负梯度可以近似认为是残差，区别在于$\eta$。</p>
 <ul>
 <li>对于平方损失函数，它就是通常意义的残差。</li>
 <li>对于一般损失函数，它就是残差的近似。</li>
