@@ -107,7 +107,7 @@
 <meta property="og:image" content="http://yoursite.com/images/GBRT.png">
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
-<meta property="og:updated_time" content="2020-04-28T08:40:36.000Z">
+<meta property="og:updated_time" content="2020-04-28T08:50:09.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LambdaMART从放弃到入门">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  【待进一步整理】 Lambda关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking F">
@@ -406,10 +406,10 @@ L\left(\tilde{y}, f_{m}(\overrightarrow{\mathrm{x}})\right)=L\left(\tilde{y}, f_
 <p>这里进一步解释一下，对于函数f：<br><span>$$\begin{gather*}
 f\left(\theta_{k+1}\right) \approx f\left(\theta_{k}\right)+\frac{\partial f\left(\theta_{k}\right)}{\partial \theta_{k}}\left(\theta_{k+1}-\theta_{k}\right)
 \end{gather*}$$</span><!-- Has MathJax --><br>使用梯度下降算法时，<span>$\theta_{k+1}=\theta_{k+1}-\eta \frac{\partial f\left(\theta_{k}\right)}{\partial \theta_{k}}$</span><!-- Has MathJax -->。</p>
-<p>而在GBDT中，我们对损失函数进行展开：<span>$L\left(y, F_{m}(x)\right) \approx L\left(y, F_{m-1}(x)\right)+\frac{\partial L\left(y, F_{m-1}(x)\right)}{\partial F_{m-1}(x)}\left(F_{m}(x)-F_{m-1}(x)\right)$</span><!-- Has MathJax --></p>
-<p>即，<span>$L\left(y, F_{m}(x)\right) \approx L\left(y, F_{m-1}(x)\right)+\frac{\partial L\left(y, F_{m-1}(x)\right)}{\partial F_{m-1}(x)} T_{m}(x)$</span><!-- Has MathJax --></p>
-<p>在优化<span>$L(y, F(x))$</span><!-- Has MathJax -->时，应用梯度下降算法时，有：<span>$F_{m}(x)=F_{m-1}(x)-\eta \frac{\partial L\left(y, F_{m-1}(x)\right)}{\partial F_{m-1}(x)}$</span><!-- Has MathJax --></p>
-<p>则有<span>$T_{m}(x)=-\eta \frac{\partial L\left(y, F_{m-1}(x)\right)}{\partial F_{m-1}(x)}$</span><!-- Has MathJax --> ，即负梯度可以近似认为是残差，区别在于$\eta$。</p>
+<p>而在GBDT中，我们对损失函数进行展开：<span>$L\left(y, f_{m}(x)\right) \approx L\left(y, f_{m-1}(x)\right)+\frac{\partial L\left(y, f_{m-1}(x)\right)}{\partial f_{m-1}(x)}\left(f_{m}(x)-f_{m-1}(x)\right)$</span><!-- Has MathJax --></p>
+<p>即，<span>$L\left(y, f_{m}(x)\right) \approx L\left(y, f{m-1}(x)\right)+\frac{\partial L\left(y, f_{m-1}(x)\right)}{\partial f_{m-1}(x)} T_{m}(x)$</span><!-- Has MathJax --></p>
+<p>在优化<span>$L(y, f(x))$</span><!-- Has MathJax -->时，应用梯度下降算法时，有：<span>$f_{m}(x)=f_{m-1}(x)-\eta \frac{\partial L\left(y, f_{m-1}(x)\right)}{\partial f_{m-1}(x)}$</span><!-- Has MathJax --></p>
+<p>则有<span>$T_{m}(x)=-\eta \frac{\partial L\left(y, f{m-1}(x)\right)}{\partial f_{m-1}(x)}$</span><!-- Has MathJax --> ，即负梯度可以近似认为是残差，区别在于$\eta$。</p>
 <ul>
 <li>对于平方损失函数，它就是通常意义的残差。</li>
 <li>对于一般损失函数，它就是残差的近似。</li>
