@@ -391,6 +391,281 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/09/论文简读-Controlling-Fairness-and-Bias-in-Dynamic-Learning-to-Rank/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/10/09/论文简读-Controlling-Fairness-and-Bias-in-Dynamic-Learning-to-Rank/" itemprop="url">论文简读-Controlling Fairness and Bias in Dynamic Learning-to-Rank</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-09T12:20:05+08:00">
+                2020-10-09
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐问人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的，但在其他排序场景中，就会存在一些问题，例如在购物场景下，初始排名靠后的商品由于无法得到充分曝光相对成交量很少，这对商家来说是难以接受的。下面我们看一下论文是如何解决马太效应的。</p>
+<h2 id="曝光模型偏差"><a href="#曝光模型偏差" class="headerlink" title="曝光模型偏差"></a>曝光模型偏差</h2><p>以新闻网站动态排序文章为例，假设有六篇文章，且没有关于排名的信息，那么我们可能向第一个用户提供随机的排名。根据该用户的点击行为更新排名，类似的，根据后续的用户点击行为，持续更新排名。最后找到一个适合大多数用户的排名，如下图所示：</p>
+<p><img src="/images/FairCo1.png" alt="calcos"></p>
+<p>这种动态学习排序的方式存在两个问题：</p>
+<ol>
+<li>位置选择偏差。每篇文章的平均点击次数并不等于喜欢这篇文章用户数，因为位置越靠后，获得的用户注意力就越少，点击次数相应较少，如下图所示：</li>
+</ol>
+<p><img src="/images/FairCo1-p.png" alt="calcos"></p>
+<p>​    这是一个“富者越富”的问题，上图中的文章4上升到顶部的机会显然低于从一开始就在顶部的文章。</p>
+<ol>
+<li><p>曝光分配不均。假设我们能够以某种方式计算出文章的真实相关性，仍然会存在问题。假设上文中提到的六篇文章属于<span>$G_{Left}$</span><!-- Has MathJax -->和<span>$G_{Right}$</span><!-- Has MathJax -->两组，即有两组用户分别喜欢对应的文章，如下图所示：</p>
+<p><img src="/images/FairCo2.png" alt="calcos"></p>
+<p>根据排序规则，由于喜欢Right组文章的用户更多，因此会把Right组的文章全部排在前面，这导致Left组文章无法得到公平曝光，而相应的Left组用户也开始不喜欢这个产品，导致用户流失。但喜欢两个组文章的用户数只有2%的差异，这显然是不合理的。</p>
+</li>
+</ol>
+<p>那么公平的动态排序算法要具有两个性质：</p>
+<ol>
+<li><strong>无偏性</strong>。用来描述用户偏好的统计量是无偏的。</li>
+<li><strong>公平性</strong>。算法可以根据相关性对曝光量进行公平的分配。</li>
+</ol>
+<h2 id="文章排序模型"><a href="#文章排序模型" class="headerlink" title="文章排序模型"></a>文章排序模型</h2><p>仍以文章排序模型为例，该模型存在Exposure Unfairness和Impact Unfairness，如下图所示：</p>
+<p><img src="/images/FairCo3.png" alt="calcos"></p>
+<h3 id="曝光"><a href="#曝光" class="headerlink" title="曝光"></a>曝光</h3><p>为保证文章得到公平曝光，我们希望单位相关度下的期望曝光是一致的，即曝光可以表示为相关度的函数：</p>
+<span>$$\begin{gather*}
+\operatorname{Exp}(G \mid x)=f(\operatorname{Rel}(G \mid x))
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>从公平的角度，我们希望各组文章进行与其相关度成比例的曝光：</p>
+<span>$$\begin{gather*}
+\frac{\operatorname{Exp}\left(G_{0} \mid x\right)}{\operatorname{Exp}\left(G_{1} \mid x\right)}=\frac{\operatorname{Rel}\left(G_{0} \mid x\right)}{\operatorname{Rel}\left(G_{1} \mid x\right)}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>那么公平性的差异就是两组单位相关度曝光的差异：</p>
+<span>$$\begin{gather*}
+\begin{array}{l}
+D^{E}\left(G_{0}, G_{1}\right) \\
+=\left|\frac{E x p\left(G_{0} \mid x\right)}{\operatorname{Rel}\left(G_{0} \mid x\right)}-\frac{\operatorname{Exp}\left(G_{1} \mid x\right)}{\operatorname{Rel}\left(G_{1} \mid x\right)}\right|
+\end{array}
+\end{gather*}$$</span><!-- Has MathJax -->
+<h3 id="影响力"><a href="#影响力" class="headerlink" title="影响力"></a>影响力</h3><p>类似于曝光，影响力也是相关度的函数，这里的影响力可以认为是预期点击率：</p>
+<span>$$\begin{gather*}
+\operatorname{Imp}(G \mid x)=f(\operatorname{Rel}(G \mid x))
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>同样，影响力的差异定义为单位相关度的影响力：</p>
+<span>$$\begin{gather*}
+D^{I}\left(G_{0}, G_{1}\right)=\left|\frac{\operatorname{Imp}\left(G_{0} \mid x\right)}{\operatorname{Rel}\left(G_{0} \mid x\right)}-\frac{\operatorname{Imp}\left(G_{1} \mid x\right)}{\operatorname{Rel}\left(G_{1} \mid x\right)}\right|
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>仍以文章排序为例，不妨设<span>$\text { Exposure }(j)=1 / \log (1+j)$</span><!-- Has MathJax -->，如下图所示，可以看到两个组仅仅2%的差异导致曝光和影响力均不公平。</p>
+<p><img src="/images/FairCo4.png" alt="calcos"></p>
+<h2 id="动态排序"><a href="#动态排序" class="headerlink" title="动态排序"></a>动态排序</h2><p>假设给定一批文章，x表示用户信息，r表示文章与用户的相关性，t表示时间，则特定时间用户信息表示为<span>$x_{t}$</span><!-- Has MathJax -->，特定时间相关性表示为<span>$r_{t}$</span><!-- Has MathJax -->，一般来说，<span>$x_{t}$</span><!-- Has MathJax -->是明确已知的，<span>$r_{t}$</span><!-- Has MathJax -->是隐性不可知的。现有一个排序规则<span>$&pi;_{t}$</span><!-- Has MathJax -->可以得到排序打分<span>$&delta;_{t}$</span><!-- Has MathJax -->，则利用这个排序方法可以获得用户的反馈<span>$c_{t}(d)$</span><!-- Has MathJax -->，例如可以用0和1表示是否点击，掌握用户的反馈后可以利用动态排序算法得到t+1时刻的排序规则<span>$&pi;_{t+1}$</span><!-- Has MathJax -->。</p>
+<span>$c_{t}(d)$</span><!-- Has MathJax -->用于描述用户的偏好，如果以点击和未点击来判断的话，用户偏好与相关性的关系可以表示为：<br><span>$$\begin{gather*}
+c_{t}(d)=\left\{\begin{array}{rr}
+r_{t}(d), &amp; \text { if } e_{t}(d)=1 \\
+0, &amp; \text { otherwise }
+\end{array}\right.
+\end{gather*}$$</span><!-- Has MathJax -->
+<span>$e_{t}$</span><!-- Has MathJax -->表示该文章是否曝光（有机会经过用户偏好试探），当且仅当文章被曝光且被点击时，用户的偏好才能被记录。也就是说，<span>$c_{t}(d)$</span><!-- Has MathJax -->只能表达经过试探的文章的偏好，对于未经试探的文章，无法正确记录其偏好。因为当<span>$c_{t}(d)=0$</span><!-- Has MathJax -->时，无法判断是因为未曝光还是因为曝光但没有点击导致的0。随着时间推移，迭代轮数增多，这个错误会更加明显。<br><br><span>$e_{t}$</span><!-- Has MathJax -->也有问题，对于新的文章，由于无法知道用户对其偏好，因此要通过试探的方法获得。那么如何确定文章的曝光顺序呢？一般来说会按排序分数确定曝光位置，排在越前面，被曝光的概率就越大，即用排序打分来决定文章的曝光，也就是position bias：<br><br><span>$c_{t}(d)$</span><!-- Has MathJax -->用于描述用户的偏好，如果以点击和未点击来判断的话，用户偏好与相关性的关系可以表示为：<br><span>$$\begin{gather*}
+e_{t}(d)=\sigma_{d}
+\end{gather*}$$</span><!-- Has MathJax -->
+<span>$\sigma_{t}$</span><!-- Has MathJax -->可以理解为排序的打分，例如预估CTR，由用户信息、文章和两者的相关性计算得到。假设不进行动态调整，那么排序逻辑可以表示为：<br><br><span>$$\begin{gather*}
+\pi(x)=\operatorname{argsort}_{d \in D}[R(d \mid x)]
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>根据用户X的特征计算用户与文章d的相关度，进而根据打分公式获得排序分数，决定展示给特定用户的顺序。相关度<span>$R(d|x)$</span><!-- Has MathJax -->也可以简化为<span>$R(d)$</span><!-- Has MathJax -->，即大部分用户对该文章的偏好，不考虑用户个性化偏好。如果要进行动态调整，那么<span>$R(d|x)$</span><!-- Has MathJax -->需要根据时间进行调整，其调整的依据就是<span>$c_{t}(d)$</span><!-- Has MathJax -->用户偏好。</p>
+<h2 id="具体建模"><a href="#具体建模" class="headerlink" title="具体建模"></a>具体建模</h2><p>下面我们看一下论文中描述公平性和无偏性的具体方式：</p>
+<h3 id="公平性"><a href="#公平性" class="headerlink" title="公平性"></a>公平性</h3><p>关注是否曝光和用户偏好两个变量。</p>
+<p>是否曝光与排序打分、用户信息和相关性有关，其概率表示为：</p>
+<span>$$\begin{gather*}
+p_{t}(d)=P\left(e_{t}(d)=1 \mid \sigma_{t}, x_{t}, r_{t}\right)
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>论文中将单个物料扩展为一组物料，使用组内所有物料的平均曝光度，其中<span>$G_i$</span><!-- Has MathJax -->表示第i组的物料。</p>
+<p>对物料的偏好可以使用R(d)衡量，同样使用组内所有物料偏好的平均值：</p>
+<span>$$\begin{gather*}
+p_{t}(d)=P\left(e_{t}(d)=1 \mid \sigma_{t}, x_{t}, r_{t}\right)
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>实现公平就是要消除差异，即各组单位相关度的曝光尽可能一致：</p>
+<span>$$\begin{gather*}
+D_{\tau}^{E}\left(G_{i}, G_{j}\right)=\frac{\frac{1}{\tau} \sum_{t=1}^{\tau} \operatorname{Exp}_{t}\left(G_{i}\right)}{\operatorname{Merit}\left(G_{i}\right)}-\frac{\frac{1}{\tau} \sum_{t=1}^{\tau} \operatorname{Exp}_{t}\left(G_{j}\right)}{\operatorname{Merit}\left(G_{j}\right)}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>影响力公平的实现方式类似：</p>
+<span>$$\begin{gather*}
+\begin{array}{c}
+\operatorname{Imp}_{t}\left(G_{i}\right)=\frac{1}{\left|G_{i}\right|} \sum_{d \in G_{i}} c_{t}(d) \\
+D_{\tau}^{E}\left(G_{i}, G_{j}\right)=\frac{\frac{1}{\tau} \sum_{t=1}^{\tau} \operatorname{Imp}_{t}\left(G_{i}\right)}{\operatorname{Merit}\left(G_{i}\right)}-\frac{\frac{1}{\tau} \sum_{t=1}^{\tau} \operatorname{Imp}_{t}\left(G_{j}\right)}{\operatorname{Merit}\left(G_{j}\right)}
+\end{array}
+\end{gather*}$$</span><!-- Has MathJax -->
+<h3 id="无偏性"><a href="#无偏性" class="headerlink" title="无偏性"></a>无偏性</h3><p>再回顾一下无偏性的定义：用于描述用户偏好的统计量是无偏的。这里我们需要考虑无偏性的三个变量：</p>
+<ol>
+<li>位置偏差<span>$p_t$</span><!-- Has MathJax --></li>
+<li>用户与物料的相关性<span>$R(d|x)$</span><!-- Has MathJax --></li>
+<li>全局物料相关性<span>$R(d)$</span><!-- Has MathJax --></li>
+</ol>
+<span>$p_t$</span><!-- Has MathJax -->表示position bais，即由于排位导致的曝光度不同，排在越后面曝光概率越小。为尽可能缓解position bais，简单地，可以直接根据用户特征、物料特征和用户物料相关度进行打分来确定排序，进一步优化可以考虑加入更多的特征，如上下文特征等。<br><br><span>$R(d|x)$</span><!-- Has MathJax -->表示物料与用户的真实相关度，例如点击概率，而通常是无法直接观测到实际相关度<span>$r_t$</span><!-- Has MathJax -->的，只能观测到<span>$c_t$</span><!-- Has MathJax -->，即用户的点击情况。因此可以使用抽样和因果推断的方法。<br><br>抽样指通过多次尝试，借助<span>$c_t$</span><!-- Has MathJax -->的数学期望来估计<span>$r_t$</span><!-- Has MathJax -->。<br><br>关于因果推断，事件/变量之间的关系，最主要的有<strong>相关性</strong>和<strong>因果性</strong>。<br><br>- 相关性是指在<strong>观测</strong>到的数据分布中，X与Y相关，如果我们<strong>观测</strong>到X的分布，就可以推断出Y的分布<br>- 因果性是指在<strong>操作/改变</strong>X后，Y随着这种<strong>操作/改变</strong>也变化，则说明X是Y的因<code>cause</code><br><br>在常用的机器学习算法中，关注的是特征之间的相关性，而无法去识别特征之间的因果性，而很多时候<strong>在做决策与判断的时候，我们需要的是因果性</strong>。举个例子，我们会发现在学校中，近视的同学成绩更好。近视和成绩好之间有强相关性，但显然近视不是成绩好的原因。而我们想要提升学生成绩，自然需要找到因，否则就会通过给学生戴眼镜的方式来提高成绩。上面的例子是很明显地可以区分出相关与因果的，但是也有很多难以区分的，如经常喝葡萄酒的人寿命更长，是因为葡萄酒确实能延长寿命，还是因为能经常喝的人通常更富有，享有更好的医疗条件。<br><br>因果推断中估算平均处理效应的经典方法包括“倾向性得分匹配”（Propensity Score Matching）、“倾向性得分加权 “（Propensity Score Weighting）等，本文使用加权的方法。因果推断也是一个比较复杂的研究方向，可参考Yishi Lin的博客进行扩展阅读，链接为：<br><br>&gt; <a href="https://dango.rocks/blog/2019/08/18/Causal-Inference-Introduction3-Propensity-Score-Weighting/" target="_blank" rel="external">https://dango.rocks/blog/2019/08/18/Causal-Inference-Introduction3-Propensity-Score-Weighting/</a><br><br>本文估计<span>$R(d|x)$</span><!-- Has MathJax -->，即<span>$r_t$</span><!-- Has MathJax -->的思路大致是，通过多次尝试，借助<span>$c_t$</span><!-- Has MathJax -->的数学期望来求<span>$R(d|x)$</span><!-- Has MathJax -->，但<span>$c_t$</span><!-- Has MathJax -->是有偏的。因此我们要使<span>$c_t$</span><!-- Has MathJax -->无偏，然后求得<span>$R(d|x)$</span><!-- Has MathJax -->的无偏估计。<br><br>假设我们可以观测到真实的相关度标签<span>$\left(\mathbf{r}_{1}, \ldots, \mathbf{r}_{\tau}\right)$</span><!-- Has MathJax -->，一个简单的方法是基于神经网络构建一个回归模型<span>$\hat{R}^{\mathrm{w}}\left(d \mid \boldsymbol{x}_{t}\right)$</span><!-- Has MathJax -->，损失函数使用最小平方误差函数，其中<span>$w$</span><!-- Has MathJax -->表示该模型的参数：<br><br><span>$$\begin{gather*}
+\mathcal{L}^{\mathbf{r}}(w)=\sum_{t=1}^{\tau} \sum_{d}\left(\mathbf{r}_{t}(d)-\hat{R}^{\mathrm{w}}\left(d \mid \boldsymbol{x}_{t}\right)\right)^{2}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>该函数的目标是使<span>$R(d|x_t)$</span><!-- Has MathJax -->与<span>$r_t(d)$</span><!-- Has MathJax -->尽可能接近。但由于<span>$\left(\mathbf{r}_{1}, \ldots, \mathbf{r}_{\tau}\right)$</span><!-- Has MathJax -->是无法获取的，所以定义一个近似相等的目标函数，使用有偏反馈<span>$\left(\mathbf{c}_{1}, \ldots, \mathbf{c}_{\tau}\right)$</span><!-- Has MathJax -->。新目标函数使用Inverse Propensity Score (IPS) weighting方法来纠正position bias，IPS方法是因果推断中的经典方法，详细资料可参考上文链接，新的目标函数表示为：</p>
+<span>$$\begin{gather*}
+\mathcal{L}^{\mathbf{c}}(w)=\sum_{t=1}^{\tau} \sum_{d} \hat{R}^{\mathrm{w}}\left(d \mid \boldsymbol{x}_{t}\right)^{2}+\frac{\mathbf{c}_{t}(d)}{\mathbf{p}_{t}(d)}\left(\mathbf{c}_{t}(d)-2 \hat{R}^{\mathrm{w}}\left(d \mid \boldsymbol{x}_{t}\right)\right)
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>新模型中的回归模型表示为<span>$\hat{R}^{\operatorname{Reg}}\left(d \mid \boldsymbol{x}_{t}\right)$</span><!-- Has MathJax -->。上述目标函数是无偏的，那就是说它的期望应该等于<span>$\mathcal{L}^{\mathbf{r}}(w)$</span><!-- Has MathJax -->：</p>
+<span>$$\begin{gather*}
+\begin{aligned}
+\mathbb{E}_{\mathbf{e}} &amp;\left[\mathcal{L}^{\mathbf{c}}(w)\right] \\
+&amp;=\sum_{t=1}^{\tau} \sum_{d} \sum_{\mathbf{e}_{t}(d)}\left[\hat{R}^{\mathbf{w}}\left(d \mid \boldsymbol{x}_{t}\right)^{2}+\frac{\mathbf{c}_{t}(d)}{\mathbf{p}_{t}(d)}\left(\mathbf{c}_{t}(d)-2 \hat{R}^{\mathbf{w}}\left(d \mid \boldsymbol{x}_{t}\right)\right)\right] \mathrm{P}\left(\mathbf{e}_{t}(d) \mid \boldsymbol{\sigma}_{t}, \boldsymbol{x}_{t}\right) \\
+&amp;=\sum_{t=1}^{\tau} \sum_{d} \hat{R}^{\mathrm{w}}\left(d \mid \boldsymbol{x}_{t}\right)^{2}+\frac{1}{\mathbf{p}_{t}(d)} \mathbf{r}_{t}(d)\left(\mathbf{r}_{t}(d)-2 \hat{R}^{\mathrm{w}}\left(d \mid \boldsymbol{x}_{t}\right)\right) \mathbf{p}_{t}(d) \\
+&amp;=\sum_{t=1}^{\tau} \sum_{d} \hat{R}^{\mathrm{w}}\left(d \mid \boldsymbol{x}_{t}\right)^{2}+\mathbf{r}_{t}(d)^{2}-2 \mathbf{r}_{t}(d) \hat{R}^{\mathrm{w}}\left(d \mid \boldsymbol{x}_{t}\right) \\
+&amp;=\sum_{t=1}^{\tau} \sum_{d}\left(\mathbf{r}_{t}(d)-\hat{R}^{\mathrm{w}}\left(d \mid \boldsymbol{x}_{t}\right)\right)^{2} \\
+&amp;=\mathcal{L}^{\mathbf{r}}(w)
+\end{aligned}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>其中<span>$\mathrm{P}\left(\mathbf{e}_{t}(d) \mid \boldsymbol{\sigma}_{t}, \boldsymbol{x}_{t}\right)$</span><!-- Has MathJax -->表示边缘曝光概率，在曝光模型中就是<span>$p_t(d)$</span><!-- Has MathJax -->。</p>
+<p>最后是<span>$R(d|x)$</span><!-- Has MathJax -->的简化版本<span>$R(d)$</span><!-- Has MathJax -->的估计，其无偏估计为：</p>
+<span>$$\begin{gather*}
+\hat{R}^{\mathrm{IPS}}(d)=\frac{1}{\tau} \sum_{t=1}^{\tau} \frac{\mathbf{c}_{t}(d)}{\mathbf{p}_{t}(d)}
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>只要倾向是从0开始有界的，该估计就是无偏的：</p>
+<span>$$\begin{gather*}
+\begin{aligned}
+\mathbb{E}_{\mathbf{e}}\left[\hat{R}^{\mathrm{IP}}(d)\right] &amp;=\frac{1}{\tau} \sum_{t=1}^{\tau} \sum_{\mathbf{e}_{t}(d)} \frac{\mathbf{e}_{t}(d) \mathbf{r}_{t}(d)}{\mathbf{p}_{t}(d)} \mathrm{P}\left(\mathbf{e}_{t}(d) \mid \boldsymbol{\sigma}_{t}, \boldsymbol{x}_{t}\right) \\
+&amp;=\frac{1}{\tau} \sum_{t=1}^{\tau} \frac{\mathbf{r}_{t}(d)}{\mathbf{p}_{t}(d)} \mathbf{p}_{t}(d) \\
+&amp;=\frac{1}{\tau} \sum_{t=1}^{\tau} \mathbf{r}_{t}(d) \\
+&amp;=R(d)
+\end{aligned}
+\end{gather*}$$</span><!-- Has MathJax -->
+<h2 id="公平性的动态控制"><a href="#公平性的动态控制" class="headerlink" title="公平性的动态控制"></a>公平性的动态控制</h2><p>基于上述公平性衡量方法以及相关的无偏估计量，该文提出了FairCo算法，其思想来源于Proportional Controller，即比例控制器，其核心是为了在常态信号下控制特定信号而构建的一种模型。关于比例控制器，举例说明:</p>
+<blockquote>
+<p>假设有一个水缸，最终的控制目的是要保证水缸里的水位永远的维持在1米的高度。假设初试时刻，水缸里的水位是0.2米，那么当前时刻的水位和目标水位之间是存在一个误差的error，且error为0.8.这个时候，假设旁边站着一个人，这个人通过往缸里加水的方式来控制水位。如果单纯的用比例控制算法，就是指加入的水量u和误差error是成正比的。即<br>u=kp<em>error<br>假设kp取0.5，<br>那么t=1时（表示第1次加水，也就是第一次对系统施加控制），那么u=0.5</em>0.8=0.4，所以这一次加入的水量会使水位在0.2的基础上上升0.4，达到0.6.<br>接着，t=2时刻（第2次施加控制），当前水位是0.6，所以error是0.4。u=0.5*0.4=0.2，会使水位再次上升0.2，达到0.8.<br>如此这么循环下去，就是比例控制算法的运行方法。 </p>
+</blockquote>
+<p>当然上面的例子是存在一些问题的，例如如果水缸漏水怎么办？这也是PID控制算法要解决的问题，扩展阅读：</p>
+<blockquote>
+<p>一文读懂PID控制算法](<a href="https://blog.csdn.net/qq_25352981/article/details/81007075" target="_blank" rel="external">https://blog.csdn.net/qq_25352981/article/details/81007075</a>)</p>
+</blockquote>
+<p>本文中的常态是根据用户的偏好对内容进行排序，需要控制的是不能让某个组的物料过多的出现，FairCo算法表示为：</p>
+<span>$$\begin{gather*}
+\text { FairCo: } \quad \boldsymbol{\sigma}_{\tau}=\underset{d \in \mathcal{D}}{\operatorname{argsort}}\left(\hat{R}(d \mid \boldsymbol{x})+\lambda \operatorname{err}_{\tau}(d)\right)
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>可以看到，FairCo算法是基于修改后的相关度得分来对物料进行排序的，该分数是<span>$\hat{R}(d \mid \boldsymbol{x})$</span><!-- Has MathJax -->加上一个误差项<span>$\operatorname{err}_{\tau}(d)$</span><!-- Has MathJax -->，误差项乘以一个权重参数<span>$\lambda$</span><!-- Has MathJax -->作为最后用于排序的分数，其中误差项为：</p>
+<span>$$\begin{gather*}
+\operatorname{err}_{\tau}(d)=(\tau-1) \cdot \max _{G_{i}}\left(\hat{D}_{\tau-1}\left(G_{i}, G\right)\right)
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>误差项表示上一个时刻，即<span>$\mathcal{T}-1$</span><!-- Has MathJax -->时刻物料d所在组与优势（曝光、影响力…）最大组之间的最大差距。对于优势最大的组，误差项对排序的提升帮助为0，而其他组的排序会得到相应提升。</p>
+<p>文中证明了随着时间推移，即当<span>$\mathcal{T}$</span><!-- Has MathJax -->趋向于无穷大时，各个组的平均差距将趋于0，平均差距定义如下：</p>
+<span>$$\begin{gather*}
+\bar{D}_{\tau}=\frac{2}{m(m-1)} \sum_{i=0}^{m} \sum_{j=i+1}^{m}\left|D_{\tau}\left(G_{i}, G_{j}\right)\right|
+\end{gather*}$$</span><!-- Has MathJax -->
+<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><p>文中使用了一个自己的示例进行模拟，用相关的IPS估计器来评估Fairco算法。首先，从广告中抽取新闻文章作为测试数据集，该数据集用两极化得分标记每个新来源。然后模拟访问这个网站的用户，这样每个用户都有一个相关的两极化得分和一个开放性参数。如下图所示：</p>
+<p><img src="/images/FairCo5.png" alt="calcos"></p>
+<p>用户与新闻文章的真实相关度是新闻文章的两极化得分和用户开放性参数的函数，其真实相关度分布服从伯努利分布：</p>
+<span>$$\begin{gather*}
+\mathbf{r}_{t}(d) \sim \text { Bernoulli }\left[p=\exp \left(\frac{-\left(\rho^{u_{t}}-\rho^{d}\right)^{2}}{2\left(o^{u_{t}}\right)^{2}}\right)\right]
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>在第一个实验中对一些右偏向性用户进行模拟，右偏向性用户可以通过在G-right文章中引入点击来偏向排名。可以看到公平控制器Fairco能从最初的偏差中恢复过来，同时仍在学习相关度，如下图所示：</p>
+<p><img src="/images/FairCo6.png" alt="calcos"></p>
+<p>未经调整的排名算法很难打破最初少数用户造成的偏差，即使某些“富人”在一开始就有大量的领先优势，Fairco也能够将这种偏差减少到零，并将不公平性保持在较低水平。这就意味着最开始的“富人”是有破产的风险的，但是某些“富人”也可能会继续受用户“偏爱”而富下去。</p>
+<p>如果我们改变左偏向性用户在用户群体中的比例，Fairco可以始终将不公平性保持在接近零的水平，同时在其中一个群体占多数的情况下以公平换取效用，如下图所示：</p>
+<p><img src="/images/FairCo7.png" alt="calcos"></p>
+<p>这也对应了文章开头举的一些例子，例如在热搜场景中，FairCo算法可能就不是很适合，因为类似场景是要强化“马太效应”的，而FairCo算法为了公平会牺牲一些效用。相反在商品推荐等场景中我们要关注公平性，这时FairCo算法可得到相应使用。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/27/LambdaMART从放弃到入门/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2149,152 +2424,6 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/25/Language-Model-based-on-BERT/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/25/Language-Model-based-on-BERT/" itemprop="url">Language Model based on BERT</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-25T19:22:22+08:00">
-                2019-03-25
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="BERT"><a href="#BERT" class="headerlink" title="BERT"></a>BERT</h2><p>2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。2018年1月3日微软亚洲研究院提交的R-NET模型在EM值（Exact Match表示预测答案和真实答案完全匹配）上以82.650的最高分领先，并率先超越人类分数82.304。而当谷歌一出手，便知有没有，目前SQuAD排行榜上已经被BERT霸屏，排行前列的模型几乎全部基于BERT。关于通用语言模型的介绍，可以参考另一篇翻译的博客，以及张俊林老师的介绍，参考链接附在本文末尾。</p>
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>谷歌已开放源码：</p>
-<blockquote>
-<p><a href="https://github.com/google-research/bert" target="_blank" rel="external">https://github.com/google-research/bert</a></p>
-</blockquote>
-<p>其中create_pretraining_data.py用于创建训练数据，run_pretraining.py用于进行预训练。此外，谷歌还提供了二阶段fine tunning的训练代码，run_classifier.py用于句子分类任务，run_squad.py用于机器阅读理解任务，可直接使用。而基于BERT的语言模型可直接对预训练模型进行改造后获得，参考链接：</p>
-<blockquote>
-<p><a href="https://github.com/xu-song/bert-as-language-model" target="_blank" rel="external">https://github.com/xu-song/bert-as-language-model</a></p>
-</blockquote>
-<p>作者主要对get_masked_lm_output函数进行了改造，具体地，计算masked lm loss时不使用masked_lm_weights，参考代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">#原代码</div><div class="line">def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,</div><div class="line">                         label_ids, label_weights):</div><div class="line">  &quot;&quot;&quot;Get loss and log probs for the masked LM.&quot;&quot;&quot;</div><div class="line">  input_tensor = gather_indexes(input_tensor, positions)</div><div class="line"></div><div class="line">  with tf.variable_scope(&quot;cls/predictions&quot;):</div><div class="line">    # We apply one more non-linear transformation before the output layer.</div><div class="line">    # This matrix is not used after pre-training.</div><div class="line">    with tf.variable_scope(&quot;transform&quot;):</div><div class="line">      input_tensor = tf.layers.dense(</div><div class="line">          input_tensor,</div><div class="line">          units=bert_config.hidden_size,</div><div class="line">          activation=modeling.get_activation(bert_config.hidden_act),</div><div class="line">          kernel_initializer=modeling.create_initializer(</div><div class="line">              bert_config.initializer_range))</div><div class="line">      input_tensor = modeling.layer_norm(input_tensor)</div><div class="line"></div><div class="line">    # The output weights are the same as the input embeddings, but there is</div><div class="line">    # an output-only bias for each token.</div><div class="line">    output_bias = tf.get_variable(</div><div class="line">        &quot;output_bias&quot;,</div><div class="line">        shape=[bert_config.vocab_size],</div><div class="line">        initializer=tf.zeros_initializer())</div><div class="line">    logits = tf.matmul(input_tensor, output_weights, transpose_b=True)</div><div class="line">    logits = tf.nn.bias_add(logits, output_bias)</div><div class="line">    log_probs = tf.nn.log_softmax(logits, axis=-1)</div><div class="line"></div><div class="line">    label_ids = tf.reshape(label_ids, [-1])</div><div class="line">    label_weights = tf.reshape(label_weights, [-1])</div><div class="line"></div><div class="line">    one_hot_labels = tf.one_hot(</div><div class="line">        label_ids, depth=bert_config.vocab_size, dtype=tf.float32)</div><div class="line"></div><div class="line">    # The `positions` tensor might be zero-padded (if the sequence is too</div><div class="line">    # short to have the maximum number of predictions). The `label_weights`</div><div class="line">    # tensor has a value of 1.0 for every real prediction and 0.0 for the</div><div class="line">    # padding predictions.</div><div class="line">    per_example_loss = -tf.reduce_sum(log_probs * one_hot_labels, axis=[-1])</div><div class="line">    numerator = tf.reduce_sum(label_weights * per_example_loss)</div><div class="line">    denominator = tf.reduce_sum(label_weights) + 1e-5</div><div class="line">    loss = numerator / denominator</div><div class="line"></div><div class="line">  return (loss, per_example_loss, log_probs)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">#改造后代码</div><div class="line">def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,</div><div class="line">                         label_ids):</div><div class="line">  &quot;&quot;&quot;Get loss and log probs for the masked LM.&quot;&quot;&quot;</div><div class="line">  input_tensor = gather_indexes(input_tensor, positions)</div><div class="line"></div><div class="line">  with tf.variable_scope(&quot;cls/predictions&quot;):</div><div class="line">    # We apply one more non-linear transformation before the output layer.</div><div class="line">    # This matrix is not used after pre-training.</div><div class="line">    with tf.variable_scope(&quot;transform&quot;):</div><div class="line">      input_tensor = tf.layers.dense(</div><div class="line">          input_tensor,</div><div class="line">          units=bert_config.hidden_size,</div><div class="line">          activation=modeling.get_activation(bert_config.hidden_act),</div><div class="line">          kernel_initializer=modeling.create_initializer(</div><div class="line">              bert_config.initializer_range))</div><div class="line">      input_tensor = modeling.layer_norm(input_tensor)</div><div class="line"></div><div class="line">    # The output weights are the same as the input embeddings, but there is</div><div class="line">    # an output-only bias for each token.</div><div class="line">    output_bias = tf.get_variable(</div><div class="line">        &quot;output_bias&quot;,</div><div class="line">        shape=[bert_config.vocab_size],</div><div class="line">        initializer=tf.zeros_initializer())</div><div class="line">    logits = tf.matmul(input_tensor, output_weights, transpose_b=True)</div><div class="line">    logits = tf.nn.bias_add(logits, output_bias)</div><div class="line">    log_probs = tf.nn.log_softmax(logits, axis=-1)</div><div class="line"></div><div class="line">    label_ids = tf.reshape(label_ids, [-1])</div><div class="line"></div><div class="line">    one_hot_labels = tf.one_hot(</div><div class="line">        label_ids, depth=bert_config.vocab_size, dtype=tf.float32)</div><div class="line">    per_example_loss = -tf.reduce_sum(log_probs * one_hot_labels, axis=[-1])</div><div class="line">    loss = tf.reshape(per_example_loss, [-1, tf.shape(positions)[1]])</div><div class="line">    # TODO: dynamic gather from per_example_loss</div><div class="line">  return loss</div></pre></td></tr></table></figure>
-<p>Python中可直接构造输入，然后利用Tensorflow高级API来获得结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">result = estimator.predict(input_fn=predict_input_fn)</div></pre></td></tr></table></figure></p>
-<p>estimator.predict的预测结果在model_fn_builder中指定：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">if mode == tf.estimator.ModeKeys.PREDICT:</div><div class="line">    output_spec = tf.contrib.tpu.TPUEstimatorSpec(</div><div class="line">    mode=mode, predictions=masked_lm_example_loss, scaffold_fn=scaffold_fn)  # 输出mask_word的score</div></pre></td></tr></table></figure></p>
-<p>BERT作为语言模型时，一个不便之处是需要逐个计算每个token的prob，然后计算句子的ppl。</p>
-<blockquote>
-<p>ppl: 自然语言处理领域（NLP）中，衡量语言模型好坏的指标。根据每个词来估计一句话出现的概率，并用句子长度作normalize，ppl值越小，表示该句子越合理。</p>
-</blockquote>
-<p>结果解析，ppl计算代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">def parse_result(result, all_tokens, output_file=None):</div><div class="line">  with tf.gfile.GFile(output_file, &quot;w&quot;) as writer:</div><div class="line">    tf.logging.info(&quot;***** Predict results *****&quot;)</div><div class="line">    i = 0</div><div class="line">    sentences = []</div><div class="line">    for word_loss in result:</div><div class="line">      # start of a sentence</div><div class="line">      if all_tokens[i] == &quot;[CLS]&quot;:</div><div class="line">        sentence = &#123;&#125;</div><div class="line">        tokens = []</div><div class="line">        sentence_loss = 0.0</div><div class="line">        word_count_per_sent = 0</div><div class="line">        i += 1</div><div class="line"></div><div class="line">      # add token</div><div class="line">      tokens.append(&#123;&quot;token&quot;: tokenization.printable_text(all_tokens[i]),</div><div class="line">                     &quot;prob&quot;: float(np.exp(-word_loss[0])) &#125;)</div><div class="line">      sentence_loss += word_loss[0]</div><div class="line">      word_count_per_sent += 1</div><div class="line">      i += 1</div><div class="line"></div><div class="line">      token_count_per_word = 0</div><div class="line">      while is_subtoken(all_tokens[i]):</div><div class="line">        token_count_per_word += 1</div><div class="line">        tokens.append(&#123;&quot;token&quot;: tokenization.printable_text(all_tokens[i]),</div><div class="line">                       &quot;prob&quot;: float(np.exp(-word_loss[token_count_per_word]))&#125;)</div><div class="line">        sentence_loss += word_loss[token_count_per_word]</div><div class="line">        i += 1</div><div class="line"></div><div class="line">      # end of a sentence</div><div class="line">      if all_tokens[i] == &quot;[SEP]&quot;:</div><div class="line">        sentence[&quot;tokens&quot;] = tokens</div><div class="line">        sentence[&quot;ppl&quot;] = float(np.exp(sentence_loss / word_count_per_sent))</div><div class="line">        sentences.append(sentence)</div><div class="line">        i += 1</div><div class="line"></div><div class="line">    if output_file is not None:</div><div class="line">      tf.logging.info(&quot;Saving results to %s&quot; % output_file)</div><div class="line">      writer.write(json.dumps(sentences, indent=2, ensure_ascii=False))</div></pre></td></tr></table></figure></p>
-<h2 id="模型训练、导出和部署"><a href="#模型训练、导出和部署" class="headerlink" title="模型训练、导出和部署"></a>模型训练、导出和部署</h2><p>由于预训练模型中masked lm loss节点并未命名，所以添加name后需要启动很短暂的预训练，同时将模型导出。get_masked_lm_output函数参考bert-as-language-model中的代码进行相应改造。Tensorflow版本升级后，使用estimator接受输入，原来我们最爱的placeholder找不到了，而在部署模型时，仍需要使用placeholder接受输入，可在run_pretraining.py导出模型时添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">if FLAGS.do_export:</div><div class="line">    estimator._export_to_tpu = False</div><div class="line">    name_to_features = [(&quot;input_ids&quot;, tf.int32), (&quot;input_mask&quot;, tf.int32),</div><div class="line">                            (&quot;segment_ids&quot;, tf.int32), (&quot;masked_lm_positions&quot;, tf.int32), (&quot;masked_lm_ids&quot;, tf.int32),</div><div class="line">                            (&quot;masked_lm_weights&quot;, tf.float32), (&quot;next_sentence_labels&quot;, tf.int32)]</div><div class="line">    feature_placeholders = &#123;name: tf.placeholder(dtype, [1, FLAGS.max_seq_length],</div><div class="line">                                                     name=&apos;bert/&apos; + name + &quot;_placeholder&quot;) for name, dtype in</div><div class="line">                                name_to_features&#125;</div><div class="line">    serving_input_fn = tf.estimator.export.build_raw_serving_input_receiver_fn(feature_placeholders)</div><div class="line">    path = estimator.export_savedmodel(&quot;./export/&quot;, serving_input_fn)</div></pre></td></tr></table></figure></p>
-<p>本文部署模型使用golang语言，基于tfgo实现模型的加载和tensorflow对应节点的计算。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//模型加载</div><div class="line">model := tg.LoadModel(*modleDir, []string&#123;&quot;serve&quot;&#125;, nil)</div></pre></td></tr></table></figure></p>
-<p>参考run_pretraining.py导出模型时的代码，golang程序中需要构造7个输入，而masked_lm_weights和next_sentence_labels对于语言模型没有影响，可按自己喜爱构造。以下面的例子说明一下输入的构造标准：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">//输入句子</div><div class="line">何异浮云过太空</div><div class="line">//处理后的句子</div><div class="line">[[CLS] 何 异 浮 云 过 太 空 [SEP]]</div><div class="line">------------------------token 1-----------------------------</div><div class="line">//input_ids</div><div class="line">[101 103 2460 3859 756 6814 1922 4958 102 0 0 0 ...]</div><div class="line">//input_mask</div><div class="line">[1 1 1 1 1 1 1 1 1 0 0 0 ...]</div><div class="line">//segment_ids</div><div class="line">[0 0 0 ...]</div><div class="line">//masked_lm_positions</div><div class="line">[1 0 0 0 ...]</div><div class="line">//masked_lm_ids</div><div class="line">[862 0 0 0 0 0 ...]</div><div class="line">------------------------token 2----------------------------</div><div class="line">[101 862 103 3859 756 6814 1922 4958 102 0 0 0 ...]</div><div class="line">[1 1 1 1 1 1 1 1 1 0 0 0 ...]</div><div class="line">[0 0 0 ...]</div><div class="line">[2 0 0 0 ...]</div><div class="line">[2460 0 0 0 ...]</div></pre></td></tr></table></figure></p>
-<p>Golang程序计算句子ppl：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">for i := 1; i &lt; ids_len - 1; i++&#123;</div><div class="line">	...</div><div class="line">	result := model.Exec([]tf.Output&#123;</div><div class="line">				model.Op(&quot;cls/predictions/lm_loss&quot;, 0),</div><div class="line">			&#125;, map[tf.Output]*tf.Tensor&#123;</div><div class="line">				model.Op(&quot;bert/input_ids_placeholder&quot;, 0):           inputX1,</div><div class="line">				model.Op(&quot;bert/input_mask_placeholder&quot;, 0):           inputX2,</div><div class="line">				model.Op(&quot;bert/segment_ids_placeholder&quot;, 0):           inputX3,</div><div class="line">				model.Op(&quot;bert/masked_lm_positions_placeholder&quot;, 0):           inputX4,</div><div class="line">				model.Op(&quot;bert/masked_lm_ids_placeholder&quot;, 0):           inputX5,</div><div class="line">				model.Op(&quot;bert/masked_lm_weights_placeholder&quot;, 0):           inputX6,</div><div class="line">				model.Op(&quot;bert/next_sentence_labels_placeholder&quot;, 0):           inputX7,</div><div class="line">			&#125;)</div><div class="line">	</div><div class="line">	val := result[0].Value().([][]float32)[0][0]</div><div class="line">	sentence_loss += float64(val)</div><div class="line">	...</div><div class="line">&#125;</div><div class="line"></div><div class="line">ppl := math.Pow(math.E, sentence_loss / float64(ids_len))</div></pre></td></tr></table></figure></p>
-<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><blockquote>
-<p><a href="https://zhuanlan.zhihu.com/p/49271699" target="_blank" rel="external">从Word Embedding到Bert模型</a><br><a href="https://zhuanlan.zhihu.com/p/56865533" target="_blank" rel="external">效果惊人的GPT 2.0模型</a><br><a href="http://octopuscoder.github.io/2019/03/11/通用语言模型/" target="_blank" rel="external">通用语言模型</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2348,7 +2477,7 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">25</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2356,6 +2485,15 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
 
           
 
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
           
 
         </nav>
