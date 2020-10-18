@@ -95,13 +95,13 @@
 
 
 
-<meta name="description" content="前言本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐问人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的">
+<meta name="description" content="前言本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐无人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的">
 <meta name="keywords" content="排序 推荐">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文简读-Controlling Fairness and Bias in Dynamic Learning-to-Rank">
 <meta property="og:url" content="http://yoursite.com/2020/10/09/论文简读-Controlling-Fairness-and-Bias-in-Dynamic-Learning-to-Rank/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="前言本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐问人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的">
+<meta property="og:description" content="前言本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐无人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/FairCo1.png">
 <meta property="og:image" content="http://yoursite.com/images/FairCo1-p.png">
@@ -111,10 +111,10 @@
 <meta property="og:image" content="http://yoursite.com/images/FairCo5.png">
 <meta property="og:image" content="http://yoursite.com/images/FairCo6.png">
 <meta property="og:image" content="http://yoursite.com/images/FairCo7.png">
-<meta property="og:updated_time" content="2020-10-17T01:40:05.000Z">
+<meta property="og:updated_time" content="2020-10-18T18:06:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Controlling Fairness and Bias in Dynamic Learning-to-Rank">
-<meta name="twitter:description" content="前言本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐问人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的">
+<meta name="twitter:description" content="前言本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐无人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的">
 <meta name="twitter:image" content="http://yoursite.com/images/FairCo1.png">
 
 
@@ -336,7 +336,7 @@
       
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐问人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的，但在其他排序场景中，就会存在一些问题，例如在购物场景下，初始排名靠后的商品由于无法得到充分曝光相对成交量很少，这对商家来说是难以接受的。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐无人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的，但在其他排序场景中，就会存在一些问题，例如在购物场景下，初始排名靠后的商品由于无法得到充分曝光相对成交量很少，这对商家来说是难以接受的。</p>
 <h2 id="曝光模型偏差"><a href="#曝光模型偏差" class="headerlink" title="曝光模型偏差"></a>曝光模型偏差</h2><p>以新闻网站动态排序文章为例，假设有六篇文章，且没有关于排名的信息，那么我们可能向第一个用户提供随机的排名。根据该用户的点击行为更新排名，类似的，根据后续的用户点击行为，持续更新排名。最后找到一个适合大多数用户的排名，如下图所示：</p>
 <p><img src="/images/FairCo1.png" alt="calcos"></p>
 <p>这种动态学习排序的方式存在两个问题：</p>
