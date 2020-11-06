@@ -669,6 +669,7 @@ P(Y=1 \mid \mathbf{x})=\sigma\left(\mathbf{w}_{\text {wide }}^{T}[\mathbf{x}, \p
 <h3 id="DIN-Model"><a href="#DIN-Model" class="headerlink" title="DIN Model"></a>DIN Model</h3><p>DIN模型引入了一个设计的局部激活单元，作用是计算候选广告与用户各行为的权重，在给定候选广告A的基础上自适应地的计算用户信息的表示：</p>
 <span>$$\boldsymbol{v}_{U}(A)=f\left(\boldsymbol{v}_{A}, \boldsymbol{e}_{1}, \boldsymbol{e}_{2}, \ldots, \boldsymbol{e}_{H}\right)=\sum_{j=1}^{H} a\left(\boldsymbol{e}_{j}, \boldsymbol{v}_{A}\right) \boldsymbol{e}_{j}=\sum_{j=1}^{H} \boldsymbol{w}_{j} \boldsymbol{e}_{j}$$</span><!-- Has MathJax --> 
 <p>其中<span>$\left\{e_{1}, e 2, \ldots e H\right\}$</span><!-- Has MathJax --> 表示用户向量，<span>$v_{A}$</span><!-- Has MathJax --> 表示候选广告向量，<span>$a(\cdot)$</span><!-- Has MathJax -->表示前向传播网络。不同于Attention机制的是，<span>$\sum_{i} w_{i}=1$</span><!-- Has MathJax --> 的约束被放宽，因此输出权重的softmax归一化也不再采用，目的是表征更强烈的用户兴趣。</p>
+<p><img src="/images/din.png" alt="img"></p>
 <p>对于用户行为的序列特征，不免不产生一个想法，使用RNN、LSTM等建模会有助于提升效果吗？作者也利用LSTM模型进行了尝试，但是由于用户历史行为序列可能包含了多个并发的兴趣，不同兴趣点的快速跳跃和突然终结也会使用户行为的序列特征显得杂乱无章，但是一个可研究的方向。</p>
 <h3 id="训练技巧"><a href="#训练技巧" class="headerlink" title="训练技巧"></a>训练技巧</h3><ol>
 <li><p>Mini-batch Aware Regularization。正则化可以防止模型过拟合，但对于工业数据集来说，直接应用传统的正则化方法是不实际的，因为具有大规模稀疏输入和海量的参数。作者提出了一种有效的小批量处理感知型正则化器，它仅针对每个微型批处理中出现的稀疏特征的参数计算L2-范数。</p>
