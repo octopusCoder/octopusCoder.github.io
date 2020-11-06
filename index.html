@@ -464,7 +464,7 @@
       
         
           
-            <p>搜索和推荐系统一般包含召回和排序两个阶段，搜索排序主要关注相关性，常见的模型可以参考<a href="http://octopuscoder.github.io/2020/01/19/搜索排序算法/" target="_blank" rel="external">搜索排序算法</a>。推荐的排序则关注用户偏好，一般用CTR点击率来描述，常用的推荐模型有：</p>
+            <p>搜索和推荐系统一般包含召回和排序两个阶段，搜索排序主要关注相关性，常见的模型可以参考<a href="http://octopuscoder.github.io/2020/01/19/搜索排序算法/" target="_blank" rel="external">搜索排序算法</a>。推荐模型则关注用户偏好，一般用CTR点击率来描述，常用的推荐模型有：</p>
 <p><img src="/images/rec1.jpg" alt=""></p>
 <blockquote>
 <p>图片来源：<a href="https://zhuanlan.zhihu.com/p/243243145" target="_blank" rel="external">推荐算法炼丹笔记：CTR点击率预估系列入门手册</a></p>
@@ -592,7 +592,7 @@
 <li>将Dense Embeddings的结果作为左边FM模型和右边DNN模型的输入。通过一定方式组合后，模型左边FM模块的输出完全模拟出了FM的效果，而右边的DNN模块则学到了比FM模块更高阶的交叉特征。</li>
 <li>最后将DNN和FM的结果组合后输出。</li>
 </ol>
-<h1 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h1><p>关于GBDT已在<a href="http://octopuscoder.github.io/2020/03/27/LambdaMART从放弃到入门/" target="_blank" rel="external">LambdaMART从放弃到入门</a>一文中进行了介绍，具体可参考其中MART部分对于BT和GBT的介绍，本文只提取一些要点。理解GBDT要从决策树DT开始，然后是BT，再到GBT。梯度提升树BT用于分类模型时，是<strong>梯度提升决策树<code>GBDT</code></strong>；用于回归模型时，是<strong>梯度提升回归树<code>GBRT</code>，</strong>二者的区别主要是损失函数不同。李航老师在《统计学习方法》一书中对决策树的基础和原理进行了详细介绍，网上也有不少笔记资料，例如<a href="https://blog.csdn.net/john_hongming/article/details/89453626" target="_blank" rel="external">李航统计学习方法-决策树</a>。这里做一下简单总结：</p>
+<h2 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h2><p>关于GBDT已在<a href="http://octopuscoder.github.io/2020/03/27/LambdaMART从放弃到入门/" target="_blank" rel="external">LambdaMART从放弃到入门</a>一文中进行了介绍，具体可参考其中MART部分对于BT和GBT的介绍，本文只提取一些要点。理解GBDT要从决策树DT开始，然后是BT，再到GBT。梯度提升树BT用于分类模型时，是<strong>梯度提升决策树<code>GBDT</code></strong>；用于回归模型时，是<strong>梯度提升回归树<code>GBRT</code>，</strong>二者的区别主要是损失函数不同。李航老师在《统计学习方法》一书中对决策树的基础和原理进行了详细介绍，网上也有不少笔记资料，例如<a href="https://blog.csdn.net/john_hongming/article/details/89453626" target="_blank" rel="external">李航统计学习方法-决策树</a>。这里做一下简单总结：</p>
 <ul>
 <li><p>决策树通常包含三个步骤：特征选择、自顶向下生成和自底向上剪枝；</p>
 </li>
@@ -812,7 +812,18 @@
       
         
           
-            <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐无人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的，但在其他排序场景中，就会存在一些问题，例如在购物场景下，初始排名靠后的商品由于无法得到充分曝光相对成交量很少，这对商家来说是难以接受的。</p>
+            <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段时间内，越是靠前的文章就越会被人点击，然后其排名持续提升，而初始排在后面的文章由于没有得到公平曝光而逐渐无人问津。不过仅仅考虑热搜场景的话，这里的马太效应是符合要求的，但在其他排序场景中，就会存在一些问题，例如在购物场景下，初始排名靠后的商品由于无法得到充分曝光相对成交量很少，这对商家来说是难以接受的。</p>
 <h2 id="曝光模型偏差"><a href="#曝光模型偏差" class="headerlink" title="曝光模型偏差"></a>曝光模型偏差</h2><p>以新闻网站动态排序文章为例，假设有六篇文章，且没有关于排名的信息，那么我们可能向第一个用户提供随机的排名。根据该用户的点击行为更新排名，类似的，根据后续的用户点击行为，持续更新排名。最后找到一个适合大多数用户的排名，如下图所示：</p>
 <p><img src="/images/FairCo1.png" alt="calcos"></p>
 <p>这种动态学习排序的方式存在两个问题：</p>
