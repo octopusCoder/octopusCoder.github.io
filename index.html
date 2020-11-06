@@ -503,9 +503,8 @@
 <p>利用梯度下降法进行训练：</p>
 <p><img src="/images/lrgd-1.png" alt="img"></p>
 <p>LR梯度下降公式还是很简洁的：</p>
-<p><img src="/images/lrgd-2.png" alt="img"></p>
-<p>而在训练模型时，我们通常使用损失函数，这里如果取整个数据集上的平均对数似然损失可以得到：</p>
-<span>$J(w)=-\frac{1}{N} \ln L(w)$</span><!-- Has MathJax -->
+<p><img src="/images/lrgd.png" alt="img"></p>
+<p>而在训练模型时，我们通常使用损失函数，这里如果取整个数据集上的平均对数似然损失可以得到：<span>$J(w)=-\frac{1}{N} \ln L(w)$</span><!-- Has MathJax --></p>
 <p>显然在逻辑回归模型中，最大化似然函数和最小化损失函数其实是等价的。</p>
 <h3 id="LR扩展知识点"><a href="#LR扩展知识点" class="headerlink" title="LR扩展知识点"></a>LR扩展知识点</h3><h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><p><img src="/images/lryqd.png" alt="img"></p>
 <h4 id="对比线性回归"><a href="#对比线性回归" class="headerlink" title="对比线性回归"></a>对比线性回归</h4><p><img src="/images/lirvslor.png" alt="img"></p>
@@ -558,21 +557,46 @@
 <h3 id="FM模型应用"><a href="#FM模型应用" class="headerlink" title="FM模型应用"></a>FM模型应用</h3><p>FM模型可应用于回归、分类和排名任务中，参考原论文中的应用方式：</p>
 <p><img src="/images/fmapply.png" alt="img"></p>
 <p><strong>回归任务可使用平方误差损失函数：</strong></p>
-<span>$\text {Loss}=\frac{1}{2} \sum_{i=1}^{n}\left(\hat{y}_{i}-y_{i}\right)^{2}$</span><!-- Has MathJax --> 
+<span>$$\begin{gather*}
+
+\text {Loss}=\frac{1}{2} \sum_{i=1}^{n}\left(\hat{y}_{i}-y_{i}\right)^{2}
+
+\end{gather*}$$</span><!-- Has MathJax --> 
 <p>求偏导，得到：</p>
-<span>$\frac{\partial L}{\partial \hat{y}(x)}=(\hat{y}(x)-y)$</span><!-- Has MathJax --> 
+<span>$$\begin{gather*}
+
+\frac{\partial L}{\partial \hat{y}(x)}=(\hat{y}(x)-y)
+
+\end{gather*}$$</span><!-- Has MathJax --> 
 <p>则梯度为：</p>
-<span>$\frac{\partial L}{\partial \theta}=(\hat{y}(x)-y) * \frac{\partial \hat{y}(x)}{\partial \theta}$</span><!-- Has MathJax --> 
+<span>$$\begin{gather*}
+
+\frac{\partial L}{\partial \theta}=(\hat{y}(x)-y) * \frac{\partial \hat{y}(x)}{\partial \theta}
+
+\end{gather*}$$</span><!-- Has MathJax --> 
 <p><strong>分类任务可使用对数损失函数：</strong></p>
-<span>$\text { Loss }=\frac{1}{2} \sum_{i=1}^{n}-\ln \left(\sigma\left(\hat{y}_{i} y_{i}\right)\right)^{2}$</span><!-- Has MathJax --> 
+<span>$$\begin{gather*}
+
+\text { Loss }=\frac{1}{2} \sum_{i=1}^{n}-\ln \left(\sigma\left(\hat{y}_{i} y_{i}\right)\right)^{2}
+
+\end{gather*}$$</span><!-- Has MathJax --> 
 <p>其中：</p>
-<span>$\sigma(\hat{y} y)=\frac{1}{1+e^{-\hat{y} y}}$</span><!-- Has MathJax --> 
-<span>$\frac{\partial(\sigma(\hat{y} y))}{\partial \hat{y}}=\sigma(\hat{y} y) *[1-\sigma(\hat{y} y)] * y$</span><!-- Has MathJax --> 
+<span>$$\begin{gather*}
+
+\sigma(\hat{y} y)=\frac{1}{1+e^{-\hat{y} y}}
+
+\frac{\partial(\sigma(\hat{y} y))}{\partial \hat{y}}=\sigma(\hat{y} y) *[1-\sigma(\hat{y} y)] * y
+
+\end{gather*}$$</span><!-- Has MathJax --> 
 <p>对数损失函数的梯度为：</p>
-<span>$$\begin{array}{c}
+<span>$$\begin{gather*}
+
+\begin{array}{c}
 \frac{\partial L}{\partial \theta}=\frac{1}{\sigma(\hat{y} y)} * \sigma(\hat{y} y) *\left[1-\sigma(\hat{y} y] * y * \frac{\partial \hat{y}(x)}{\partial \theta}\right. \\
 =[1-\sigma(\hat{y} y)] * y * \frac{\partial \hat{y}(x)}{\partial \theta}
-\end{array}$$</span><!-- Has MathJax --> 
+\end{array}
+
+\end{gather*}$$</span><!-- Has MathJax --> 
 <p><strong>排序任务</strong>可先利用FM模型获得分数，然后利用pairwise分类损失函数进行训练，当然也有多种求解方式，可参考<a href="http://octopuscoder.github.io/2020/01/19/搜索排序算法/" target="_blank" rel="external">搜索排序算法</a>。</p>
 <h3 id="FM模型扩展知识点"><a href="#FM模型扩展知识点" class="headerlink" title="FM模型扩展知识点"></a>FM模型扩展知识点</h3><p><strong>FM模型优点：</strong></p>
 <p>适用于数据稀疏场景。</p>
@@ -581,8 +605,7 @@
 <p><img src="/images/lirvsfm.png" alt="img"></p>
 <p><strong>FM模型演化：</strong></p>
 <p><img src="/images/fmhis.png" alt="img"></p>
-<p>FFM(Field Factorization Machine)是在FM的基础上引入了“场（Field）”的概念而形成的新模型。在FM中计算特征 <img src="https://www.zhihu.com/equation?tex=x_i" alt="[公式]"> 与其他特征的交叉影响时，使用的都是同一个隐向量 <img src="https://www.zhihu.com/equation?tex=V_i" alt="[公式]"> 。而FFM将特征按照事先的规则分为多个场(Field)，特征 <img src="https://www.zhihu.com/equation?tex=x_i" alt="[公式]"> 属于某个特定的场f。每个特征将被映射为多个隐向量 <img src="https://www.zhihu.com/equation?tex=V_%7Bi1%7D%2C%E2%80%A6%2CV_%7Bif%7D" alt="[公式]"> ，每个隐向量对应一个场。当两个特征 <img src="https://www.zhihu.com/equation?tex=x_i%2C+x_j" alt="[公式]"> ,组合时，用对方对应的场对应的隐向量做内积:</p>
-<span>$w_{i j}=\mathbf{v}_{i, f_{j}}^{T} \mathbf{v}_{j, f_{i}}$</span><!-- Has MathJax --> 
+<p>FFM(Field Factorization Machine)是在FM的基础上引入了“场（Field）”的概念而形成的新模型。在FM中计算特征<span>$x_i$</span><!-- Has MathJax --> 与其他特征的交叉影响时，使用的都是同一个隐向量 <span>$V_i$</span><!-- Has MathJax --> 。而FFM将特征按照事先的规则分为多个场(Field)，特征 <img src="https://www.zhihu.com/equation?tex=x_i" alt="[公式]"> 属于某个特定的场f。每个特征将被映射为多个隐向量 <span>$V_{i 1}, \ldots, V_{i f}$</span><!-- Has MathJax -->  ，每个隐向量对应一个场。当两个特征<span>$x_i,x_j$</span><!-- Has MathJax -->  ,组合时，用对方对应的场对应的隐向量做内积:<span>$w_{i j}=\mathbf{v}_{i, f_{j}}^{T} \mathbf{v}_{j, f_{i}}$</span><!-- Has MathJax --> </p>
 <p>FFM 由于引入了场，使得每两组特征交叉的隐向量都是独立的，可以取得更好的组合效果， FM 可以看做只有一个场的 FFM。</p>
 <p>DeepFM模型将深度神经网络模型与FM模型结合，模型结构如下图所示：</p>
 <p><img src="/images/deepfm.png" alt="img"></p>
@@ -613,22 +636,24 @@
 <p><strong>XGBoost优缺点：</strong></p>
 <p><img src="/images/xgyqd.png" alt="img"></p>
 <p><strong>XGBoost vs GBDT:</strong></p>
-<p><img src="/images/xgbsgb.png" alt="img"></p>
+<p><img src="/images/xgbvsgb.png" alt="img"></p>
 <p><strong>XGBoost相关论文：</strong></p>
 <p><img src="/images/xgbhis.png" alt="img"></p>
 <h2 id="Wide-amp-Deep"><a href="#Wide-amp-Deep" class="headerlink" title="Wide&amp;Deep"></a>Wide&amp;Deep</h2><p>W&amp;D模型由谷歌在DLRS 2016会议上提出，其核心思想是结合线性模型的记忆能力和深度模型的泛化能力，从而提升整体性能。记忆能力是指模型直接从历史数据中发现相关性，学习规则的能力，泛化能力指相关性的传递，即模型可以发现在历史数据中很少或者没有出现的特征组合、相关性。以点外卖为例，记忆能力可以推荐我们点过的外卖，或者与点过外卖强相关的外卖（类似商家、同样菜系），而泛化能力可以增加口味的多样性，例如每次都推煲仔饭也总有吃够的时候，泛化能力可以提供一些其他选择，例如烤鱼什么的。</p>
 <h3 id="模型原理"><a href="#模型原理" class="headerlink" title="模型原理"></a>模型原理</h3><p>谷歌提出的Wide&amp;Deep模型中Wide部分使用广义线性模型LR，Deep部分使用深度神经网络DNN，值得注意的是Wide&amp;Deep不仅仅可以当做一个模型，而是可以作为一个推荐模型的框架，如本文开头的常见推荐模型图所示，我们可以对Wide和Deep部分进行改进。</p>
 <p>谷歌提出的W&amp;D模型如下图所示：</p>
 <p><img src="/images/wdmodel.png" alt="img"></p>
-<p>Wide部分使用广义线性模型：</p>
-<span>$y=\boldsymbol{w}^{T}[\boldsymbol{x}, \phi(\boldsymbol{x})]+b$</span><!-- Has MathJax --> 
-<p>其中x表示原始特征，<span>$\phi(\boldsymbol{x})$</span><!-- Has MathJax --> 表示交叉特征。交叉特征定义为：</p>
-<span>$\phi_{k}(\mathbf{x})=\prod_{i=1}^{d} x_{i}^{c_{k i}} \quad c_{k i} \in\{0,1\}$</span><!-- Has MathJax --> 
-<span>$c_{k i}$</span><!-- Has MathJax --> 是一个布尔变量，当第i个特征是第k个变化的一部分时取1。对于二值特征，组合后的特征当且仅当原特征都为1时取1，这为广义线性模型增加了非线性能力。<br><br>Deep部分使用前馈神经网络：<br><br><span>$\boldsymbol{a}^{l+1}=f\left(\boldsymbol{W}^{l} \boldsymbol{a}^{l}+\boldsymbol{b}^{l}\right)$</span><!-- Has MathJax -->
+<p>Wide部分使用广义线性模型：<span>$y=\boldsymbol{w}^{T}[\boldsymbol{x}, \phi(\boldsymbol{x})]+b$</span><!-- Has MathJax --> </p>
+<p>其中x表示原始特征，<span>$\phi(\boldsymbol{x})$</span><!-- Has MathJax --> 表示交叉特征。交叉特征定义为：<span>$\phi_{k}(\mathbf{x})=\prod_{i=1}^{d} x_{i}^{c_{k i}} \quad c_{k i} \in\{0,1\}$</span><!-- Has MathJax --> </p>
+<span>$c_{k i}$</span><!-- Has MathJax --> 是一个布尔变量，当第i个特征是第k个变化的一部分时取1。对于二值特征，组合后的特征当且仅当原特征都为1时取1，这为广义线性模型增加了非线性能力。<br><br>Deep部分使用前馈神经网络：<span>$\boldsymbol{a}^{l+1}=f\left(\boldsymbol{W}^{l} \boldsymbol{a}^{l}+\boldsymbol{b}^{l}\right)$</span><!-- Has MathJax -->
 <p>其中<span>$\boldsymbol{a}^{l}, \boldsymbol{b}^{l}, \boldsymbol{W}^{l}$</span><!-- Has MathJax -->分别表示第l层的激活值、偏置和权重，f是激活函数。</p>
 <p>模型最终输出为：</p>
-<span>$P(Y=1 \mid \mathbf{x})=\sigma\left(\mathbf{w}_{\text {wide }}^{T}[\mathbf{x}, \phi(\mathbf{x})]+\mathbf{w}_{\text {deep }}^{T} a^{\left(l_{f}\right)}+b\right)$</span><!-- Has MathJax -->
-<p>其中Y表示分类标签，<img src="https://www.zhihu.com/equation?tex=%5Csigma%28.%29" alt="[公式]"> 是sigmoid函数， <img src="https://www.zhihu.com/equation?tex=%5Cphi%28x%29" alt="[公式]"> 是原始特征x的跨产品变换，b是偏置项， <img src="https://www.zhihu.com/equation?tex=w_%7Bwide%7D" alt="[公式]"> 是wide模型的权重向量， <img src="https://www.zhihu.com/equation?tex=w_%7Bdeep%7D" alt="[公式]"> 是用于最终激活函数 <img src="https://www.zhihu.com/equation?tex=a%5E%7B%28l_f%29%7D" alt="[公式]"> 的权重。</p>
+<span>$$\begin{gather*}
+
+P(Y=1 \mid \mathbf{x})=\sigma\left(\mathbf{w}_{\text {wide }}^{T}[\mathbf{x}, \phi(\mathbf{x})]+\mathbf{w}_{\text {deep }}^{T} a^{\left(l_{f}\right)}+b\right)
+
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>其中Y表示分类标签，<span>$\sigma(.)$</span><!-- Has MathJax -->是sigmoid函数，<span>$\phi(x)$</span><!-- Has MathJax -->是原始特征x的跨产品变换，b是偏置项， <span>$w_wide$</span><!-- Has MathJax -->是wide模型的权重向量， <span>$w_deep$</span><!-- Has MathJax -->是用于最终激活函数 <span>$a^(lf)$</span><!-- Has MathJax -->的权重。</p>
 <p>损失函数选取logistic loss，也就是经常使用的交叉熵损失函数。</p>
 <h3 id="模型特征"><a href="#模型特征" class="headerlink" title="模型特征"></a>模型特征</h3><p>谷歌将模型应用于Google Play商店的APP推荐，使用了年龄、已下载APP和设备类型等特征。注意Wide部分选择了记忆用户已安装的APP与被曝光APP之前的相关性，旨在推荐一些强相关的APP，可以理解为用户装了某个APP后还会装什么，例如安装了淘宝后推荐天猫、拼多多。</p>
 <p><img src="/images/wdfeature.jpg" alt="img"></p>
@@ -654,8 +679,12 @@
    \alpha s &amp; \text { if } s \leq 0
    \end{array}=p(s) \cdot s+(1-p(s)) \cdot \alpha s\right.$$</span><!-- Has MathJax --> 
 <p>当每层的输入遵循不同分布时，这可能不适合。作者设计了一个新的激活函数Dice：</p>
-<span>$f(s)=p(s) \cdot s+(1-p(s)) \cdot \alpha s, p(s)=\frac{1}{1+e^{-\frac{s-E[s]}{\sqrt{\operatorname{var}[s]+\epsilon}}}}$</span><!-- Has MathJax -->
-<p>其中E[s]和Var[s]分别表示均值和方差，<img src="https://www.zhihu.com/equation?tex=%5Cepsilon" alt="[公式]">是一个常量，值为<span>$10^-8$</span><!-- Has MathJax --> 。Dice的关键思想是根据输入数据的分布来自适应地调整修正点，其值设置为输入的平均值。当<img src="https://www.zhihu.com/equation?tex=E%5Bs%5D%3D0%2C+Var%5Bs%5D%3D0" alt="[公式]">则退化为PRelu。</p>
+<span>$$\begin{gather*}
+
+f(s)=p(s) \cdot s+(1-p(s)) \cdot \alpha s, p(s)=\frac{1}{1+e^{-\frac{s-E[s]}{\sqrt{\operatorname{var}[s]+\epsilon}}}}
+
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>其中E[s]和Var[s]分别表示均值和方差，<span>$\epsilon$</span><!-- Has MathJax -->是一个常量，值为<span>$10^-8$</span><!-- Has MathJax --> 。Dice的关键思想是根据输入数据的分布来自适应地调整修正点，其值设置为输入的平均值。当<span>$E[s]=0,Var[s]=0$</span><!-- Has MathJax -->则退化为PRelu。</p>
 <p>两个函数图像如下图所示：</p>
 </li>
 </ol>
@@ -665,17 +694,17 @@
 <p>那么从Wide模型到Deep模型的迭代过程大致是什么样的，各个模型有何优缺点呢？这里引用<a href="http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" target="_blank" rel="external">搜索排序算法</a>一文的图片：</p>
 <p><img width="700" src="/images/search_process.png"></p>
 <p>从迭代过程看，模型特征表征能力逐渐增强，复杂度逐渐变高。值得注意的是由于深度模型十分复杂，可解释性很差，所以Wide模型在特定场景下是有用武之地的。例如谷歌论文里Wide部分用于APP的初始推荐，搜索排序系统中的时效模型，Wide模型适用于明确规则、便于人工干预的场景。近些年来的研究主要集中在Deep部分，开始应用Attention机制、GRU等在CV和NLP领域常用的技术。但在工业界，LR、GBDT目前还是在广泛使用，因为深度模型的训练和上线部署都比较复杂，如果效果没有得到显著提升，使用深度模型的性价比不高。所以需要针对特定场景和数据进行仔细分析，选择合适的模型。</p>
-<h1 id="开源代码"><a href="#开源代码" class="headerlink" title="开源代码"></a>开源代码</h1><p>LR: <a href="https://github.com/scikit-learn/scikit-learn/blob/master/examples/linear_model/plot_iris_logistic.py" target="_blank" rel="external">https://github.com/scikit-learn/scikit-learn/blob/master/examples/linear_model/plot_iris_logistic.py</a></p>
-<p>GBDT、XGBoost:<a href="https://github.com/dmlc/xgboost" target="_blank" rel="external">https://github.com/dmlc/xgboost</a></p>
-<p>FM: <a href="https://github.com/srendle/libfm" target="_blank" rel="external">https://github.com/srendle/libfm</a></p>
-<p>Wide&amp;Deep:<a href="https://github.com/Lapis-Hong/wide_deep" target="_blank" rel="external">https://github.com/Lapis-Hong/wide_deep</a></p>
-<p>DIN:<a href="https://github.com/zhougr1993/DeepInterestNetwork" target="_blank" rel="external">https://github.com/zhougr1993/DeepInterestNetwork</a></p>
+<h1 id="开源代码"><a href="#开源代码" class="headerlink" title="开源代码"></a>开源代码</h1><p>LR:  <a href="https://github.com/scikit-learn/scikit-learn/blob/master/examples/linear_model/plot_iris_logistic.py" target="_blank" rel="external">https://github.com/scikit-learn/scikit-learn/blob/master/examples/linear_model/plot_iris_logistic.py</a></p>
+<p>GBDT、XGBoost: <a href="https://github.com/dmlc/xgboost" target="_blank" rel="external">https://github.com/dmlc/xgboost</a></p>
+<p>FM:  <a href="https://github.com/srendle/libfm" target="_blank" rel="external">https://github.com/srendle/libfm</a></p>
+<p>Wide&amp;Deep: <a href="https://github.com/Lapis-Hong/wide_deep" target="_blank" rel="external">https://github.com/Lapis-Hong/wide_deep</a></p>
+<p>DIN: <a href="https://github.com/zhougr1993/DeepInterestNetwork" target="_blank" rel="external">https://github.com/zhougr1993/DeepInterestNetwork</a></p>
 <h1 id="模型论文"><a href="#模型论文" class="headerlink" title="模型论文"></a>模型论文</h1><p>LR: <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/predictingclicks.pdf" target="_blank" rel="external">https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/predictingclicks.pdf</a></p>
 <p>FM: <a href="https://www.csie.ntu.edu.tw/~b97053/paper/Rendle2010FM.pdf" target="_blank" rel="external">https://www.csie.ntu.edu.tw/~b97053/paper/Rendle2010FM.pdf</a></p>
-<p>GBDT:<a href="https://projecteuclid.org/download/pdf_1/euclid.aos/1013203451" target="_blank" rel="external">https://projecteuclid.org/download/pdf_1/euclid.aos/1013203451</a></p>
-<p>XGBoost:<a href="http://dmlc.cs.washington.edu/data/pdf/XGBoostArxiv.pdf" target="_blank" rel="external">http://dmlc.cs.washington.edu/data/pdf/XGBoostArxiv.pdf</a></p>
-<p>Wide&amp;Deep:<a href="https://arxiv.org/pdf/1606.07792.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1606.07792.pdf</a></p>
-<p>DIN:<a href="https://arxiv.org/pdf/1706.06978.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1706.06978.pdf</a></p>
+<p>GBDT: <a href="https://projecteuclid.org/download/pdf_1/euclid.aos/1013203451" target="_blank" rel="external">https://projecteuclid.org/download/pdf_1/euclid.aos/1013203451</a></p>
+<p>XGBoost: <a href="http://dmlc.cs.washington.edu/data/pdf/XGBoostArxiv.pdf" target="_blank" rel="external">http://dmlc.cs.washington.edu/data/pdf/XGBoostArxiv.pdf</a></p>
+<p>Wide&amp;Deep: <a href="https://arxiv.org/pdf/1606.07792.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1606.07792.pdf</a></p>
+<p>DIN: <a href="https://arxiv.org/pdf/1706.06978.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1706.06978.pdf</a></p>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://zhuanlan.zhihu.com/p/80887841" target="_blank" rel="external">线性回归模型的概念、原理、代码和应用</a></p>
 <p><a href="https://zhuanlan.zhihu.com/p/151036015" target="_blank" rel="external">LR逻辑回归模型的原理、推导、代码和应用</a></p>
 <p><a href="https://www.cnblogs.com/XDU-Lakers/p/11853034.html" target="_blank" rel="external">线性模型之逻辑回归(LR)(原理、公式推导、模型对比、常见面试点)</a></p>
