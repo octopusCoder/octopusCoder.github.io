@@ -257,6 +257,143 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/06/论文简读-Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/06/论文简读-Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences/" itemprop="url">论文简读-Bilateral Multi-Perspective Matching for Natural Language Sentences</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-06T11:30:16+08:00">
+                2017-08-06
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>论文发表于2017.7.14，作者为Zhiguo Wang等人，属于IBM Watson实验中心，截止2017.8.6，在TREC QA数据集上测试准确率排名第一。论文的主要目标是解决自然语言句子匹配的问题，在释义识别、自然语言推断和答案选择三个方面均取得了state-of-the-art水平。</p>
+<h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p><img src="/images/bimpm-model.png" alt="模型结构图"></p>
+<p>模型自下而上分为五层，分别为单词表示层、文法表示层、匹配层、聚合层和预测层，其中匹配层为模型的核心，文中共提出了四种匹配策略，这里的匹配也就是Attention机制。<br>假设要匹配的句子分别为P和Q。下面以P-&gt;Q方向为例进行说明，Q-&gt;P方向同理。</p>
+<h2 id="单词表示层"><a href="#单词表示层" class="headerlink" title="单词表示层"></a>单词表示层</h2><p>单词级别使用了GloVe模型，字符级别对字符embedding进行随机初始化，逐个输入LSTM，在训练中进行学习，由单词中的字符组成单词的向量表示。</p>
+<h2 id="文法表示层"><a href="#文法表示层" class="headerlink" title="文法表示层"></a>文法表示层</h2><p>使用双向LSTM对P和Q进行编码。</p>
+<h2 id="匹配层"><a href="#匹配层" class="headerlink" title="匹配层"></a>匹配层</h2><p>本层是模型的核心层，包含四种匹配策略，分别为：Full-Matching、Maxpooling-Matching、Attentive-Matching和 Max-Attentive-Matching。在介绍四种匹配策略之前，先对论文的关键点Multi-Perspective进行说明。</p>
+<h3 id="Multi-Perspective"><a href="#Multi-Perspective" class="headerlink" title="Multi-Perspective"></a>Multi-Perspective</h3><p>l表示perspectives数，W是一个可训练的参数矩阵，维度为l * d。<br><img src="/images/bimpm-eql3.png" alt="eql-3"><br><img src="/images/bimpm-eql4.png" alt="eql-4"><br>根据上面的公式，每两个向量的匹配结果为一个l维的向量m，m = [m1,…,mk,…,ml]。</p>
+<h3 id="four-matching-strategies"><a href="#four-matching-strategies" class="headerlink" title="four matching strategies"></a>four matching strategies</h3><p><img src="/images/bimpm-match.png" alt="four"></p>
+<h4 id="Full-Matching"><a href="#Full-Matching" class="headerlink" title="Full-Matching"></a>Full-Matching</h4><p><img src="/images/fm.png" alt="fm"><br>P中每一个前向(反向)文法向量与Q前向(反向)的最后一个时间步的输出进行匹配。</p>
+<h4 id="Maxpooling-Matching"><a href="#Maxpooling-Matching" class="headerlink" title="Maxpooling-Matching"></a>Maxpooling-Matching</h4><p><img src="/images/maxpool.png" alt="maxpool"><br>P中每一个前向(反向)文法向量与Q前向(反向)每一个时间步的输出进行匹配，最后仅保留匹配最大的结果向量。</p>
+<h4 id="Attentive-Matching"><a href="#Attentive-Matching" class="headerlink" title="Attentive-Matching"></a>Attentive-Matching</h4><p>先计算P中每一个前向(反向)文法向量与Q中每一个前向(反向)文法向量的余弦相似度，然后利用余弦相似度作为权重对Q各个文法向量进行加权求平均作为Q的整体表示，最后P中每一个前向(后向)文法向量与Q对应的整体表示进行匹配。<br><img src="/images/calcos.png" alt="calcos"><br><img src="/images/mean.png" alt="mean"><br><img src="/images/ammatch.png" alt="ammatch"></p>
+<h4 id="Max-Attentive-Matching"><a href="#Max-Attentive-Matching" class="headerlink" title="Max-Attentive-Matching"></a>Max-Attentive-Matching</h4><p>与Attentive-Matching类似，不同的是不进行加权求和，而是直接取Q中余弦相似度最高的单词文法向量作为Q整体向量表示，与P中每一个前向(反向)文法向量进行匹配。</p>
+<h2 id="聚合层"><a href="#聚合层" class="headerlink" title="聚合层"></a>聚合层</h2><p>利用双向LSTM对匹配层输出的匹配向量进行处理，取得P、Q前向和后向最后一个时间步的输出向量，连接后输入预测层。</p>
+<h2 id="预测层"><a href="#预测层" class="headerlink" title="预测层"></a>预测层</h2><p>利用一个两层的前向神经网络处理固定长度的匹配向量，在输出层应用softmax函数获得Pr(y|P,Q)。</p>
+<h1 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h1><h2 id="the-influence-of-multi-perspective-cosine-matching-function"><a href="#the-influence-of-multi-perspective-cosine-matching-function" class="headerlink" title="the influence of multi-perspective cosine matching function"></a>the influence of multi-perspective cosine matching function</h2><p><img src="/images/lres.png" alt="lres"><br>l=0时相当于直接计算余弦相似度。</p>
+<h2 id="Experiments-on-Answer-Sentence-Selection"><a href="#Experiments-on-Answer-Sentence-Selection" class="headerlink" title="Experiments on Answer Sentence Selection"></a>Experiments on Answer Sentence Selection</h2><p><img src="/images/trecqa.png" alt="trecqa"><br>截止2017.8.7，在TREC-QA数据集上的表现算是并列第一吧。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/27/论文简读-Reading-Wikipedia-to-Answer-Open-Domain-Questions/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1045,7 +1182,7 @@ public:
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1058,7 +1195,7 @@ public:
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>

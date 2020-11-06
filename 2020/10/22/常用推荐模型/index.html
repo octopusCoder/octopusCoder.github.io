@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="推荐," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="搜索和推荐系统一般包含召回和排序两个阶段，搜索排序主要关注相关性，常见的模型可以参考搜索排序算法。推荐的排序则关注用户偏好，一般用CTR点击率来描述，常用的推荐模型有：   图片来源：推荐算法炼丹笔记：CTR点击率预估系列入门手册  本文重点关注应用较为广泛的LR、GBDT、FM、Wide&amp;amp;Deep和DIN模型，其中LR、GBDT和FM部分大部分图片引用自刘启林的机器学习笔记。 模型介绍L">
+<meta name="keywords" content="推荐">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用推荐模型">
+<meta property="og:url" content="http://yoursite.com/2020/10/22/常用推荐模型/index.html">
+<meta property="og:site_name" content="小菜鸡">
+<meta property="og:description" content="搜索和推荐系统一般包含召回和排序两个阶段，搜索排序主要关注相关性，常见的模型可以参考搜索排序算法。推荐的排序则关注用户偏好，一般用CTR点击率来描述，常用的推荐模型有：   图片来源：推荐算法炼丹笔记：CTR点击率预估系列入门手册  本文重点关注应用较为广泛的LR、GBDT、FM、Wide&amp;amp;Deep和DIN模型，其中LR、GBDT和FM部分大部分图片引用自刘启林的机器学习笔记。 模型介绍L">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/rec1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/lrjs.png">
+<meta property="og:image" content="http://yoursite.com/images/lryl.png">
+<meta property="og:image" content="http://yoursite.com/images/sigmoid.png">
+<meta property="og:image" content="http://yoursite.com/images/lrre.png">
+<meta property="og:image" content="http://yoursite.com/images/lrjs-2.png">
+<meta property="og:image" content="http://yoursite.com/images/lirejc.png">
+<meta property="og:image" content="http://yoursite.com/images/dylire.png">
+<meta property="og:image" content="http://yoursite.com/images/liremodel-1.png">
+<meta property="og:image" content="http://yoursite.com/images/lrbincl.png">
+<meta property="og:image" content="http://yoursite.com/images/lrtrain.png">
+<meta property="og:image" content="http://yoursite.com/images/maxlike.png">
+<meta property="og:image" content="http://yoursite.com/images/lrgd-1.png">
+<meta property="og:image" content="http://yoursite.com/images/lrgd-2.png">
+<meta property="og:image" content="http://yoursite.com/images/lryqd.png">
+<meta property="og:image" content="http://yoursite.com/images/lirvslor.png">
+<meta property="og:image" content="http://yoursite.com/images/dxslre.png">
+<meta property="og:image" content="http://yoursite.com/images/smre.png">
+<meta property="og:image" content="http://yoursite.com/images/liremodel.png">
+<meta property="og:image" content="http://yoursite.com/images/fmzh.png">
+<meta property="og:image" content="http://yoursite.com/images/dxshg.png">
+<meta property="og:image" content="http://yoursite.com/images/mfyl-wb.png">
+<meta property="og:image" content="http://yoursite.com/images/fmyl-wb.png">
+<meta property="og:image" content="http://yoursite.com/images/mf2fm.png">
+<meta property="og:image" content="http://yoursite.com/images/fmyl.png">
+<meta property="og:image" content="http://yoursite.com/images/fmcompu.png">
+<meta property="og:image" content="http://yoursite.com/images/fmpro.png">
+<meta property="og:image" content="http://yoursite.com/images/fmtrans.png">
+<meta property="og:image" content="http://yoursite.com/images/fmtrain.png">
+<meta property="og:image" content="http://yoursite.com/images/fmtzgc.png">
+<meta property="og:image" content="http://yoursite.com/images/fmapply.png">
+<meta property="og:image" content="http://yoursite.com/images/fmyd.png">
+<meta property="og:image" content="http://yoursite.com/images/lirvsfm.png">
+<meta property="og:image" content="http://yoursite.com/images/fmhis.png">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=x_i">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=V_i">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=x_i">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=V_%7Bi1%7D%2C%E2%80%A6%2CV_%7Bif%7D">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=x_i%2C+x_j">
+<meta property="og:image" content="http://yoursite.com/images/deepfm.png">
+<meta property="og:image" content="http://yoursite.com/images/dt.png">
+<meta property="og:image" content="http://yoursite.com/images/xgyqd.png">
+<meta property="og:image" content="http://yoursite.com/images/xgbsgb.png">
+<meta property="og:image" content="http://yoursite.com/images/xgbhis.png">
+<meta property="og:image" content="http://yoursite.com/images/wdmodel.png">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5Csigma%28.%29">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5Cphi%28x%29">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=w_%7Bwide%7D">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=w_%7Bdeep%7D">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=a%5E%7B%28l_f%29%7D">
+<meta property="og:image" content="http://yoursite.com/images/wdfeature.jpg">
+<meta property="og:image" content="http://yoursite.com/images/din-base.png">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=%5Cepsilon">
+<meta property="og:image" content="https://www.zhihu.com/equation?tex=E%5Bs%5D%3D0%2C+Var%5Bs%5D%3D0">
+<meta property="og:image" content="http://yoursite.com/images/preludice.png">
+<meta property="og:image" content="http://yoursite.com/images/rec1.jpg">
+<meta property="og:image" content="http://yoursite.com/images/search_process.png">
+<meta property="og:updated_time" content="2020-11-06T10:01:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常用推荐模型">
+<meta name="twitter:description" content="搜索和推荐系统一般包含召回和排序两个阶段，搜索排序主要关注相关性，常见的模型可以参考搜索排序算法。推荐的排序则关注用户偏好，一般用CTR点击率来描述，常用的推荐模型有：   图片来源：推荐算法炼丹笔记：CTR点击率预估系列入门手册  本文重点关注应用较为广泛的LR、GBDT、FM、Wide&amp;amp;Deep和DIN模型，其中LR、GBDT和FM部分大部分图片引用自刘启林的机器学习笔记。 模型介绍L">
+<meta name="twitter:image" content="http://yoursite.com/images/rec1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/10/22/常用推荐模型/"/>
+
+
+
+
+
+  <title>常用推荐模型 | 小菜鸡</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-106410509-1', 'auto');
+  ga('send', 'pageview');
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小菜鸡</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/22/常用推荐模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">常用推荐模型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-22T18:07:04+08:00">
+                2020-10-22
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>搜索和推荐系统一般包含召回和排序两个阶段，搜索排序主要关注相关性，常见的模型可以参考<a href="http://octopuscoder.github.io/2020/01/19/搜索排序算法/" target="_blank" rel="external">搜索排序算法</a>。推荐的排序则关注用户偏好，一般用CTR点击率来描述，常用的推荐模型有：</p>
+<p><img src="/images/rec1.jpg" alt=""></p>
+<blockquote>
+<p>图片来源：<a href="https://zhuanlan.zhihu.com/p/243243145" target="_blank" rel="external">推荐算法炼丹笔记：CTR点击率预估系列入门手册</a></p>
+</blockquote>
+<p>本文重点关注应用较为广泛的LR、GBDT、FM、Wide&amp;Deep和DIN模型，其中LR、GBDT和FM部分大部分图片引用自<a href="http://www.zhihu.com/column/c_1151830542046711808" target="_blank" rel="external">刘启林的机器学习笔记</a>。</p>
+<h1 id="模型介绍"><a href="#模型介绍" class="headerlink" title="模型介绍"></a>模型介绍</h1><h2 id="LR"><a href="#LR" class="headerlink" title="LR"></a>LR</h2><p>下面从逻辑回归LR的假设、原理和训练等方面进行介绍。</p>
+<h3 id="LR假设"><a href="#LR假设" class="headerlink" title="LR假设"></a>LR假设</h3><ol>
+<li>数据服从伯努利分布；</li>
+<li>样本概率是Sigmoid函数。</li>
+</ol>
+<p><img src="/images/lrjs.png" alt=""></p>
+<h3 id="LR原理"><a href="#LR原理" class="headerlink" title="LR原理"></a>LR原理</h3><p>逻辑回归模型是由线性回归模型和Sigmoid函数共同组成的：</p>
+<p><img src="/images/lryl.png" alt="img"></p>
+<p>Sigmoid函数：</p>
+<p><img src="/images/sigmoid.png" alt="img"></p>
+<p>线性回归定义：</p>
+<p><img src="/images/lrre.png" alt="img"></p>
+<p>线性回归假设：</p>
+<p><img src="/images/lrjs-2.png" alt="img"></p>
+<p>一元线性回归：</p>
+<p><img src="/images/lirejc.png" alt="img"></p>
+<p>多元线性回归：</p>
+<p><img src="/images/dylire.png" alt="img"></p>
+<p>线性回归模型：</p>
+<p><img src="/images/liremodel-1.png" alt="img"></p>
+<p>回到逻辑回归，LR一般用于分类任务，其中二分类的原理如下：</p>
+<p><img src="/images/lrbincl.png" alt="img"></p>
+<h3 id="LR训练"><a href="#LR训练" class="headerlink" title="LR训练"></a>LR训练</h3><p>根据二项分布构建似然函数，为方便进行训练转化为对数似然函数，并通过极大似然估计方法进行参数训练：</p>
+<p><img src="/images/lrtrain.png" alt="img"></p>
+<p>极大似然估计是一种参数估计方法，使用的前提条件是：<strong>训练样本的分布能代表样本的真实分布。每个样本集中的样本都是所谓独立同分布的随机变量 ，且有充分的训练样本。</strong>极大似然估计（Maximum Likelihood Estimation）的原理可以用下图说明：</p>
+<p><img src="/images/maxlike.png" alt="img"></p>
+<p><strong>极大似然估计的目的：利用已知的样本结果，反推最有可能（最大概率）导致这样结果的参数值，即：“模型已定，参数未知”。</strong></p>
+<p>考虑一个样本集<span>$D=\left\{x_{1}, x_{2}, \ldots, x_{n}\right\}$</span><!-- Has MathJax -->，我们需要对参数<span>$\theta$</span><!-- Has MathJax -->进行估计。<strong>似然函数</strong>定义为联合密度函数<span>$p(D \mid \theta)$</span><!-- Has MathJax -->：</p>
+<span>$l(\theta)=p(D \mid \theta)=p\left(x_{1}, x_{2}, \ldots, x_{n} \mid \theta\right)=\prod_{i=1}^{n} p\left(x_{i} \mid \theta\right)$</span><!-- Has MathJax -->
+<p>如果<span>$\hat{\theta}$</span><!-- Has MathJax -->是参数空间中使似然函数最大的<span>$\theta$</span><!-- Has MathJax -->值，那么<span>$\hat{\theta}$</span><!-- Has MathJax -->应该就是“最可能”的参数值，<span>$\hat{\theta}$</span><!-- Has MathJax -->就是<span>$\theta$</span><!-- Has MathJax -->的极大似然估计量。联合密度函数连乘求导比较麻烦，一般取对数后转换为叠加进行求解。</p>
+<p>利用梯度下降法进行训练：</p>
+<p><img src="/images/lrgd-1.png" alt="img"></p>
+<p>LR梯度下降公式还是很简洁的：</p>
+<p><img src="/images/lrgd-2.png" alt="img"></p>
+<p>而在训练模型时，我们通常使用损失函数，这里如果取整个数据集上的平均对数似然损失可以得到：</p>
+<span>$J(w)=-\frac{1}{N} \ln L(w)$</span><!-- Has MathJax -->
+<p>显然在逻辑回归模型中，最大化似然函数和最小化损失函数其实是等价的。</p>
+<h3 id="LR扩展知识点"><a href="#LR扩展知识点" class="headerlink" title="LR扩展知识点"></a>LR扩展知识点</h3><h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><p><img src="/images/lryqd.png" alt="img"></p>
+<h4 id="对比线性回归"><a href="#对比线性回归" class="headerlink" title="对比线性回归"></a>对比线性回归</h4><p><img src="/images/lirvslor.png" alt="img"></p>
+<h4 id="多分类"><a href="#多分类" class="headerlink" title="多分类"></a>多分类</h4><p>多项逻辑回归</p>
+<p><img src="/images/dxslre.png" alt="img"></p>
+<p>Softmax回归：</p>
+<p><img src="/images/smre.png" alt="img"></p>
+<h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>为什么不适用平方误差作为损失函数？</p>
+<ol>
+<li>平方误差损失函数加上sigmoid的函数将会是一个非凸的函数，不易求解，会得到局部解，用对数似然函数得到高阶连续可导凸函数，可以得到最优解。</li>
+<li>对数损失函数更新起来很快，因为只和x，y有关，和sigmoid本身的梯度无关。如果使用平方损失函数，会发现梯度更新的速度和sigmod函数本身的梯度是很相关的。sigmod函数在它在定义域内的梯度都不大于0.25。这样训练会非常的慢。</li>
+</ol>
+<h4 id="特征离散化"><a href="#特征离散化" class="headerlink" title="特征离散化"></a>特征离散化</h4><p>为什么逻辑回归一般会进行特征离散化处理：</p>
+<ol>
+<li>非线性：逻辑回归属于广义线性模型，表达能力受限；单变量离散化为N个后，每个变量有单独的权重，相当于为模型引入了非线性，能够提升模型表达能力，加大拟合； 离散特征的增加和减少都很容易，易于模型的快速迭代；</li>
+<li>速度快：稀疏向量内积乘法运算速度快，计算结果方便存储，容易扩展；</li>
+<li>鲁棒性：离散化后的特征对异常数据有很强的鲁棒性：比如一个特征是年龄&gt;30是1，否则0。如果特征没有离散化，一个异常数据“年龄300岁”会给模型造成很大的干扰；</li>
+<li>方便交叉与特征组合：离散化后可以进行特征交叉，由M+N个变量变为M*N个变量，进一步引入非线性，提升表达能力；</li>
+<li>稳定性：特征离散化后，模型会更稳定，比如如果对用户年龄离散化，20-30作为一个区间，不会因为一个用户年龄长了一岁就变成一个完全不同的人。当然处于区间相邻处的样本会刚好相反，所以怎么划分区间是门学问；</li>
+<li>简化模型：特征离散化以后，起到了简化了逻辑回归模型的作用，降低了模型过拟合的风险。</li>
+</ol>
+<h4 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h4><p>用于避免过拟合，一般采用L1或L2正则化。L1 正则的本质其实是为模型增加了“模型参数服从零均值拉普拉斯分布”这一先验知识，L1会趋向于产生少量的特征，而其他的特征都是0(稀疏性)。 L2 正则的本质其实是为模型增加了“模型参数服从零均值正态分布”这一先验知识，L2会选择更多的特征，这些特征都会接近于0。L1在特征选择时候非常有用，而L2只是一种规则化。L1范数可以使权值稀疏，方便特征提取。L2范数可以防止过拟合，提升模型的泛化能力。</p>
+<h2 id="FM"><a href="#FM" class="headerlink" title="FM"></a>FM</h2><p>FM（Factor Machine，因子分解机）是一种基于矩阵分解的机器学习算法，用于解决大规模稀疏矩阵中特征组合问题，可以看做针对上文中提到的线性模型的改进，回顾一下线性回归模型：</p>
+<p><img src="/images/liremodel.png" alt="img"></p>
+<p>线性回归模型假设特征之间是相互独立的、不相关的。但在现实的某些场景中，特征之间往往是相关的，而不是相互独立的。比如&lt;女人&gt;和&lt;化妆品&gt;，&lt;男人&gt;与&lt;足球&gt;等，所以需要特征组合。一种简单的做法是将特征进行两两组合，如下图所示：</p>
+<p><img src="/images/fmzh.png" alt="img"></p>
+<p>我们可以利用二阶多项式回归模型对此进行建模：</p>
+<p><img src="/images/dxshg.png" alt="img"></p>
+<h3 id="矩阵分解-Matrix-Factorization-vs-因子分解机-Factor-Machine"><a href="#矩阵分解-Matrix-Factorization-vs-因子分解机-Factor-Machine" class="headerlink" title="矩阵分解(Matrix Factorization) vs 因子分解机(Factor Machine)"></a>矩阵分解(Matrix Factorization) vs 因子分解机(Factor Machine)</h3><p>MF（Matrix Factorization，矩阵分解）在推荐系统已经得到广泛应用，最典型的代表就是协同过滤模型。其核心思想是通过两个低维小矩阵（一个代表用户embedding矩阵，一个代表物品embedding矩阵）的乘积计算，来模拟真实用户点击或评分产生的大的协同信息稀疏矩阵，本质上是编码了用户和物品协同信息的降维模型，如下图所示：</p>
+<p><img src="/images/mfyl-wb.png" alt="img"></p>
+<blockquote>
+<p>图片来源：<a href="https://zhuanlan.zhihu.com/p/58160982" target="_blank" rel="external">推荐系统召回四模型之：全能的FM模型</a></p>
+</blockquote>
+<p>当训练完成，每个用户和物品得到对应的低维embedding表达后，如果要预测某个<span>$User_{i}$</span><!-- Has MathJax -->对<span>$Item_{j}$</span><!-- Has MathJax --> 的评分的时候，只要它们做个内积计算<span>$&lt;User_{i},Item_{j}&gt;$</span><!-- Has MathJax --> ，这个得分就是预测得分:</p>
+<p><img src="/images/fmyl-wb.png" alt="img"></p>
+<p>MF和FM不仅在名字简称上看着有点像，其实他们本质思想上也有很多相同点。本质上，MF模型是FM模型的特例，MF可以被认为是只有User ID 和Item ID这两个特征Fields的FM模型，MF将这两类特征通过矩阵分解，来达到将这两类特征embedding化表达的目的。而FM则可以看作是MF模型的进一步拓展，除了User ID和Item ID这两类特征外，很多其它类型的特征，都可以进一步融入FM模型里，它将所有这些特征转化为embedding低维向量表达，并计算任意两个特征embedding的内积，就是特征组合的权重，如下图所示：</p>
+<p><img src="/images/mf2fm.png" alt="img"></p>
+<h3 id="FM模型原理"><a href="#FM模型原理" class="headerlink" title="FM模型原理"></a>FM模型原理</h3><p>从下图中公式可以看出，公式前半部分是线性模型，后半部分是特征交叉项。因此多项式回归模型的特征组合能力要强于线性模型，而当交叉项参数全部为0时退化为普通的线性模型。由于实际场景中，数据往往非常稀疏，因此对于二次项参数的训练是很困难的。因为对于每个参数<span>$w_{i,j}$</span><!-- Has MathJax -->需要大量的<span>$x_{i}$</span><!-- Has MathJax -->和<span>$x_{j}$</span><!-- Has MathJax -->均不为0的样本进行训练，但由于往往样本比较稀疏，这很容易导致参数<span>$w_{i,j}$</span><!-- Has MathJax -->不准确，最终将严重影响模型的性能。解决这一问题的方法是给每个特征分量<span>$x_{i}$</span><!-- Has MathJax -->引入一个辅助向量<span>$v_{i}=(v_{1},v_{2},...,v_{k})$</span><!-- Has MathJax -->，然后利用<span>$v{i}*v{j}$</span><!-- Has MathJax -->对参数<span>$w_{i,j}$</span><!-- Has MathJax -->进行估计，如下图所示：</p>
+<p><img src="/images/fmyl.png" alt="img"></p>
+<h3 id="FM模型训练"><a href="#FM模型训练" class="headerlink" title="FM模型训练"></a>FM模型训练</h3><p><img src="/images/fmcompu.png" alt="img"></p>
+<p>对于FM原始模型可以看到参数的复杂度是<span>$O(n^2)$</span><!-- Has MathJax -->的，那么如何降低这一复杂度呢？可以通过下面的过程进行化简：</p>
+<p><img src="/images/fmpro.png" alt="img"></p>
+<p>化简后的参数复杂度为<span>$O(n)$</span><!-- Has MathJax -->，降低至线性复杂度：</p>
+<p><img src="/images/fmtrans.png" alt="img"></p>
+<p><strong>FM模型训练：</strong></p>
+<p>采用随机梯度下降：</p>
+<p><img src="/images/fmtrain.png" alt="img"></p>
+<p><strong>FM模型特征工程：</strong></p>
+<p><img src="/images/fmtzgc.png" alt="img"></p>
+<h3 id="FM模型应用"><a href="#FM模型应用" class="headerlink" title="FM模型应用"></a>FM模型应用</h3><p>FM模型可应用于回归、分类和排名任务中，参考原论文中的应用方式：</p>
+<p><img src="/images/fmapply.png" alt="img"></p>
+<p><strong>回归任务可使用平方误差损失函数：</strong></p>
+<span>$\text {Loss}=\frac{1}{2} \sum_{i=1}^{n}\left(\hat{y}_{i}-y_{i}\right)^{2}$</span><!-- Has MathJax --> 
+<p>求偏导，得到：</p>
+<span>$\frac{\partial L}{\partial \hat{y}(x)}=(\hat{y}(x)-y)$</span><!-- Has MathJax --> 
+<p>则梯度为：</p>
+<span>$\frac{\partial L}{\partial \theta}=(\hat{y}(x)-y) * \frac{\partial \hat{y}(x)}{\partial \theta}$</span><!-- Has MathJax --> 
+<p><strong>分类任务可使用对数损失函数：</strong></p>
+<span>$\text { Loss }=\frac{1}{2} \sum_{i=1}^{n}-\ln \left(\sigma\left(\hat{y}_{i} y_{i}\right)\right)^{2}$</span><!-- Has MathJax --> 
+<p>其中：</p>
+<span>$\sigma(\hat{y} y)=\frac{1}{1+e^{-\hat{y} y}}$</span><!-- Has MathJax --> 
+<span>$\frac{\partial(\sigma(\hat{y} y))}{\partial \hat{y}}=\sigma(\hat{y} y) *[1-\sigma(\hat{y} y)] * y$</span><!-- Has MathJax --> 
+<p>对数损失函数的梯度为：</p>
+<span>$$\begin{array}{c}
+\frac{\partial L}{\partial \theta}=\frac{1}{\sigma(\hat{y} y)} * \sigma(\hat{y} y) *\left[1-\sigma(\hat{y} y] * y * \frac{\partial \hat{y}(x)}{\partial \theta}\right. \\
+=[1-\sigma(\hat{y} y)] * y * \frac{\partial \hat{y}(x)}{\partial \theta}
+\end{array}$$</span><!-- Has MathJax --> 
+<p><strong>排序任务</strong>可先利用FM模型获得分数，然后利用pairwise分类损失函数进行训练，当然也有多种求解方式，可参考<a href="http://octopuscoder.github.io/2020/01/19/搜索排序算法/" target="_blank" rel="external">搜索排序算法</a>。</p>
+<h3 id="FM模型扩展知识点"><a href="#FM模型扩展知识点" class="headerlink" title="FM模型扩展知识点"></a>FM模型扩展知识点</h3><p><strong>FM模型优点：</strong></p>
+<p>适用于数据稀疏场景。</p>
+<p><img src="/images/fmyd.png" alt="img"></p>
+<p><strong>线性回归 vs FM：</strong></p>
+<p><img src="/images/lirvsfm.png" alt="img"></p>
+<p><strong>FM模型演化：</strong></p>
+<p><img src="/images/fmhis.png" alt="img"></p>
+<p>FFM(Field Factorization Machine)是在FM的基础上引入了“场（Field）”的概念而形成的新模型。在FM中计算特征 <img src="https://www.zhihu.com/equation?tex=x_i" alt="[公式]"> 与其他特征的交叉影响时，使用的都是同一个隐向量 <img src="https://www.zhihu.com/equation?tex=V_i" alt="[公式]"> 。而FFM将特征按照事先的规则分为多个场(Field)，特征 <img src="https://www.zhihu.com/equation?tex=x_i" alt="[公式]"> 属于某个特定的场f。每个特征将被映射为多个隐向量 <img src="https://www.zhihu.com/equation?tex=V_%7Bi1%7D%2C%E2%80%A6%2CV_%7Bif%7D" alt="[公式]"> ，每个隐向量对应一个场。当两个特征 <img src="https://www.zhihu.com/equation?tex=x_i%2C+x_j" alt="[公式]"> ,组合时，用对方对应的场对应的隐向量做内积:</p>
+<span>$w_{i j}=\mathbf{v}_{i, f_{j}}^{T} \mathbf{v}_{j, f_{i}}$</span><!-- Has MathJax --> 
+<p>FFM 由于引入了场，使得每两组特征交叉的隐向量都是独立的，可以取得更好的组合效果， FM 可以看做只有一个场的 FFM。</p>
+<p>DeepFM模型将深度神经网络模型与FM模型结合，模型结构如下图所示：</p>
+<p><img src="/images/deepfm.png" alt="img"></p>
+<p>模型分为两部分：FM（左边）和DNN（右边）：</p>
+<ol>
+<li>首先利用FM进行embedding得到Dense Embeddings的输出;</li>
+<li>将Dense Embeddings的结果作为左边FM模型和右边DNN模型的输入。通过一定方式组合后，模型左边FM模块的输出完全模拟出了FM的效果，而右边的DNN模块则学到了比FM模块更高阶的交叉特征。</li>
+<li>最后将DNN和FM的结果组合后输出。</li>
+</ol>
+<h1 id="GBDT"><a href="#GBDT" class="headerlink" title="GBDT"></a>GBDT</h1><p>关于GBDT已在<a href="http://octopuscoder.github.io/2020/03/27/LambdaMART从放弃到入门/" target="_blank" rel="external">LambdaMART从放弃到入门</a>一文中进行了介绍，具体可参考其中MART部分对于BT和GBT的介绍，本文只提取一些要点。理解GBDT要从决策树DT开始，然后是BT，再到GBT。梯度提升树BT用于分类模型时，是<strong>梯度提升决策树<code>GBDT</code></strong>；用于回归模型时，是<strong>梯度提升回归树<code>GBRT</code>，</strong>二者的区别主要是损失函数不同。李航老师在《统计学习方法》一书中对决策树的基础和原理进行了详细介绍，网上也有不少笔记资料，例如<a href="https://blog.csdn.net/john_hongming/article/details/89453626" target="_blank" rel="external">李航统计学习方法-决策树</a>。这里做一下简单总结：</p>
+<ul>
+<li><p>决策树通常包含三个步骤：特征选择、自顶向下生成和自底向上剪枝；</p>
+</li>
+<li><p>决策树通常分为三种，如下图所示：</p>
+</li>
+</ul>
+<p><img src="/images/dt.png" alt="img"></p>
+<blockquote>
+<p>图片来自：<a href="https://zhuanlan.zhihu.com/p/121889349" target="_blank" rel="external">《统计学习方法》（第五章）决策树</a></p>
+</blockquote>
+<p>BT(Boosting Tree)提升树是以<strong>决策树</strong>为基本学习器的提升方法，它被认为是统计学习中性能最好的方法之一。提升树模型可以表示为决策树为基学习器的加法模型，其学习思想有点类似一打高尔夫球，先粗略的打一杆，然后在之前的基础上逐步靠近球洞，也就是说<strong>每一棵树学习的是之前所有树预测值和的残差</strong>，这个<strong>残差</strong>就是一个加预测值后得到真实值的累加量。不同问题的提升树学习算法主要区别在于使用的损失函数不同，（设预测值为<span>$\tilde{y}$</span><!-- Has MathJax --> ，真实值为<span>$\hat{y}$</span><!-- Has MathJax -->):</p>
+<ul>
+<li>回归问题：通常使用平方误差损失函数<span>$L(\tilde{y}, \hat{y})=(\tilde{y}-\hat{y})^{2}$</span><!-- Has MathJax -->。</li>
+<li>分类问题：通常使用指数损失函数：<span>$L(\tilde{y}, \hat{y})=e^{-\tilde{y} \hat{y}}$</span><!-- Has MathJax --></li>
+</ul>
+<p>而当损失函数不是平方损失函数或指数损失函数时，由于求导复杂，导致每一步优化非常麻烦。针对这个问题，<code>Freidman</code>提出了<strong>梯度提升树算法(GBT)</strong>，其核心思想是<strong>利用损失函数的负梯度在当前模型的值作为残差的近似值</strong>，本质上是<strong>对损失函数进行一阶泰勒展开</strong>，从而拟合一个回归树。</p>
+<p>XGBoost是对GBDT的进一步优化，主要改进点在于对损失函数进行二阶泰勒展开、加入正则化项和并行化处理等方面。</p>
+<p><strong>XGBoost优缺点：</strong></p>
+<p><img src="/images/xgyqd.png" alt="img"></p>
+<p><strong>XGBoost vs GBDT:</strong></p>
+<p><img src="/images/xgbsgb.png" alt="img"></p>
+<p><strong>XGBoost相关论文：</strong></p>
+<p><img src="/images/xgbhis.png" alt="img"></p>
+<h2 id="Wide-amp-Deep"><a href="#Wide-amp-Deep" class="headerlink" title="Wide&amp;Deep"></a>Wide&amp;Deep</h2><p>W&amp;D模型由谷歌在DLRS 2016会议上提出，其核心思想是结合线性模型的记忆能力和深度模型的泛化能力，从而提升整体性能。记忆能力是指模型直接从历史数据中发现相关性，学习规则的能力，泛化能力指相关性的传递，即模型可以发现在历史数据中很少或者没有出现的特征组合、相关性。以点外卖为例，记忆能力可以推荐我们点过的外卖，或者与点过外卖强相关的外卖（类似商家、同样菜系），而泛化能力可以增加口味的多样性，例如每次都推煲仔饭也总有吃够的时候，泛化能力可以提供一些其他选择，例如烤鱼什么的。</p>
+<h3 id="模型原理"><a href="#模型原理" class="headerlink" title="模型原理"></a>模型原理</h3><p>谷歌提出的Wide&amp;Deep模型中Wide部分使用广义线性模型LR，Deep部分使用深度神经网络DNN，值得注意的是Wide&amp;Deep不仅仅可以当做一个模型，而是可以作为一个推荐模型的框架，如本文开头的常见推荐模型图所示，我们可以对Wide和Deep部分进行改进。</p>
+<p>谷歌提出的W&amp;D模型如下图所示：</p>
+<p><img src="/images/wdmodel.png" alt="img"></p>
+<p>Wide部分使用广义线性模型：</p>
+<span>$y=\boldsymbol{w}^{T}[\boldsymbol{x}, \phi(\boldsymbol{x})]+b$</span><!-- Has MathJax --> 
+<p>其中x表示原始特征，<span>$\phi(\boldsymbol{x})$</span><!-- Has MathJax --> 表示交叉特征。交叉特征定义为：</p>
+<span>$\phi_{k}(\mathbf{x})=\prod_{i=1}^{d} x_{i}^{c_{k i}} \quad c_{k i} \in\{0,1\}$</span><!-- Has MathJax --> 
+<span>$c_{k i}$</span><!-- Has MathJax --> 是一个布尔变量，当第i个特征是第k个变化的一部分时取1。对于二值特征，组合后的特征当且仅当原特征都为1时取1，这为广义线性模型增加了非线性能力。<br><br>Deep部分使用前馈神经网络：<br><br><span>$\boldsymbol{a}^{l+1}=f\left(\boldsymbol{W}^{l} \boldsymbol{a}^{l}+\boldsymbol{b}^{l}\right)$</span><!-- Has MathJax -->
+<p>其中<span>$\boldsymbol{a}^{l}, \boldsymbol{b}^{l}, \boldsymbol{W}^{l}$</span><!-- Has MathJax -->分别表示第l层的激活值、偏置和权重，f是激活函数。</p>
+<p>模型最终输出为：</p>
+<span>$P(Y=1 \mid \mathbf{x})=\sigma\left(\mathbf{w}_{\text {wide }}^{T}[\mathbf{x}, \phi(\mathbf{x})]+\mathbf{w}_{\text {deep }}^{T} a^{\left(l_{f}\right)}+b\right)$</span><!-- Has MathJax -->
+<p>其中Y表示分类标签，<img src="https://www.zhihu.com/equation?tex=%5Csigma%28.%29" alt="[公式]"> 是sigmoid函数， <img src="https://www.zhihu.com/equation?tex=%5Cphi%28x%29" alt="[公式]"> 是原始特征x的跨产品变换，b是偏置项， <img src="https://www.zhihu.com/equation?tex=w_%7Bwide%7D" alt="[公式]"> 是wide模型的权重向量， <img src="https://www.zhihu.com/equation?tex=w_%7Bdeep%7D" alt="[公式]"> 是用于最终激活函数 <img src="https://www.zhihu.com/equation?tex=a%5E%7B%28l_f%29%7D" alt="[公式]"> 的权重。</p>
+<p>损失函数选取logistic loss，也就是经常使用的交叉熵损失函数。</p>
+<h3 id="模型特征"><a href="#模型特征" class="headerlink" title="模型特征"></a>模型特征</h3><p>谷歌将模型应用于Google Play商店的APP推荐，使用了年龄、已下载APP和设备类型等特征。注意Wide部分选择了记忆用户已安装的APP与被曝光APP之前的相关性，旨在推荐一些强相关的APP，可以理解为用户装了某个APP后还会装什么，例如安装了淘宝后推荐天猫、拼多多。</p>
+<p><img src="/images/wdfeature.jpg" alt="img"></p>
+<h3 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h3><p>Wide部分使用带L1正则化的FTRL（Followed the Regularized Leader）算法进行训练，FTRL扩展阅读</p>
+<blockquote>
+<p><a href="https://link.zhihu.com/?target=https%3A//github.com/wzhe06/Ad-papers/blob/master/Optimization%2520Method/%25E5%259C%25A8%25E7%25BA%25BF%25E6%259C%2580%25E4%25BC%2598%25E5%258C%2596%25E6%25B1%2582%25E8%25A7%25A3%2528Online%2520Optimization%2529-%25E5%2586%25AF%25E6%2589%25AC.pdf" target="_blank" rel="external">在线优化求解</a></p>
+</blockquote>
+<p>FTRL是一种在线学习算法，可简单理解为一个稀疏性较好、精度不错的随机梯度下降算法，由于是随机梯度下降，因此可以在获取新的样本后进行训练，从而实现模型在线更新。那么Wide部分为何要注重正则化呢？上面模型特征部分已经提到，Wide部分使用的交叉特征是用户已安装APP和当前曝光APP，当两个ID类特征进行组合时，会产生维度爆炸的问题，并且会让原本已经十分稀疏的特征更加稀疏，所以需要利用正则化对海量特征进行过滤方便线上部署。</p>
+<p>Deep部分使用常用的AdaGrad算法进行训练，由于输入已经是Age、#App Installs这些数值类特征，或者稠密化的Embedding向量，因此Deep部分不会存在很严重的特征稀疏问题。</p>
+<h2 id="DIN"><a href="#DIN" class="headerlink" title="DIN"></a>DIN</h2><p>DIN模型在KDD 2018会议上提出，其核心是利用一个局部激活单元来更好的表征用户信息，增强用户信息与候选广告的相关性，这与在CV和NLP领域得到广泛应用的Attention思想其实是一致的。就Wide&amp;Deep框架来看，DIN模型是对于Deep部分的改进，我们先看一下Base Model：</p>
+<p><img src="/images/din-base.png" alt="img"></p>
+<h3 id="Base-Model"><a href="#Base-Model" class="headerlink" title="Base Model"></a>Base Model</h3><p>Base Model采用深度模型常见的Embedding+MLP方案，首先将大规模稀疏特征映射为Embedding向量，然后利用sum pooling转换为固定长度的向量，最后进行拼接输入到MLP学习特征与预测结果之间的关系，损失函数采用交叉熵损失函数。该模型的缺陷在于无法表达用户兴趣的多样性，因为对于不同的候选广告，模型都将用户的信息表征为一个固定向量，但对于某个候选广告，用户历史行为对于是否点击该广告的影响力一般是不一样的。例如用户历史行为中包含购买电脑、外套和篮球等信息，对于当前的鼠标广告，显然历史行为中的电脑购买信息影响力更大。显然我们可以利用Attention机制对用户侧信息进行更准确的表征，利用候选广告与用户行为的关系计算权重，辅助特征与结果的相关性学习，最终提高模型性能。</p>
+<h3 id="DIN-Model"><a href="#DIN-Model" class="headerlink" title="DIN Model"></a>DIN Model</h3><p>DIN模型引入了一个设计的局部激活单元，作用是计算候选广告与用户各行为的权重，在给定候选广告A的基础上自适应地的计算用户信息的表示：</p>
+<span>$$\boldsymbol{v}_{U}(A)=f\left(\boldsymbol{v}_{A}, \boldsymbol{e}_{1}, \boldsymbol{e}_{2}, \ldots, \boldsymbol{e}_{H}\right)=\sum_{j=1}^{H} a\left(\boldsymbol{e}_{j}, \boldsymbol{v}_{A}\right) \boldsymbol{e}_{j}=\sum_{j=1}^{H} \boldsymbol{w}_{j} \boldsymbol{e}_{j}$$</span><!-- Has MathJax --> 
+<p>其中<span>$\left\{e_{1}, e 2, \ldots e H\right\}$</span><!-- Has MathJax --> 表示用户向量，<span>$v_{A}$</span><!-- Has MathJax --> 表示候选广告向量，<span>$a(\cdot)$</span><!-- Has MathJax -->表示前向传播网络。不同于Attention机制的是，<span>$\sum_{i} w_{i}=1$</span><!-- Has MathJax --> 的约束被放宽，因此输出权重的softmax归一化也不再采用，目的是表征更强烈的用户兴趣。</p>
+<p>对于用户行为的序列特征，不免不产生一个想法，使用RNN、LSTM等建模会有助于提升效果吗？作者也利用LSTM模型进行了尝试，但是由于用户历史行为序列可能包含了多个并发的兴趣，不同兴趣点的快速跳跃和突然终结也会使用户行为的序列特征显得杂乱无章，但是一个可研究的方向。</p>
+<h3 id="训练技巧"><a href="#训练技巧" class="headerlink" title="训练技巧"></a>训练技巧</h3><ol>
+<li><p>Mini-batch Aware Regularization。正则化可以防止模型过拟合，但对于工业数据集来说，直接应用传统的正则化方法是不实际的，因为具有大规模稀疏输入和海量的参数。作者提出了一种有效的小批量处理感知型正则化器，它仅针对每个微型批处理中出现的稀疏特征的参数计算L2-范数。</p>
+</li>
+<li><p>Data Adaptive Activation Function。PRelu是常用的激活函数，采用值为0的硬修正点：</p>
+<span>$$f(s)=\left\{\begin{array}{ll}
+   s &amp; \text { if } s&gt;0 \\
+   \alpha s &amp; \text { if } s \leq 0
+   \end{array}=p(s) \cdot s+(1-p(s)) \cdot \alpha s\right.$$</span><!-- Has MathJax --> 
+<p>当每层的输入遵循不同分布时，这可能不适合。作者设计了一个新的激活函数Dice：</p>
+<span>$f(s)=p(s) \cdot s+(1-p(s)) \cdot \alpha s, p(s)=\frac{1}{1+e^{-\frac{s-E[s]}{\sqrt{\operatorname{var}[s]+\epsilon}}}}$</span><!-- Has MathJax -->
+<p>其中E[s]和Var[s]分别表示均值和方差，<img src="https://www.zhihu.com/equation?tex=%5Cepsilon" alt="[公式]">是一个常量，值为<span>$10^-8$</span><!-- Has MathJax --> 。Dice的关键思想是根据输入数据的分布来自适应地调整修正点，其值设置为输入的平均值。当<img src="https://www.zhihu.com/equation?tex=E%5Bs%5D%3D0%2C+Var%5Bs%5D%3D0" alt="[公式]">则退化为PRelu。</p>
+<p>两个函数图像如下图所示：</p>
+</li>
+</ol>
+<p><img src="/images/preludice.png" alt="img"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>回顾一下文章开头展示的常用推荐模型，我们以Wide&amp;Deep模型为中心进行梳理，本文介绍的LR、FM和GBDT属于Wide部分，而DIN则属于Deep部分。</p>
+<p><img src="/images/rec1.jpg" alt=""></p>
+<p>那么从Wide模型到Deep模型的迭代过程大致是什么样的，各个模型有何优缺点呢？这里引用<a href="http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" target="_blank" rel="external">搜索排序算法</a>一文的图片：</p>
+<p><img width="700" src="/images/search_process.png"></p>
+<p>从迭代过程看，模型特征表征能力逐渐增强，复杂度逐渐变高。值得注意的是由于深度模型十分复杂，可解释性很差，所以Wide模型在特定场景下是有用武之地的。例如谷歌论文里Wide部分用于APP的初始推荐，搜索排序系统中的时效模型，Wide模型适用于明确规则、便于人工干预的场景。近些年来的研究主要集中在Deep部分，开始应用Attention机制、GRU等在CV和NLP领域常用的技术。但在工业界，LR、GBDT目前还是在广泛使用，因为深度模型的训练和上线部署都比较复杂，如果效果没有得到显著提升，使用深度模型的性价比不高。所以需要针对特定场景和数据进行仔细分析，选择合适的模型。</p>
+<h1 id="开源代码"><a href="#开源代码" class="headerlink" title="开源代码"></a>开源代码</h1><p>LR: <a href="https://github.com/scikit-learn/scikit-learn/blob/master/examples/linear_model/plot_iris_logistic.py" target="_blank" rel="external">https://github.com/scikit-learn/scikit-learn/blob/master/examples/linear_model/plot_iris_logistic.py</a></p>
+<p>GBDT、XGBoost:<a href="https://github.com/dmlc/xgboost" target="_blank" rel="external">https://github.com/dmlc/xgboost</a></p>
+<p>FM: <a href="https://github.com/srendle/libfm" target="_blank" rel="external">https://github.com/srendle/libfm</a></p>
+<p>Wide&amp;Deep:<a href="https://github.com/Lapis-Hong/wide_deep" target="_blank" rel="external">https://github.com/Lapis-Hong/wide_deep</a></p>
+<p>DIN:<a href="https://github.com/zhougr1993/DeepInterestNetwork" target="_blank" rel="external">https://github.com/zhougr1993/DeepInterestNetwork</a></p>
+<h1 id="模型论文"><a href="#模型论文" class="headerlink" title="模型论文"></a>模型论文</h1><p>LR: <a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/predictingclicks.pdf" target="_blank" rel="external">https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/predictingclicks.pdf</a></p>
+<p>FM: <a href="https://www.csie.ntu.edu.tw/~b97053/paper/Rendle2010FM.pdf" target="_blank" rel="external">https://www.csie.ntu.edu.tw/~b97053/paper/Rendle2010FM.pdf</a></p>
+<p>GBDT:<a href="https://projecteuclid.org/download/pdf_1/euclid.aos/1013203451" target="_blank" rel="external">https://projecteuclid.org/download/pdf_1/euclid.aos/1013203451</a></p>
+<p>XGBoost:<a href="http://dmlc.cs.washington.edu/data/pdf/XGBoostArxiv.pdf" target="_blank" rel="external">http://dmlc.cs.washington.edu/data/pdf/XGBoostArxiv.pdf</a></p>
+<p>Wide&amp;Deep:<a href="https://arxiv.org/pdf/1606.07792.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1606.07792.pdf</a></p>
+<p>DIN:<a href="https://arxiv.org/pdf/1706.06978.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1706.06978.pdf</a></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://zhuanlan.zhihu.com/p/80887841" target="_blank" rel="external">线性回归模型的概念、原理、代码和应用</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/151036015" target="_blank" rel="external">LR逻辑回归模型的原理、推导、代码和应用</a></p>
+<p><a href="https://www.cnblogs.com/XDU-Lakers/p/11853034.html" target="_blank" rel="external">线性模型之逻辑回归(LR)(原理、公式推导、模型对比、常见面试点)</a></p>
+<p><a href="https://www.cnblogs.com/XDU-Lakers/p/11770642.html" target="_blank" rel="external">L0、L1、L2范数正则化</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/162001079" target="_blank" rel="external">XGBoost的原理、推导、代码和应用</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/145436595" target="_blank" rel="external">FM因子分解机模型的原理、推导、代码和应用</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/109980037" target="_blank" rel="external">一文读懂FM模型</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/58160982" target="_blank" rel="external">推荐系统召回四模型之：全能的FM模型</a></p>
+<p><a href="https://blog.csdn.net/jgj123321/article/details/91571640" target="_blank" rel="external">极大似然估计原理解析</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/153500425" target="_blank" rel="external">推荐系统玩家 之 因子分解机FM（Factorization Machines）</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/61096338" target="_blank" rel="external">FM、FFM、DeepFM学习笔记</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/53361519" target="_blank" rel="external">详解 Wide &amp; Deep 结构背后的动机</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/132708525" target="_blank" rel="external">Wide&amp;Deep模型原理与实现</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/142958834" target="_blank" rel="external">见微知著，你真的搞懂Google的Wide&amp;Deep模型了吗？</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/145149051" target="_blank" rel="external">2018阿里CTR预估模型—DIN（深度兴趣网络），后附TF2.0复现代码</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/推荐/" rel="tag"># 推荐</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/10/09/论文简读-Controlling-Fairness-and-Bias-in-Dynamic-Learning-to-Rank/" rel="next" title="论文简读-Controlling Fairness and Bias in Dynamic Learning-to-Rank">
+                <i class="fa fa-chevron-left"></i> 论文简读-Controlling Fairness and Bias in Dynamic Learning-to-Rank
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="/images/avatar.gif"
+              alt="Jeb" />
+          
+            <p class="site-author-name" itemprop="name">Jeb</p>
+            <p class="site-description motion-element" itemprop="description">我菜故我在</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#模型介绍"><span class="nav-number">1.</span> <span class="nav-text">模型介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#LR"><span class="nav-number">1.1.</span> <span class="nav-text">LR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LR假设"><span class="nav-number">1.1.1.</span> <span class="nav-text">LR假设</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LR原理"><span class="nav-number">1.1.2.</span> <span class="nav-text">LR原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LR训练"><span class="nav-number">1.1.3.</span> <span class="nav-text">LR训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LR扩展知识点"><span class="nav-number">1.1.4.</span> <span class="nav-text">LR扩展知识点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优缺点"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">优缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对比线性回归"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">对比线性回归</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多分类"><span class="nav-number">1.1.4.3.</span> <span class="nav-text">多分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#损失函数"><span class="nav-number">1.1.4.4.</span> <span class="nav-text">损失函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#特征离散化"><span class="nav-number">1.1.4.5.</span> <span class="nav-text">特征离散化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正则化"><span class="nav-number">1.1.4.6.</span> <span class="nav-text">正则化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FM"><span class="nav-number">1.2.</span> <span class="nav-text">FM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#矩阵分解-Matrix-Factorization-vs-因子分解机-Factor-Machine"><span class="nav-number">1.2.1.</span> <span class="nav-text">矩阵分解(Matrix Factorization) vs 因子分解机(Factor Machine)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FM模型原理"><span class="nav-number">1.2.2.</span> <span class="nav-text">FM模型原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FM模型训练"><span class="nav-number">1.2.3.</span> <span class="nav-text">FM模型训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FM模型应用"><span class="nav-number">1.2.4.</span> <span class="nav-text">FM模型应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FM模型扩展知识点"><span class="nav-number">1.2.5.</span> <span class="nav-text">FM模型扩展知识点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GBDT"><span class="nav-number">2.</span> <span class="nav-text">GBDT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Wide-amp-Deep"><span class="nav-number">2.1.</span> <span class="nav-text">Wide&Deep</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型原理"><span class="nav-number">2.1.1.</span> <span class="nav-text">模型原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型特征"><span class="nav-number">2.1.2.</span> <span class="nav-text">模型特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模型训练"><span class="nav-number">2.1.3.</span> <span class="nav-text">模型训练</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DIN"><span class="nav-number">2.2.</span> <span class="nav-text">DIN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Base-Model"><span class="nav-number">2.2.1.</span> <span class="nav-text">Base Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DIN-Model"><span class="nav-number">2.2.2.</span> <span class="nav-text">DIN Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练技巧"><span class="nav-number">2.2.3.</span> <span class="nav-text">训练技巧</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开源代码"><span class="nav-number">4.</span> <span class="nav-text">开源代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型论文"><span class="nav-number">5.</span> <span class="nav-text">模型论文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jeb</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

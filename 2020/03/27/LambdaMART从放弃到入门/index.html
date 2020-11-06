@@ -107,7 +107,7 @@
 <meta property="og:image" content="http://yoursite.com/images/GBRT.png">
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
-<meta property="og:updated_time" content="2020-04-28T08:50:09.000Z">
+<meta property="og:updated_time" content="2020-10-26T11:28:54.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LambdaMART从放弃到入门">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  【待进一步整理】 Lambda关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking F">
@@ -422,7 +422,7 @@ f\left(\theta_{k+1}\right) \approx f\left(\theta_{k}\right)+\frac{\partial f\lef
 <p>这时我们再看一下LambdaMART算法的流程：</p>
 <p><img src="/images/LambdaMART2.png" alt=""></p>
 <p>对比GBRT和LambdaMART算法流程可以发现两者非常相似，主要区别是LambdaMART将GBRT中要拟合的负梯度替换为Lambda梯度，而LambdaMART对排序的最核心的改进正是这个Lambda梯度，具体介绍可以参考<a href="[http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/](http://octopuscoder.github.io/2020/01/19/搜索排序算法/">搜索排序算法</a>)中关于RankNet和LambdaRank的介绍。</p>
-<h2 id="XBGoost"><a href="#XBGoost" class="headerlink" title="XBGoost"></a>XBGoost</h2><p>这里既然提到了提升树和梯度提升树，那么顺便也介绍一下大名鼎鼎的XGBoost，这部分介绍完后我们再探LambdaMART的一些细节。</p>
+<h2 id="XGBoost"><a href="#XGBoost" class="headerlink" title="XGBoost"></a>XGBoost</h2><p>这里既然提到了提升树和梯度提升树，那么顺便也介绍一下大名鼎鼎的XGBoost，这部分介绍完后我们再探LambdaMART的一些细节。</p>
 <p><strong>Xgboost</strong>也使用与提升树相同的<strong>前向分步算法，</strong>其区别在于：Xgboost通过<strong>结构风险最小化</strong>来确定下一个决策树的参数$\Theta_{m}$：</p>
 <span>$\hat{\Theta}_{m}=\arg \min _{\Theta_{m}} \sum_{i=1}^{N} L\left(\tilde{y}_{i}, f_{m}\left(\overrightarrow{\mathbf{x}}_{i}\right)\right)+\Omega\left(h_{m}(\overrightarrow{\mathbf{x}})\right)$</span><!-- Has MathJax -->
 <p>其中：</p>
@@ -650,7 +650,7 @@ n d c g(swap(1,4))=\frac{d c g(swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2020/04/21/NLP算法工程师技能加点路线/" rel="prev" title="NLP算法工程师技能加点路线">
+              <a href="/2020/04/21/算法工程师技能加点路线/" rel="prev" title="NLP算法工程师技能加点路线">
                 NLP算法工程师技能加点路线 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -732,7 +732,7 @@ n d c g(swap(1,4))=\frac{d c g(swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-count">26</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -745,7 +745,7 @@ n d c g(swap(1,4))=\frac{d c g(swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.
             
             <div class="site-state-item site-state-tags">
               
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">标签</span>
               
             </div>
@@ -780,7 +780,7 @@ n d c g(swap(1,4))=\frac{d c g(swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lambda"><span class="nav-number">1.</span> <span class="nav-text">Lambda</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MART"><span class="nav-number">2.</span> <span class="nav-text">MART</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#提升树"><span class="nav-number">2.1.</span> <span class="nav-text">提升树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#梯度提升树-GBT"><span class="nav-number">2.2.</span> <span class="nav-text">梯度提升树(GBT)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XBGoost"><span class="nav-number">2.3.</span> <span class="nav-text">XBGoost</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LambdaMART"><span class="nav-number">3.</span> <span class="nav-text">LambdaMART</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Lambda"><span class="nav-number">1.</span> <span class="nav-text">Lambda</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MART"><span class="nav-number">2.</span> <span class="nav-text">MART</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#提升树"><span class="nav-number">2.1.</span> <span class="nav-text">提升树</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#梯度提升树-GBT"><span class="nav-number">2.2.</span> <span class="nav-text">梯度提升树(GBT)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XGBoost"><span class="nav-number">2.3.</span> <span class="nav-text">XGBoost</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LambdaMART"><span class="nav-number">3.</span> <span class="nav-text">LambdaMART</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>
