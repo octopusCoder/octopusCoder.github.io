@@ -103,8 +103,9 @@
 <meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      TextRank算法可以用于提取文本关键词和生成摘要，其思想来源于PageRank算法。Google的两位创始人在斯坦福大学读研期间从事网页排序研究时，受到学术界对学术论文重要性的评估方法（论文引用次数）启发，提出了PageRank算法。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/dgraph.png">
+<meta property="og:image" content="http://yoursite.com/images/prnoout.png">
 <meta property="og:image" content="http://yoursite.com/images/keywords.png">
-<meta property="og:updated_time" content="2020-05-03T14:45:42.000Z">
+<meta property="og:updated_time" content="2020-12-08T05:27:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TextRank算法">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      TextRank算法可以用于提取文本关键词和生成摘要，其思想来源于PageRank算法。Google的两位创始人在斯坦福大学读研期间从事网页排序研究时，受到学术界对学术论文重要性的评估方法（论文引用次数）启发，提出了PageRank算法。">
@@ -361,6 +362,7 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
 <p>阻尼系数:</p>
 <p>PageRank算法可以视为对网页跳转的模拟，当有些网页只有入链而没有出链时，则无法从这些网页跳转出去，使得每个网页的PageRank值最终为0。下图给出了这个问题的实例，网页C没有到其他页面的链接，随着算法的不断迭代，每个网页的权重值不断减少，最终收敛于0。为了避免这个问题，在算法中引入阻尼系数d，作为网页随机跳转的概率。</p>
 </blockquote>
+<p><img src="/images/prnoout.png" alt="prnoout"></p>
 <h3 id="TextRank"><a href="#TextRank" class="headerlink" title="TextRank"></a>TextRank</h3><h4 id="关键词提取"><a href="#关键词提取" class="headerlink" title="关键词提取"></a>关键词提取</h4><p>以下面的文章为例，首先进行过滤停用词等预处理（中文需要分词），然后建立如图所示单词之间的连接图，此时PageRank算法中网页之间的链接关系体现为一定窗口大小内单词之间的相邻关系，例如以“systems”为中心，窗口大小为3时，”types”, “linear”和“compatibility”与其具有“链接关系“。<br><img src="/images/keywords.png" alt=""></p>
 <p><center><strong><em><a href="https://upload-images.jianshu.io/upload_images/3579920-09c220dd15b3f13b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/996" target="_blank" rel="external">图片来源</a></em></strong></center><br>图构造完成后，单词的TR值计算公式为：<br><span>$$\begin{gather*}
 W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{j i}}{\sum_{V_{k} \in O u t\left(V_{j}\right)} w_{j k}} W S\left(V_{j}\right)
@@ -488,7 +490,7 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -559,7 +561,7 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

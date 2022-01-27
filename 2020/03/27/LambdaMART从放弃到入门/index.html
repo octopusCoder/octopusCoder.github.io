@@ -107,7 +107,8 @@
 <meta property="og:image" content="http://yoursite.com/images/GBRT.png">
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
-<meta property="og:updated_time" content="2020-10-26T11:28:54.000Z">
+<meta property="og:image" content="http://yoursite.com/images/lambdamart-pfuc.png">
+<meta property="og:updated_time" content="2020-12-07T16:38:18.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LambdaMART从放弃到入门">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  【待进一步整理】 Lambda关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking F">
@@ -428,7 +429,7 @@ f\left(\theta_{k+1}\right) \approx f\left(\theta_{k}\right)+\frac{\partial f\lef
 <p>另外，梯度提升树用于分类模型时，是<strong>梯度提升决策树<code>GBDT</code></strong>；用于回归模型时，是<strong>梯度提升回归树<code>GBRT</code>，</strong>二者的区别主要是损失函数不同。</p>
 <p><strong>GBRT</strong>算法的伪代码如下：</p>
 <p> <img src="/images/GBRT.png" alt=""></p>
-<p>另外，Freidman从bagging策略受到启发，采用<strong>随机梯度提升</strong>来修改了原始的梯度提升算法，即每一轮迭代中，新的决策树拟合的是原始训练集的一个子集（而并不是原始训练集）的残差，这个子集是通过对原始训练集的无放回随机采样而来，类似于自助采样法。这种方法<strong>引入了随机性，有助于改善过拟合</strong>，另一个好处是<strong>未被采样的另一部分字集可以用来计算包外估计误差</strong>。</p>
+<p>另外，Freidman从bagging策略受到启发，采用<strong>随机梯度提升</strong>来修改了原始的梯度提升算法，即每一轮迭代中，新的决策树拟合的是原始训练集的一个子集（而并不是原始训练集）的残差，这个子集是通过对原始训练集的无放回随机采样而来，类似于自助采样法。这种方法<strong>引入了随机性，有助于改善过拟合</strong>，另一个好处是<strong>未被采样的另一部分子集可以用来计算包外估计误差</strong>。</p>
 <p>这时我们再看一下LambdaMART算法的流程：</p>
 <p><img src="/images/LambdaMART2.png" alt=""></p>
 <p>对比GBRT和LambdaMART算法流程可以发现两者非常相似，主要区别是LambdaMART将GBRT中要拟合的负梯度替换为Lambda梯度，而LambdaMART对排序的最核心的改进正是这个Lambda梯度，具体介绍可以参考<a href="[http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/](http://octopuscoder.github.io/2020/01/19/搜索排序算法/">搜索排序算法</a>)中关于RankNet和LambdaRank的介绍。</p>
@@ -565,13 +566,14 @@ n d c g(swap(1,4))=\frac{d c g(swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.
 
 \end{gather*}$$</span><!-- Has MathJax -->
 <p>Ranklib中直接取σ=1，如下图，蓝，红，绿三种颜色分别对应σ=1，2，4时ρ函数的曲线情形（横坐标是<span>$s_i-s_j$</span><!-- Has MathJax -->）:</p>
+<p><img src="/images/lambdamart-pfuc.png" alt="lambdamart-pfuc"></p>
 <p>初始时，模型为空，所有模型预测得分都是0，所以<span>$s_i=s_j=0，&rho;_{ij}=1/2$</span><!-- Has MathJax -->，lambda(i,j)的计算公式为：</p>
 <span>$$\begin{gather*}
 
 \lambda_{i j}=\rho_{i j} *|\operatorname{deltaNDCG}(i, j)|
 
 \end{gather*}$$</span><!-- Has MathJax -->
-<p>上式为Ranklib中实际使用的公式，而在paper中，还需要再乘以-σ，在σ=1时，就是符号正好相反，这两种方式是等价的，符号并不影响模型训练结果（其实大可以把代码中lambda的值前面加一个负号，只是注意在每轮计算train, valid和最后计算test的ndcg的时候，模型预测的得分modelScores要按升序排列——越负的doc越好，而不是源代码中按降序。最后训练出的模型是一样的，这说明这两种方式完全对称，所以符号的问题可以省略。甚至不乘以-σ，更符合人的习惯——分数越大越好，降序排列结果。）：</p>
+<p>上式为Ranklib中实际使用的公式，而在paper中，还需要再乘以-σ，在σ=1时，就是符号正好相反，这两种方式是等价的，符号并不影响模型训练结果（其实大可以把代码中lambda的值前面加一个负号，只是注意在每轮计算train, valid和最后计算test的ndcg的时候，模型预测的得分modelScores要按升序排列——越负的doc越好，而不是源代码中按降序。最后训练出的模型是一样的，这说明这两种方式完全对称，所以符号的问题可以省略。甚至不乘以-σ，更符合人的习惯——分数越大越好，降序排列结果：</p>
 <span>$$\begin{gather*}
 
 \lambda_{i}=\sum_{j(l a b e l(i)&gt;l a b e l(j))} \lambda_{i j}-\sum_{j(label(i)&lt;label(j))} \lambda_{i j}
@@ -742,7 +744,7 @@ n d c g(swap(1,4))=\frac{d c g(swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -813,7 +815,7 @@ n d c g(swap(1,4))=\frac{d c g(swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

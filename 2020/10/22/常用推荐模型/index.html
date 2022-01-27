@@ -137,7 +137,6 @@
 <meta property="og:image" content="http://yoursite.com/images/fmyd.png">
 <meta property="og:image" content="http://yoursite.com/images/lirvsfm.png">
 <meta property="og:image" content="http://yoursite.com/images/fmhis.png">
-<meta property="og:image" content="https://www.zhihu.com/equation?tex=x_i">
 <meta property="og:image" content="http://yoursite.com/images/deepfm.png">
 <meta property="og:image" content="http://yoursite.com/images/dt.png">
 <meta property="og:image" content="http://yoursite.com/images/xgyqd.png">
@@ -150,7 +149,7 @@
 <meta property="og:image" content="http://yoursite.com/images/preludice.png">
 <meta property="og:image" content="http://yoursite.com/images/rec1.jpg">
 <meta property="og:image" content="http://yoursite.com/images/search_process.png">
-<meta property="og:updated_time" content="2020-11-09T04:27:10.000Z">
+<meta property="og:updated_time" content="2020-12-06T10:47:35.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="常用推荐模型">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      搜索和推荐系统一般包含召回和排序两个阶段，搜索排序主要关注相关性，常见的模型可以参考搜索排序算法。推荐模型则关注用户偏好，一般用CTR点击率来描述，常用的推荐模型有：   图片来源：推荐算法炼丹笔记：CTR点击率预估系列入门手册  本文重">
@@ -442,7 +441,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p><img src="/images/dxslre.png" alt="img"></p>
 <p>Softmax回归：</p>
 <p><img src="/images/smre.png" alt="img"></p>
-<h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>为什么不适用平方误差作为损失函数？</p>
+<h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>为什么不使用平方误差作为损失函数？</p>
 <ol>
 <li>平方误差损失函数加上sigmoid的函数将会是一个非凸的函数，不易求解，会得到局部解，用对数似然函数得到高阶连续可导凸函数，可以得到最优解。</li>
 <li>对数损失函数更新起来很快，因为只和x，y有关，和sigmoid本身的梯度无关。如果使用平方损失函数，会发现梯度更新的速度和sigmod函数本身的梯度是很相关的。sigmod函数在它在定义域内的梯度都不大于0.25。这样训练会非常的慢。</li>
@@ -535,7 +534,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p><img src="/images/lirvsfm.png" alt="img"></p>
 <p><strong>FM模型演化：</strong></p>
 <p><img src="/images/fmhis.png" alt="img"></p>
-<p>FFM(Field Factorization Machine)是在FM的基础上引入了“场（Field）”的概念而形成的新模型。在FM中计算特征<span>$x_i$</span><!-- Has MathJax --> 与其他特征的交叉影响时，使用的都是同一个隐向量 <span>$V_i$</span><!-- Has MathJax --> 。而FFM将特征按照事先的规则分为多个场(Field)，特征 <img src="https://www.zhihu.com/equation?tex=x_i" alt="[公式]"> 属于某个特定的场f。每个特征将被映射为多个隐向量 <span>$V_{i 1}, \ldots, V_{i f}$</span><!-- Has MathJax -->  ，每个隐向量对应一个场。当两个特征<span>$x_i,x_j$</span><!-- Has MathJax -->  ,组合时，用对方对应的场对应的隐向量做内积:<span>$w_{i j}=\mathbf{v}_{i, f_{j}}^{T} \mathbf{v}_{j, f_{i}}$</span><!-- Has MathJax --> </p>
+<p>FFM(Field Factorization Machine)是在FM的基础上引入了“场（Field）”的概念而形成的新模型。在FM中计算特征<span>$x_i$</span><!-- Has MathJax --> 与其他特征的交叉影响时，使用的都是同一个隐向量 <span>$V_i$</span><!-- Has MathJax --> 。而FFM将特征按照事先的规则分为多个场(Field)，特征 <span>$x_i$</span><!-- Has MathJax -->属于某个特定的场f。每个特征将被映射为多个隐向量 <span>$V_{i 1}, \ldots, V_{i f}$</span><!-- Has MathJax -->  ，每个隐向量对应一个场。当两个特征<span>$x_i,x_j$</span><!-- Has MathJax -->  ,组合时，用对方对应的场对应的隐向量做内积:<span>$w_{i j}=\mathbf{v}_{i, f_{j}}^{T} \mathbf{v}_{j, f_{i}}$</span><!-- Has MathJax --> </p>
 <p>FFM 由于引入了场，使得每两组特征交叉的隐向量都是独立的，可以取得更好的组合效果， FM 可以看做只有一个场的 FFM。</p>
 <p>DeepFM模型将深度神经网络模型与FM模型结合，模型结构如下图所示：</p>
 <p><img src="/images/deepfm.png" alt="img"></p>
@@ -691,6 +690,10 @@ f(s)=p(s) \cdot s+(1-p(s)) \cdot \alpha s, p(s)=\frac{1}{1+e^{-\frac{s-E[s]}{\sq
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2022/01/14/文本搜索特征体系/" rel="prev" title="文本搜索特征体系">
+                文本搜索特征体系 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -769,7 +772,7 @@ f(s)=p(s) \cdot s+(1-p(s)) \cdot \alpha s, p(s)=\frac{1}{1+e^{-\frac{s-E[s]}{\sq
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -840,7 +843,7 @@ f(s)=p(s) \cdot s+(1-p(s)) \cdot \alpha s, p(s)=\frac{1}{1+e^{-\frac{s-E[s]}{\sq
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

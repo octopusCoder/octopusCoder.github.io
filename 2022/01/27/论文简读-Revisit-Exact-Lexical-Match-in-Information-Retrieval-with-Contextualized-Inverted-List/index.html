@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="论文地址：https://arxiv.org/abs/2104.07186  文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化召回算法则经历了从无监督计算预训练词向量（word2vec、Glove）相似度，到有监督地计算query和doc相似度（DSSM），再到基于大规模预训练语言模型（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文简读-Revisit Exact Lexical Match in Information Retrieval with Contextualized Inverted List">
+<meta property="og:url" content="http://yoursite.com/2022/01/27/论文简读-Revisit-Exact-Lexical-Match-in-Information-Retrieval-with-Contextualized-Inverted-List/index.html">
+<meta property="og:site_name" content="小菜鸡">
+<meta property="og:description" content="论文地址：https://arxiv.org/abs/2104.07186  文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化召回算法则经历了从无监督计算预训练词向量（word2vec、Glove）相似度，到有监督地计算query和doc相似度（DSSM），再到基于大规模预训练语言模型（">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/tencent/api/attachments/s3/url?attachmentid=159599">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkviawkaJeoeBG0tEBticPUYmpzXuQzic2wMX4s9hicxXqwiasYHqe8w8bfQkQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvYcN2DPXOTLcNyvfMdYyXXJYKZsESwevIE2lV1MluzjicEYib13MmAJsg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="http://yoursite.com/tencent/api/attachments/s3/url?attachmentid=159622">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvYjdlAm9fUWzED7lV9ohDSnTsSOtia1iaPFKa94OEibPicYc5EEL7ECdUuA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="http://yoursite.com/tencent/api/attachments/s3/url?attachmentid=160394">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvEReqO2gYrGkIiaibibibNXxibqiapkic6fL0sB61ovvftfITX6ayRXibKxRJtg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="http://yoursite.com/tencent/api/attachments/s3/url?attachmentid=160523">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvmIZdbicCXCAnqiatxw1InuYjbY6IwMIicYNWuXUHQ1iaibvXnMbnIpbaQCQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvbicYtdbbu9dkBnwV64Tt19QEye7jIsKhKTaHeovdjlLBu23yDd8hCFw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="http://yoursite.com/tencent/api/attachments/s3/url?attachmentid=160534">
+<meta property="og:image" content="http://yoursite.com/tencent/api/attachments/s3/url?attachmentid=160542">
+<meta property="og:image" content="http://yoursite.com/tencent/api/attachments/s3/url?attachmentid=160545">
+<meta property="og:updated_time" content="2022-01-27T15:03:36.542Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="论文简读-Revisit Exact Lexical Match in Information Retrieval with Contextualized Inverted List">
+<meta name="twitter:description" content="论文地址：https://arxiv.org/abs/2104.07186  文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化召回算法则经历了从无监督计算预训练词向量（word2vec、Glove）相似度，到有监督地计算query和doc相似度（DSSM），再到基于大规模预训练语言模型（">
+<meta name="twitter:image" content="http://yoursite.com/tencent/api/attachments/s3/url?attachmentid=159599">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2022/01/27/论文简读-Revisit-Exact-Lexical-Match-in-Information-Retrieval-with-Contextualized-Inverted-List/"/>
+
+
+
+
+
+  <title>论文简读-Revisit Exact Lexical Match in Information Retrieval with Contextualized Inverted List | 小菜鸡</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-106410509-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?fba0227b145671e9f32ee1e6ae9b592d";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小菜鸡</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/01/27/论文简读-Revisit-Exact-Lexical-Match-in-Information-Retrieval-with-Contextualized-Inverted-List/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">论文简读-Revisit Exact Lexical Match in Information Retrieval with Contextualized Inverted List</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-27T23:02:33+08:00">
+                2022-01-27
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>论文地址：<a href="https://arxiv.org/abs/2104.07186" target="_blank" rel="external">https://arxiv.org/abs/2104.07186</a></p>
+</blockquote>
+<p>文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化召回算法则经历了从无监督计算预训练词向量（word2vec、Glove）相似度，到有监督地计算query和doc相似度（DSSM），再到基于大规模预训练语言模型（BERT）计算相似度的迭代过程。</p>
+<h1 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h1><h2 id="基于词汇匹配-Lexical-IR"><a href="#基于词汇匹配-Lexical-IR" class="headerlink" title="基于词汇匹配-Lexical IR"></a>基于词汇匹配-Lexical IR</h2><p>代表算法为BM25，可以理解为tf-idf算法的改进，参考链接：</p>
+<blockquote>
+<p><a href="https://cloud.tencent.com/developer/article/1056867?from=article.detail.1331631" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1056867?from=article.detail.1331631</a></p>
+</blockquote>
+<p>Lexical IR算法得益于高效的倒排索引技术，十分高效，仍是目前主要的检索方法。其主要面临以下两个问题：</p>
+<ol>
+<li>词汇不匹配导致漏召回：例如”cat”和”kitty”都表示“猫”；</li>
+<li>语义不匹配导致错召回：例如”bank of river”和”bank in finance”中的bank表示不同含义，前者是“河岸”，而后者是“银行”，当query中的bank表示银行时，可能会将包含”bank of river”的文章进行召回。</li>
+</ol>
+<p>上述两个问题可以通过词形归一、N-grams匹配和查询扩展等技术进行缓解，但本质上仍然是基于词袋假设，无法从根本上解决。</p>
+<h2 id="向量化-Neural-IR"><a href="#向量化-Neural-IR" class="headerlink" title="向量化-Neural IR"></a>向量化-Neural IR</h2><h3 id="无监督词向量"><a href="#无监督词向量" class="headerlink" title="无监督词向量"></a>无监督词向量</h3><p>早期的无监督词向量代表模型有word2vec和Glove，计算query和doc相似度时可以有以下方法：</p>
+<ol>
+<li>首先将query和doc各个词语映射到对应向量，然后利用max pool、avg pool等方法获得query向量和doc向量，最后利用余弦距离等计算相似度；</li>
+<li>不同于方法1利用max pool、avg pool获得query向量和doc向量，方法2利用CNN/LSTM等模型进行编码，最后同样利用余弦距离等计算相似度，整体是DSSM结构；</li>
+<li>无论是方法1的pool方法，还是方法2中利用模型进行编码，降维到单个向量的表示总会带来一些损失，因此方法3在token粒度增加了一些交互，代表模型为DRMM，但伴随而来的是计算复杂度的显著增大，因此一般用在后续的精排阶段，召回部分的主要目的并非是进行精准的排序，而是保证相关性较高的doc都能召回。<br>无监督词向量可以一定程度解决Lexical IR中的问题1，对于”cat”和”kitty”，其对应的词向量也是接近的。但对于问题2仍无法解决。<h3 id="大规模预训练语言模型"><a href="#大规模预训练语言模型" class="headerlink" title="大规模预训练语言模型"></a>大规模预训练语言模型</h3>BERT的出现对于Neural IR影响很大，因为向量化本质上还是解决词、句子的表示问题，通过大规模的训练预料和transformer模型，可以对词语、句子进行更好的表示。此外也可以解决Lexical IR中的问题2，因为每个词在LM中都会有其对应的表示，例如”bank of river”和”bank in finance”分别输入到transformer模型，两个”bank“的表示是不同的。而基于BERT的模型召回算法的迭代过程与上述无监督词向量部分提到的3个方法十分类似。</li>
+<li>将query和doc直接拼接输入到BERT中获得对应的[CLS]表示，进行打分；除了直接拼接，还可以利用全连接交叉注意力获得词汇和语义的匹配信息，例如BERT reranker，如下图所示：<img src="/tencent/api/attachments/s3/url?attachmentid=159599" alt="enter image description here"><br>显然这里的计算量非常大，并不适用于召回阶段。</li>
+<li>第二种方法是延续以DSSM为代表的<strong>dense ventor representation</strong>的思想，典型的有SententceBERT和DPR，如下图所示：<img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkviawkaJeoeBG0tEBticPUYmpzXuQzic2wMX4s9hicxXqwiasYHqe8w8bfQkQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><br>此类模型首先建立文档的向量索引，然后利用最近邻向量搜索等方法检索相关的文档。显然，这类模型缺少了query和doc的交互信息。</li>
+<li>DSSM模型的一个问题是将query和doc表示为一个dense ventor时不可避免的会丢失一些信息，一些模型在这方面做了改进，例如Poly-encoder将query编码为一组向量，将document编码为单个向量。Me-BERT将query编码为单个向量，将document编码为一组向量。ColBERT将query和document均编码为一组向量，然后在token级别进行all-to-all的匹配，模型结构如下图所示：<img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvYcN2DPXOTLcNyvfMdYyXXJYKZsESwevIE2lV1MluzjicEYib13MmAJsg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><img src="/tencent/api/attachments/s3/url?attachmentid=159622" alt="enter image description here"><br>由于ColBERT对doc中的token都进行了编码，因此建立索引时需要考虑文档中所有token向量，相比于DPR，索引的复杂度大大增加，并且在查询过程中需要遍历所有索引，因此ColBERT在召回阶段有学术参考价值，工业上难以使用，对硬件资源要求太高。参考DPR和ColBERT，作者提出了COIL模型，其复杂度和检索速度接近DPR，同时检索准确率接近ColBERT。<h1 id="模型实现"><a href="#模型实现" class="headerlink" title="模型实现"></a>模型实现</h1><h2 id="Lexical-IR实现"><a href="#Lexical-IR实现" class="headerlink" title="Lexical IR实现"></a>Lexical IR实现</h2>COIL参考了Lexical IR的倒排索引思想，这里简单介绍一下经典的Lexical IR系统。以BM25算法为例，利用词语匹配分数来衡量query和doc的相关性，具体的函数可以基于词频（TF）和逆文档频率（IDF）来设计，下面是一种通用的数学定义方式：<br>$$s=\sum<em>{t \in q \cap d} \sigma</em>{t}\left(h<em>{q}(q, t), h</em>{d}(d, t)\right) $$<br>其中$t$表示query和doc匹配的词语，$h_q$和$h_d$用于输出该词语相关信息，$\sigma<em>t$表示打分函数，根据该定义，BM25算法可以表示为：<br>$$<br>\begin{array}{c}<br>s</em>{\mathrm{BM} 25}=\sum<em>{t \in q \cap d} i d f(t) h</em>{q}^{\mathrm{BM} 25}(q, t) h<em>{d}^{\mathrm{BM} 25}(d, t) \<br>h</em>{q}^{\mathrm{BM} 25}(q, t)=\frac{t f<em>{t, q}\left(1+k</em>{2}\right)}{t f<em>{t, q}+k</em>{2}} \<br>h<em>{d}^{\mathrm{BM} 25}(d, t)=\frac{t f</em>{t, d}\left(1+k<em>{1}\right)}{t f</em>{t, d}+k<em>{1}\left(1-b+b \frac{|d|}{\mathrm{avgdl}}\right)}<br>\end{array}<br>$$<br>其中$tf</em>{t,q}$和$tf_{t,d}$分别表示词语$t$在query和doc中的词频，$idf(t)$表示$t$的逆文档频率，$b, k_1, k_2$均为超参数。<br>Lexical IR的高效在于倒排索引，在实际检索时，不需要访问语料库中所有doc，而只需要访问词语对应的倒排索引的子集，如下图所示：<br><img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvYjdlAm9fUWzED7lV9ohDSnTsSOtia1iaPFKa94OEibPicYc5EEL7ECdUuA/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><h2 id="COIL模型设计和训练"><a href="#COIL模型设计和训练" class="headerlink" title="COIL模型设计和训练"></a>COIL模型设计和训练</h2>Lexical IR模型中计算query和doc的相关性依赖于词语的精确匹配和TF-IDF的打分规则，那么是否可以利用上下文语义打分模型进行替换呢？COIL模型以此为出发点进行了改进，首先将query和doc的token编码为上下文向量：<br>$$\begin{aligned}<br>\boldsymbol{v}<em>{i}^{q} &amp;=\boldsymbol{W}</em>{t o k} \operatorname{LM}(q, i)+\boldsymbol{b}<em>{t o k} \<br>\boldsymbol{v}</em>{j}^{d} &amp;=\boldsymbol{W}<em>{t o k} \operatorname{LM}(d, j)+\boldsymbol{b}</em>{t o k}<br>\end{aligned}$$<br>其中$\boldsymbol{W}<em>{\text {tok }}^{n</em>{t} \times n_{l m}}$用于将$n_lm$维向量映射到更低维的$n<em>t$维向量，后续实验也证明了低维向量就可以很好地编码token级别的信息。<br>根据上文提到的Lexical IR的数学定义，基于上下文词向量的词语匹配打分函数可以定义为：<br>$$s</em>{\mathrm{tok}}(q, d)=\sum<em>{q</em>{i} \in q \cap d} \max <em>{d</em>{j}=q<em>{i}}\left(\boldsymbol{v}</em>{i}^{q \top} \boldsymbol{v}<em>{j}^{d}\right)$$<br>$q</em>{i} \in q \cap d$表示query和doc中精确匹配的词语，具体的计算过程是：对于query中的每个词$q_i$，在doc中匹配到相同的词$d_j=q_i$，然后计算$d_j$和$q_i$的点积相似度，并取出所有$d<em>j$中的最高相似度，这里的$max$可以捕获query和doc最重要的语义匹配信号。<br>由于采用Lexical IR中的精确匹配，仍然可能会遇到背景知识Lexical IR中提到的问题1，可以引入句子级的表示[CLS]：<br>$$\begin{array}{l}<br>\boldsymbol{v}</em>{c l s}^{q}=\boldsymbol{W}<em>{c l s} \mathrm{LM}(q, \mathrm{CLS})+\boldsymbol{b}</em>{c l s} \<br>\boldsymbol{v}<em>{c l s}^{d}=\boldsymbol{W}</em>{c l s} \mathrm{LM}(d, \mathrm{CLS})+\boldsymbol{b}<em>{c l s}<br>\end{array}$$<br>$\boldsymbol{v}</em>{c l s}^{q}$和$\boldsymbol{v}<em>{c l s}^{d}$之间的相似度可以从语义级别进行匹配，缓解精确匹配导致的漏召回问题，COIL模型最终的打分函数为：<br>$$s</em>{\text {full }}(q, d)=s<em>{\text {tok }}(q, d)+\boldsymbol{v}</em>{c l s}^{q}{ }^{\top} \boldsymbol{v}<em>{c l s}^{d}$$<br>论文中将包含[CLS]匹配的模型成为COIL-full，只包含词语匹配的称为COIL-tok，COIL-full模型如下图所示：<br><img src="/tencent/api/attachments/s3/url?attachmentid=160394" alt="enter image description here"><br>通过优化负对数似然函数来训练模型：<br>$$\mathcal{L}=-\log \frac{\exp \left(s\left(q, d^{+}\right)\right)}{\exp \left(s\left(q, d^{+}\right)\right)+\sum</em>{l} \exp \left(s\left(q, d_{l}^{-}\right)\right)}$$<br>其中$d^+$表示正样本，$d^-$表示负样本。<h2 id="检索过程"><a href="#检索过程" class="headerlink" title="检索过程"></a>检索过程</h2>索引方式与Lexical IR类似，如下图所示：<br><img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvEReqO2gYrGkIiaibibibNXxibqiapkic6fL0sB61ovvftfITX6ayRXibKxRJtg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><br>具体地，预先计算doc的所有向量，$$I^{t}=\left{\boldsymbol{v}<em>{j}^{d} \mid d</em>{j}=t, d \in C\right}$$<br>其中C表示所有文档，$\boldsymbol{v}<em>{j}^{d}$表示token编码，最终得到所有$t$的倒排索引$\mathbb{I}=\left{I^{t} \mid t \in V\right}$，对于COIL-full，还需要加入$I^{c l s}=\left{\boldsymbol{v}</em>{c l s}^{d} \mid d \in C\right}$。<br>为了加速，在检索时，可以将对应的多个token向量$I^{t}$转化为一个矩阵$M^{n<em>{t} \times\left|I^{k}\right|}$，同样可以将对应的多个[CLS]向量$\boldsymbol{v}</em>{c l s}^{d}$整合为一个矩阵$M<em>{c l s}$，将相似度计算转化为高效的矩阵向量积。<br>单个doc建立索引的过程如下图所示：<br><img src="/tencent/api/attachments/s3/url?attachmentid=160523" alt="enter image description here"><br>检索时，给定一个query，模型首先将query中所有token编码为向量$\boldsymbol{v}</em>{i}^{q}$，然后通过预先建立的倒排索引获取候选子集$\mathbb{J}=\left{I^{t} \mid t \in q\right}$，其中$|\mathbb{J}|&lt;&lt;|\mathbb{I}|$，最后通过矩阵向量乘法计算query和doc的匹配分数，如下图所示：<br><img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvmIZdbicCXCAnqiatxw1InuYjbY6IwMIicYNWuXUHQ1iaibvXnMbnIpbaQCQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2>作者在MSMARCO passage(8M英文文章，平均长度60)和MSMARCO document(3M英文文档，平均长度900)数据集上测试了不同模型，结果如下图所示：<br><img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvbicYtdbbu9dkBnwV64Tt19QEye7jIsKhKTaHeovdjlLBu23yDd8hCFw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><br><img src="/tencent/api/attachments/s3/url?attachmentid=160534" alt="enter image description here"><br>实验结果表明COIL-tok优于所有基于词语匹配的检索方法，也优于所有基于Dense vector的检索方法，COIL-tok模型在提升precision的同时可以保证recall无明显下降，加上[CLS]匹配后的COIL-full模型取得了进一步提升。COIL-full通过精确匹配query和doc的词语，有效的捕获了重要的匹配信息，通过忽略相关性较低的词语之间的匹配计算，可以显著地减少计算量，同时获得与ColBERT接近的表现。<h2 id="向量维度分析"><a href="#向量维度分析" class="headerlink" title="向量维度分析"></a>向量维度分析</h2>文中实验表明，将[CLS]从768维降到128维会导致效果轻微的下降，而将$n_t$从32降到8所带来的影响很小，这也符合直观理解。句子、文章显然需要更高的维度进行编码，而词语需要的维度较少，降维可以提高模型推理速度，使得COIL模型比DPR更快，甚至接近传统的BM25模型。为了进一步提升速度，还可以考虑采用近似搜索、量化压缩等方法。此外，为防止单个token对应的倒排链过长，我们可以只对doc中重要词建立索引，并在建立索引时预先进行排序。实验结果如下图所示：<br><img src="/tencent/api/attachments/s3/url?attachmentid=160542" alt="enter image description here"><h2 id="CASE分析"><a href="#CASE分析" class="headerlink" title="CASE分析"></a>CASE分析</h2>对比DPR这种基于Dense vector的检索模型，COIL针对token学习一个词语级别的向量，可有效区分同一个token在不同上下文中的语义差异。如下图所示：<br><img src="/tencent/api/attachments/s3/url?attachmentid=160545" alt="enter image description here"><br>第一个query中的词“cabinet”在第一个文档中是“内阁”的意思，而在第二个文档中是“橱柜”的意思，而query中的cabinet是第一种含义，因此COIL赋予了第一个文档中的cabinet更高的匹配分数。<br>第二个query中，pass在这两个文档中都是“许可”的意思，但经过上下文化之后，COIL能够捕捉到priority pass这个整体概念，因此赋予了第一个文档更高的匹配分数。<br>第三个query中，is是一个停用词(stopwords)，在Lexical IR中，一般会丢弃停用词，然而在这个例子中可以观察到COIL能够区分解释句中的is和被动语态中的is的区别，因为第一个文档中的is是解释定义，查询句中的is也是寻求解释，因此COIL赋予了第一个文档更高的匹配分数，同时由于is过于常见，COIL也并没有像前面两个例子那样为is赋予过高的权重。不过在工业界实际实现时，考虑到速度和资源限制，这些停用词大概率还是会去掉的。<br>上述例子说明COIL通过引入语义信息，可以有效地解决词汇不匹配和语义不匹配的问题，优于单纯的字面匹配检索系统。<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2>Lexical IR和Neural IR结合效果好，COIL是一个很好的尝试，在precision和recall上均取得了不错的结果，并且推理过程十分高效，具有应用价值。<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><blockquote>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzIxMzkwNjM2NQ==&amp;mid=2247512199&amp;idx=1&amp;sn=eb277e0f3648c0e16cded0cd1accd923&amp;chksm=97ad5655a0dadf43a8a6bb2847ae9d3e26c1fee1ff62c98b21df9514a76485b4c69541ec8439&amp;mpshare=1&amp;scene=1&amp;srcid=0106PKk7erdsNlfvcM5aQd6Z&amp;sharer_sharetime=1641438626468&amp;sharer_shareid=ff6b2f877c79558c62f2dccb6761e0d7&amp;version=3.1.20.90367&amp;platform=mac#rd" target="_blank" rel="external"># COIL：结合稠密检索和词汇匹配的更高效检索模型</a></p>
+</blockquote>
+</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/01/14/文本搜索特征体系/" rel="next" title="文本搜索特征体系">
+                <i class="fa fa-chevron-left"></i> 文本搜索特征体系
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          
+            <img class="site-author-image" itemprop="image"
+              src="/images/avatar.gif"
+              alt="Jeb" />
+          
+            <p class="site-author-name" itemprop="name">Jeb</p>
+            <p class="site-description motion-element" itemprop="description">我菜故我在</p>
+        </div>
+
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景知识"><span class="nav-number">1.</span> <span class="nav-text">背景知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于词汇匹配-Lexical-IR"><span class="nav-number">1.1.</span> <span class="nav-text">基于词汇匹配-Lexical IR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#向量化-Neural-IR"><span class="nav-number">1.2.</span> <span class="nav-text">向量化-Neural IR</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#无监督词向量"><span class="nav-number">1.2.1.</span> <span class="nav-text">无监督词向量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大规模预训练语言模型"><span class="nav-number">1.2.2.</span> <span class="nav-text">大规模预训练语言模型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模型实现"><span class="nav-number">2.</span> <span class="nav-text">模型实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lexical-IR实现"><span class="nav-number">2.1.</span> <span class="nav-text">Lexical IR实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#COIL模型设计和训练"><span class="nav-number">2.2.</span> <span class="nav-text">COIL模型设计和训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检索过程"><span class="nav-number">2.3.</span> <span class="nav-text">检索过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验结果"><span class="nav-number">2.4.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#向量维度分析"><span class="nav-number">2.5.</span> <span class="nav-text">向量维度分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CASE分析"><span class="nav-number">2.6.</span> <span class="nav-text">CASE分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结论"><span class="nav-number">2.7.</span> <span class="nav-text">结论</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jeb</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -401,6 +401,377 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/01/27/论文简读-Revisit-Exact-Lexical-Match-in-Information-Retrieval-with-Contextualized-Inverted-List/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/01/27/论文简读-Revisit-Exact-Lexical-Match-in-Information-Retrieval-with-Contextualized-Inverted-List/" itemprop="url">论文简读-Revisit Exact Lexical Match in Information Retrieval with Contextualized Inverted List</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-27T23:02:33+08:00">
+                2022-01-27
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>论文地址：<a href="https://arxiv.org/abs/2104.07186" target="_blank" rel="external">https://arxiv.org/abs/2104.07186</a></p>
+</blockquote>
+<p>文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化召回算法则经历了从无监督计算预训练词向量（word2vec、Glove）相似度，到有监督地计算query和doc相似度（DSSM），再到基于大规模预训练语言模型（BERT）计算相似度的迭代过程。</p>
+<h1 id="背景知识"><a href="#背景知识" class="headerlink" title="背景知识"></a>背景知识</h1><h2 id="基于词汇匹配-Lexical-IR"><a href="#基于词汇匹配-Lexical-IR" class="headerlink" title="基于词汇匹配-Lexical IR"></a>基于词汇匹配-Lexical IR</h2><p>代表算法为BM25，可以理解为tf-idf算法的改进，参考链接：</p>
+<blockquote>
+<p><a href="https://cloud.tencent.com/developer/article/1056867?from=article.detail.1331631" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1056867?from=article.detail.1331631</a></p>
+</blockquote>
+<p>Lexical IR算法得益于高效的倒排索引技术，十分高效，仍是目前主要的检索方法。其主要面临以下两个问题：</p>
+<ol>
+<li>词汇不匹配导致漏召回：例如”cat”和”kitty”都表示“猫”；</li>
+<li>语义不匹配导致错召回：例如”bank of river”和”bank in finance”中的bank表示不同含义，前者是“河岸”，而后者是“银行”，当query中的bank表示银行时，可能会将包含”bank of river”的文章进行召回。</li>
+</ol>
+<p>上述两个问题可以通过词形归一、N-grams匹配和查询扩展等技术进行缓解，但本质上仍然是基于词袋假设，无法从根本上解决。</p>
+<h2 id="向量化-Neural-IR"><a href="#向量化-Neural-IR" class="headerlink" title="向量化-Neural IR"></a>向量化-Neural IR</h2><h3 id="无监督词向量"><a href="#无监督词向量" class="headerlink" title="无监督词向量"></a>无监督词向量</h3><p>早期的无监督词向量代表模型有word2vec和Glove，计算query和doc相似度时可以有以下方法：</p>
+<ol>
+<li>首先将query和doc各个词语映射到对应向量，然后利用max pool、avg pool等方法获得query向量和doc向量，最后利用余弦距离等计算相似度；</li>
+<li>不同于方法1利用max pool、avg pool获得query向量和doc向量，方法2利用CNN/LSTM等模型进行编码，最后同样利用余弦距离等计算相似度，整体是DSSM结构；</li>
+<li>无论是方法1的pool方法，还是方法2中利用模型进行编码，降维到单个向量的表示总会带来一些损失，因此方法3在token粒度增加了一些交互，代表模型为DRMM，但伴随而来的是计算复杂度的显著增大，因此一般用在后续的精排阶段，召回部分的主要目的并非是进行精准的排序，而是保证相关性较高的doc都能召回。<br>无监督词向量可以一定程度解决Lexical IR中的问题1，对于”cat”和”kitty”，其对应的词向量也是接近的。但对于问题2仍无法解决。<h3 id="大规模预训练语言模型"><a href="#大规模预训练语言模型" class="headerlink" title="大规模预训练语言模型"></a>大规模预训练语言模型</h3>BERT的出现对于Neural IR影响很大，因为向量化本质上还是解决词、句子的表示问题，通过大规模的训练预料和transformer模型，可以对词语、句子进行更好的表示。此外也可以解决Lexical IR中的问题2，因为每个词在LM中都会有其对应的表示，例如”bank of river”和”bank in finance”分别输入到transformer模型，两个”bank“的表示是不同的。而基于BERT的模型召回算法的迭代过程与上述无监督词向量部分提到的3个方法十分类似。</li>
+<li>将query和doc直接拼接输入到BERT中获得对应的[CLS]表示，进行打分；除了直接拼接，还可以利用全连接交叉注意力获得词汇和语义的匹配信息，例如BERT reranker，如下图所示：<img src="/tencent/api/attachments/s3/url?attachmentid=159599" alt="enter image description here"><br>显然这里的计算量非常大，并不适用于召回阶段。</li>
+<li>第二种方法是延续以DSSM为代表的<strong>dense ventor representation</strong>的思想，典型的有SententceBERT和DPR，如下图所示：<img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkviawkaJeoeBG0tEBticPUYmpzXuQzic2wMX4s9hicxXqwiasYHqe8w8bfQkQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><br>此类模型首先建立文档的向量索引，然后利用最近邻向量搜索等方法检索相关的文档。显然，这类模型缺少了query和doc的交互信息。</li>
+<li>DSSM模型的一个问题是将query和doc表示为一个dense ventor时不可避免的会丢失一些信息，一些模型在这方面做了改进，例如Poly-encoder将query编码为一组向量，将document编码为单个向量。Me-BERT将query编码为单个向量，将document编码为一组向量。ColBERT将query和document均编码为一组向量，然后在token级别进行all-to-all的匹配，模型结构如下图所示：<img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvYcN2DPXOTLcNyvfMdYyXXJYKZsESwevIE2lV1MluzjicEYib13MmAJsg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><img src="/tencent/api/attachments/s3/url?attachmentid=159622" alt="enter image description here"><br>由于ColBERT对doc中的token都进行了编码，因此建立索引时需要考虑文档中所有token向量，相比于DPR，索引的复杂度大大增加，并且在查询过程中需要遍历所有索引，因此ColBERT在召回阶段有学术参考价值，工业上难以使用，对硬件资源要求太高。参考DPR和ColBERT，作者提出了COIL模型，其复杂度和检索速度接近DPR，同时检索准确率接近ColBERT。<h1 id="模型实现"><a href="#模型实现" class="headerlink" title="模型实现"></a>模型实现</h1><h2 id="Lexical-IR实现"><a href="#Lexical-IR实现" class="headerlink" title="Lexical IR实现"></a>Lexical IR实现</h2>COIL参考了Lexical IR的倒排索引思想，这里简单介绍一下经典的Lexical IR系统。以BM25算法为例，利用词语匹配分数来衡量query和doc的相关性，具体的函数可以基于词频（TF）和逆文档频率（IDF）来设计，下面是一种通用的数学定义方式：<br>$$s=\sum<em>{t \in q \cap d} \sigma</em>{t}\left(h<em>{q}(q, t), h</em>{d}(d, t)\right) $$<br>其中$t$表示query和doc匹配的词语，$h_q$和$h_d$用于输出该词语相关信息，$\sigma<em>t$表示打分函数，根据该定义，BM25算法可以表示为：<br>$$<br>\begin{array}{c}<br>s</em>{\mathrm{BM} 25}=\sum<em>{t \in q \cap d} i d f(t) h</em>{q}^{\mathrm{BM} 25}(q, t) h<em>{d}^{\mathrm{BM} 25}(d, t) \<br>h</em>{q}^{\mathrm{BM} 25}(q, t)=\frac{t f<em>{t, q}\left(1+k</em>{2}\right)}{t f<em>{t, q}+k</em>{2}} \<br>h<em>{d}^{\mathrm{BM} 25}(d, t)=\frac{t f</em>{t, d}\left(1+k<em>{1}\right)}{t f</em>{t, d}+k<em>{1}\left(1-b+b \frac{|d|}{\mathrm{avgdl}}\right)}<br>\end{array}<br>$$<br>其中$tf</em>{t,q}$和$tf_{t,d}$分别表示词语$t$在query和doc中的词频，$idf(t)$表示$t$的逆文档频率，$b, k_1, k_2$均为超参数。<br>Lexical IR的高效在于倒排索引，在实际检索时，不需要访问语料库中所有doc，而只需要访问词语对应的倒排索引的子集，如下图所示：<br><img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvYjdlAm9fUWzED7lV9ohDSnTsSOtia1iaPFKa94OEibPicYc5EEL7ECdUuA/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><h2 id="COIL模型设计和训练"><a href="#COIL模型设计和训练" class="headerlink" title="COIL模型设计和训练"></a>COIL模型设计和训练</h2>Lexical IR模型中计算query和doc的相关性依赖于词语的精确匹配和TF-IDF的打分规则，那么是否可以利用上下文语义打分模型进行替换呢？COIL模型以此为出发点进行了改进，首先将query和doc的token编码为上下文向量：<br>$$\begin{aligned}<br>\boldsymbol{v}<em>{i}^{q} &amp;=\boldsymbol{W}</em>{t o k} \operatorname{LM}(q, i)+\boldsymbol{b}<em>{t o k} \<br>\boldsymbol{v}</em>{j}^{d} &amp;=\boldsymbol{W}<em>{t o k} \operatorname{LM}(d, j)+\boldsymbol{b}</em>{t o k}<br>\end{aligned}$$<br>其中$\boldsymbol{W}<em>{\text {tok }}^{n</em>{t} \times n_{l m}}$用于将$n_lm$维向量映射到更低维的$n<em>t$维向量，后续实验也证明了低维向量就可以很好地编码token级别的信息。<br>根据上文提到的Lexical IR的数学定义，基于上下文词向量的词语匹配打分函数可以定义为：<br>$$s</em>{\mathrm{tok}}(q, d)=\sum<em>{q</em>{i} \in q \cap d} \max <em>{d</em>{j}=q<em>{i}}\left(\boldsymbol{v}</em>{i}^{q \top} \boldsymbol{v}<em>{j}^{d}\right)$$<br>$q</em>{i} \in q \cap d$表示query和doc中精确匹配的词语，具体的计算过程是：对于query中的每个词$q_i$，在doc中匹配到相同的词$d_j=q_i$，然后计算$d_j$和$q_i$的点积相似度，并取出所有$d<em>j$中的最高相似度，这里的$max$可以捕获query和doc最重要的语义匹配信号。<br>由于采用Lexical IR中的精确匹配，仍然可能会遇到背景知识Lexical IR中提到的问题1，可以引入句子级的表示[CLS]：<br>$$\begin{array}{l}<br>\boldsymbol{v}</em>{c l s}^{q}=\boldsymbol{W}<em>{c l s} \mathrm{LM}(q, \mathrm{CLS})+\boldsymbol{b}</em>{c l s} \<br>\boldsymbol{v}<em>{c l s}^{d}=\boldsymbol{W}</em>{c l s} \mathrm{LM}(d, \mathrm{CLS})+\boldsymbol{b}<em>{c l s}<br>\end{array}$$<br>$\boldsymbol{v}</em>{c l s}^{q}$和$\boldsymbol{v}<em>{c l s}^{d}$之间的相似度可以从语义级别进行匹配，缓解精确匹配导致的漏召回问题，COIL模型最终的打分函数为：<br>$$s</em>{\text {full }}(q, d)=s<em>{\text {tok }}(q, d)+\boldsymbol{v}</em>{c l s}^{q}{ }^{\top} \boldsymbol{v}<em>{c l s}^{d}$$<br>论文中将包含[CLS]匹配的模型成为COIL-full，只包含词语匹配的称为COIL-tok，COIL-full模型如下图所示：<br><img src="/tencent/api/attachments/s3/url?attachmentid=160394" alt="enter image description here"><br>通过优化负对数似然函数来训练模型：<br>$$\mathcal{L}=-\log \frac{\exp \left(s\left(q, d^{+}\right)\right)}{\exp \left(s\left(q, d^{+}\right)\right)+\sum</em>{l} \exp \left(s\left(q, d_{l}^{-}\right)\right)}$$<br>其中$d^+$表示正样本，$d^-$表示负样本。<h2 id="检索过程"><a href="#检索过程" class="headerlink" title="检索过程"></a>检索过程</h2>索引方式与Lexical IR类似，如下图所示：<br><img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvEReqO2gYrGkIiaibibibNXxibqiapkic6fL0sB61ovvftfITX6ayRXibKxRJtg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><br>具体地，预先计算doc的所有向量，$$I^{t}=\left{\boldsymbol{v}<em>{j}^{d} \mid d</em>{j}=t, d \in C\right}$$<br>其中C表示所有文档，$\boldsymbol{v}<em>{j}^{d}$表示token编码，最终得到所有$t$的倒排索引$\mathbb{I}=\left{I^{t} \mid t \in V\right}$，对于COIL-full，还需要加入$I^{c l s}=\left{\boldsymbol{v}</em>{c l s}^{d} \mid d \in C\right}$。<br>为了加速，在检索时，可以将对应的多个token向量$I^{t}$转化为一个矩阵$M^{n<em>{t} \times\left|I^{k}\right|}$，同样可以将对应的多个[CLS]向量$\boldsymbol{v}</em>{c l s}^{d}$整合为一个矩阵$M<em>{c l s}$，将相似度计算转化为高效的矩阵向量积。<br>单个doc建立索引的过程如下图所示：<br><img src="/tencent/api/attachments/s3/url?attachmentid=160523" alt="enter image description here"><br>检索时，给定一个query，模型首先将query中所有token编码为向量$\boldsymbol{v}</em>{i}^{q}$，然后通过预先建立的倒排索引获取候选子集$\mathbb{J}=\left{I^{t} \mid t \in q\right}$，其中$|\mathbb{J}|&lt;&lt;|\mathbb{I}|$，最后通过矩阵向量乘法计算query和doc的匹配分数，如下图所示：<br><img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvmIZdbicCXCAnqiatxw1InuYjbY6IwMIicYNWuXUHQ1iaibvXnMbnIpbaQCQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2>作者在MSMARCO passage(8M英文文章，平均长度60)和MSMARCO document(3M英文文档，平均长度900)数据集上测试了不同模型，结果如下图所示：<br><img src="https://mmbiz.qpic.cn/mmbiz_png/DHibuUfpZvQfk9PqVxqiaiakYM3oqa0gwkvbicYtdbbu9dkBnwV64Tt19QEye7jIsKhKTaHeovdjlLBu23yDd8hCFw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="undefined"><br><img src="/tencent/api/attachments/s3/url?attachmentid=160534" alt="enter image description here"><br>实验结果表明COIL-tok优于所有基于词语匹配的检索方法，也优于所有基于Dense vector的检索方法，COIL-tok模型在提升precision的同时可以保证recall无明显下降，加上[CLS]匹配后的COIL-full模型取得了进一步提升。COIL-full通过精确匹配query和doc的词语，有效的捕获了重要的匹配信息，通过忽略相关性较低的词语之间的匹配计算，可以显著地减少计算量，同时获得与ColBERT接近的表现。<h2 id="向量维度分析"><a href="#向量维度分析" class="headerlink" title="向量维度分析"></a>向量维度分析</h2>文中实验表明，将[CLS]从768维降到128维会导致效果轻微的下降，而将$n_t$从32降到8所带来的影响很小，这也符合直观理解。句子、文章显然需要更高的维度进行编码，而词语需要的维度较少，降维可以提高模型推理速度，使得COIL模型比DPR更快，甚至接近传统的BM25模型。为了进一步提升速度，还可以考虑采用近似搜索、量化压缩等方法。此外，为防止单个token对应的倒排链过长，我们可以只对doc中重要词建立索引，并在建立索引时预先进行排序。实验结果如下图所示：<br><img src="/tencent/api/attachments/s3/url?attachmentid=160542" alt="enter image description here"><h2 id="CASE分析"><a href="#CASE分析" class="headerlink" title="CASE分析"></a>CASE分析</h2>对比DPR这种基于Dense vector的检索模型，COIL针对token学习一个词语级别的向量，可有效区分同一个token在不同上下文中的语义差异。如下图所示：<br><img src="/tencent/api/attachments/s3/url?attachmentid=160545" alt="enter image description here"><br>第一个query中的词“cabinet”在第一个文档中是“内阁”的意思，而在第二个文档中是“橱柜”的意思，而query中的cabinet是第一种含义，因此COIL赋予了第一个文档中的cabinet更高的匹配分数。<br>第二个query中，pass在这两个文档中都是“许可”的意思，但经过上下文化之后，COIL能够捕捉到priority pass这个整体概念，因此赋予了第一个文档更高的匹配分数。<br>第三个query中，is是一个停用词(stopwords)，在Lexical IR中，一般会丢弃停用词，然而在这个例子中可以观察到COIL能够区分解释句中的is和被动语态中的is的区别，因为第一个文档中的is是解释定义，查询句中的is也是寻求解释，因此COIL赋予了第一个文档更高的匹配分数，同时由于is过于常见，COIL也并没有像前面两个例子那样为is赋予过高的权重。不过在工业界实际实现时，考虑到速度和资源限制，这些停用词大概率还是会去掉的。<br>上述例子说明COIL通过引入语义信息，可以有效地解决词汇不匹配和语义不匹配的问题，优于单纯的字面匹配检索系统。<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2>Lexical IR和Neural IR结合效果好，COIL是一个很好的尝试，在precision和recall上均取得了不错的结果，并且推理过程十分高效，具有应用价值。<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><blockquote>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzIxMzkwNjM2NQ==&amp;mid=2247512199&amp;idx=1&amp;sn=eb277e0f3648c0e16cded0cd1accd923&amp;chksm=97ad5655a0dadf43a8a6bb2847ae9d3e26c1fee1ff62c98b21df9514a76485b4c69541ec8439&amp;mpshare=1&amp;scene=1&amp;srcid=0106PKk7erdsNlfvcM5aQd6Z&amp;sharer_sharetime=1641438626468&amp;sharer_shareid=ff6b2f877c79558c62f2dccb6761e0d7&amp;version=3.1.20.90367&amp;platform=mac#rd" target="_blank" rel="external"># COIL：结合稠密检索和词汇匹配的更高效检索模型</a></p>
+</blockquote>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/01/14/文本搜索特征体系/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/01/14/文本搜索特征体系/" itemprop="url">文本搜索特征体系</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-14T23:52:06+08:00">
+                2022-01-14
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+
+<p>业界广泛流传着这样的一句话：数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限。特征体系的设计、优化是取得理想结果的基础，那么对于文本搜索，应该如何设计特征呢？本文讨论常见的文本搜索场景，输入为query，目标是将相关性较高的文章排在前面。关于模型，可参考<a href="https://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" target="_blank" rel="external">搜索排序算法</a>。</p>
+<h1 id="特征分类"><a href="#特征分类" class="headerlink" title="特征分类"></a>特征分类</h1><p>特征可以大致分为以下几类：</p>
+<ol>
+<li>覆盖特征。用于衡量doc对query词语的覆盖程度。</li>
+<li>命中特征。用于衡量query词语在doc中的匹配情况，代表是BM25算法。</li>
+<li>紧密特征。用于衡量query词语在doc命中的分布情况。</li>
+<li>权重特征。用于衡量doc对query需求的满足程度，例如当query为某个学校时（复旦大学）， 查询“招生”和“考研”的需求一般会高于“运动会”和“晚会”。</li>
+<li>语义特征。用于衡量query和doc内容的语义相关性，一般利用词向量和深度学习模型产出，将词语、句子映射到某个向量空间，利用余弦相似度等方法计算特征分数。</li>
+<li>意图特征。用于衡量query意图和doc内容整体的匹配程度，例如当query为百科查询类时，教育、人文历史类的doc更有可能满足要求。</li>
+<li>负面特征。以上特征主要从query和doc相关的角度来设计，可以看做正面特征。而query中重要词语遗漏，紧密pair分散等情况并没有一个特征来体现，设计该特征的目的在于强化负面情况对排序的影响。</li>
+</ol>
+<h1 id="具体设计"><a href="#具体设计" class="headerlink" title="具体设计"></a>具体设计</h1><p>假设query分词后的序列为<span>$\left\{q_{1}, q_{2}, \ldots q_{n}\right\}$</span><!-- Has MathJax -->，doc标题分词后的序列为<span>$\left\{t_{1}, t_{2} \cdots t_{m}\right\}$</span><!-- Has MathJax -->，正文序列为<span>$\left\{c_{1}, c_{2} \cdots c_{k}\right\}$</span><!-- Has MathJax -->。</p>
+<h2 id="覆盖特征"><a href="#覆盖特征" class="headerlink" title="覆盖特征"></a>覆盖特征</h2><p>简单地，可以统计query词在doc中命中个数（去重），假设为h，则有：</p>
+<span>$$\begin{gather*}
+
+\text { cover-ratio }=\frac{h}{n}
+
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>额…好像有点太简单了吧。第一步优化，我们可以只关注query中的重要词，例如query=”开端的更新时间是什么”，那么“的”、“是”、“什么”这些词是否命中无关紧要，考虑它们的话反而会产生干扰。第二步优化，query匹配到doc中的词权重也不相同，对应上述query，假设一篇doc的标题是“开端电视剧周二周三更新”，另一篇文章的标题是“早睡是养成良好生活习惯的开端”，显然在同样匹配“开端”这个词的时候，前面的文章对应的权重应该更高一些。</p>
+<p>第一步优化，我们需要获得query各个词的重要度，可通过词性、TF、IDF等进行判定。第二步优化，我们需要获得doc中的词权重。对于长度较短的标题，我们同样可以采用类似query的方法获得，此外还可以基于有监督的模型训练获得。对于正文中的词权重，简单地，可以使用TF-IDF，为了获得更好的效果可以利用深度模型进行计算，例如DeepCT模型。假设已获得query和doc词语的权重信息，那么覆盖度的计算公式为：</p>
+<span>$$\begin{gather*}
+
+\text { cover_ratio }=\frac{\sum_{t \in{q_ {keywords}}} w_{t}^{d} \text {. is_cover }}{\sum_{t \in q_{k e y w o r d s}} w_{t}^{d}}
+
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>其中<span>$q_{keywords}$</span><!-- Has MathJax -->表示query中的关键词，<span>$is_cover$</span><!-- Has MathJax -->表示doc中是否包含该词，<span>$w_{t}^{d}}$</span><!-- Has MathJax -->表示该词在doc中的权重。这里<span>$cover_ratio$</span><!-- Has MathJax -->的含义是，对于query中所有关键词，对应其在doc中的权重，计算doc对其的覆盖情况。</p>
+<h2 id="命中特征"><a href="#命中特征" class="headerlink" title="命中特征"></a>命中特征</h2><p>考虑query词在doc中命中的次数及权重来设计特征，比较简单的是TF-IDF算法，BM25算法是对TF-IDF算法的改进，应用更为广泛，公式如下：</p>
+<span>$$\begin{gather*}
+
+f(q, d)=\sum_{w \in q \cap d} c(w, q) \frac{(k+1) c(w, d)}{c(w, d)+k\left(1-b+b \frac{|d|}{\text { avdl }}\right)} \log \frac{M+1}{d f(w)}
+
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>其中<span>$b \in[0,1]$</span><!-- Has MathJax -->，<span>$k_{1}, k_{3} \in[0,+\infty)$</span><!-- Has MathJax -->。以下描述中的顺序从左到右计算。</p>
+<ol>
+<li><p>第一项<span>$c(w,q)$</span><!-- Has MathJax -->，表示词语w在query中的词频；</p>
+</li>
+<li><p>第二项实质是对词语w词频的变换，<span>$c(w,d)$</span><!-- Has MathJax -->表示词语w在文档d中的词频，通过公式的约束控制词频因子的上限，其上限为k+1，不会无线增长。例如当一个词语在文档中出现50次或100次时，都能说明该词与文本相关，但其相关性直观来说不应该是线性增长的，如下图所示：</p>
+<p>公式中分母k乘的系数目的是归一化文本长度。b表示[0,1]之间的常数，avdl表示文档的平均长度，对于文档d，如果其长度大于平均值，那么normalizer大于1，反之亦然。如下图所示：</p>
+</li>
+<li><p>第三项表示词的逆文档频率，M表示所有文档数，<span>$df(w)$</span><!-- Has MathJax -->表示包含该词的文档数。</p>
+</li>
+</ol>
+<h2 id="紧密特征"><a href="#紧密特征" class="headerlink" title="紧密特征"></a>紧密特征</h2><p>关注query词语在doc中命中位置的分布，例如query=”上海中学”，$doc_1$的标题为“上海中学招生计划”，$doc_2$的标题为“上海有哪些比较好的中学”。query中的“上海”和“中学”紧密度较高，在$doc_1$和$doc_2$中都有命中，但在$doc_2$中分散命中，语义已发生了变化，显然$doc_1$与query更相关。为了进行区分，需要根据query词语的命中位置来设计紧密特征，具体有多种实现方法，这里大致介绍两种：</p>
+<ol>
+<li>统计query词语整体分布情况。利用滑动窗口，统计每个窗口内的紧密度，最后取最大值。参考公式如下：<span>$\begin{gather*}\text { proximity }_{1}=\max _{i \in { windows }}\left(\alpha_{w_i}^{\text {miss_ratio }} * \beta_{w_i}^{\text {reverse_ratio }}\right)\end{gather*}$</span><!-- Has MathJax -->，其中<span>$windows$</span><!-- Has MathJax -->表示所有滑动窗口，<span>$w_i$</span><!-- Has MathJax -->表示第i个窗口，<span>$\alpha, \beta$</span><!-- Has MathJax -->为(0,1)区间的常数，<span>$miss_ratio$</span><!-- Has MathJax -->表示窗口内未命中词语的比例，<span>$reverse_ratio$</span><!-- Has MathJax -->表示窗口内逆序词语pair的比例。</li>
+<li>统计query中紧密词语的命中情况。方法1的计算相对粗糙一些，query中重要性较低的词和非紧密词都可能对结果产生干扰。例如“的”、“啊”这些词语不命中其实无所谓。此外，非紧密词语不在一个窗口命中也可以，例如当query=”EDG、IG在哪年夺冠的”时，其中“EDG”与“IG”并无紧密关系，不能要求doc中两个词要紧密出现，假如某篇文章第一段介绍EDG夺冠，第二段介绍IG夺冠完全可以满足要求。因此进一步优化可以只考虑query中具有紧密关系词语之间的命中情况，参考公式如下：<span>$$\begin{gather*}*\begin{array}{l}
+proximity_2=\frac{1} {total\_tightness}* \sum_{i \neq j} { tightness(t_{i},t_{j})}* \frac{1}{\operatorname{dist}\left(t_{i}, t_{j}\right)} \\
+\operatorname{dist}\left(t_{i}, t_{j}\right)=\min _{i \neq j}\left(\phi\left(t_{i}, o\left(t_{j}\right)\right)\right)\\
+\phi\left(t_{i}, t_{j}\right)=\left\{\begin{array}{l}
+\left|P_{t_{i,d}}-P_{t_{j ,d}}\right|, \text { if } P_{t_{j,d}}-P_{t_{i,d}}&gt;0 \\
+\left|P_{t_{i,d}}-P_{t_{j,d}}\right| * k, \text { if } P_{t_{j,d}}-P_{t_{i, d}}&lt;0
+\end{array}\right.
+\end{array}* \end{gather*}$$</span><!-- Has MathJax -->其中<span>$t_i,t_j$</span><!-- Has MathJax -->表示query中第i和第j个词语，<span>$tightness(t_i,t_j)$</span><!-- Has MathJax -->表示两个词之间的紧密度，<span>$dist(t_i,t_j)$</span><!-- Has MathJax -->表示两个词在doc中的距离，<span>$o\left(t_{j}\right)$</span><!-- Has MathJax -->表示第j个词语在doc命中的集合，<span>$P_{t_{i,d}}, P_{t_{j,d}}$</span><!-- Has MathJax -->表示query中第i个词语和第j个词语在doc的命中位置，<span>$k$</span><!-- Has MathJax -->为某个常数。公式的含义是，对于query中每个紧密词pair，根据其紧密度和在doc中命中位置的距离计算紧密特征，由于词语在doc中可能存在多次命中，简单地，可以取pair命中位置的最短距离。此外，对于逆序命中的情况还要做一些惩罚，相应的增大距离。对于存在紧密pair的query，根据上述公式，如果在doc中命中位置越接近，则相应的分数越高，反之则越低。若query中不存在紧密pair，即total_tightness=0，那么可以给一个默认值，例如0。</li>
+</ol>
+<h2 id="权重特征"><a href="#权重特征" class="headerlink" title="权重特征"></a>权重特征</h2><p>以key-value形式组织数据，例如对于学校、医院等实体名词，可根据经验、用户点击数据等离线计算好相应的权重，供在线生成特征。举个例子，当query=“北京大学”时，<span>$doc_i$</span><!-- Has MathJax -->和<span>$doc_j$</span><!-- Has MathJax -->中均命中了“北京大学”，但<span>$doc_i$</span><!-- Has MathJax -->的内容是关于北京大学的招生简章，而<span>$doc_j$</span><!-- Has MathJax -->则是关于北京大学财务处的信息，显然招生简章相比财务处是更为主要的需求。通过离线计算好的权重，我们可以给予<span>$doc_i$</span><!-- Has MathJax -->更高的分数，使其排序更靠前。</p>
+<h2 id="语义特征"><a href="#语义特征" class="headerlink" title="语义特征"></a>语义特征</h2><p>上述的覆盖、命中等特征属于传统的词法特征，会存在一些问题，例如：</p>
+<ol>
+<li>“电话”和“手机号”词义相近，与“电脑”词义较远，但只从字面进行匹配的话，两者的打分都是0，这显然不合理；</li>
+<li>对于“上海到北京的机票价格”和“北京到上海的机票”两句话，当query=“北京到上海的机票多少钱“时，覆盖与命中特征的分数是一样的，但显然两句话的语义并不相同。</li>
+</ol>
+<p>得益于大规模预训练语言模型和深度学习技术的发展，可以将query和doc表示为向量来计算语义相关性。</p>
+<ol>
+<li>对于doc，一般来说将其拆分为标题和正文两个部分。标题通常较短，因此可以使用DSSM模型，例如ESIM来计算相关性。正文由于较长，可以将其分段后，离线生成各个段的向量表示，在线计算时根据命中段落中词的权重计算相关性。也可以离线提取关键句、关键段落等信息，用于在线计算；</li>
+<li>将doc的标题和正文作为一个整体利用Transformer-XL、BERT-CNN或longformer等模型进行表示，然后计算其与query向量的相关性。但实践证明，虽然各个模型在长文建模方面进行了改进，但效果并不明显，相比于原始的BERT无明显提高，且最后得到的表示与起始的几个词语高度相关，后面词语对最终表示的影响很小。</li>
+</ol>
+<p>实践中一般采取第一种方法，且由于正文内容较长，离线训练和在线计算使用资源较多，所以一般先获取query与title的语义相关特征，正文部分则在后续的优化中进行。</p>
+<h2 id="意图特征"><a href="#意图特征" class="headerlink" title="意图特征"></a>意图特征</h2><p>上述的命中、紧密和语义等特征主要从词语、句子和段落粒度衡量query与doc的相关性，这里的意图特征关注query与doc整体内容的匹配情况。例如当query=”北冥鲲鹏”时，查询的目的大概率是了解相关的神话故事，那么从query侧可以将其分类为“百科查询”，doc侧教育、人文历史类的文章更有可能满足要求，而饮食、财经类的文章整体相关度较低。显然，为了获取意图匹配特征，需要进行query的意图识别和doc分类，query的意图识别需要在线完成，而doc分类可以离线计算好。值得注意的是，query的分类体系与doc的分类体系并不一定完全对应，因此需要学习两者之间的映射关系。例如上面举的例子，query意图为百科查询类时，对应的doc类型应是教育和人文历史类。这种映射关系的建立，简单地可以利用经验规则来制定，也可以根据点击数据、有监督的标注数据来学习。</p>
+<h2 id="负面特征"><a href="#负面特征" class="headerlink" title="负面特征"></a>负面特征</h2><p>从衡量query和doc相关性的角度去设计特征，我们很自然的会关注两者相关的部分，进而设计出以上特征，这些可以看作正面特征。那么负面特征有哪些呢？常见的有：</p>
+<ol>
+<li>缺失。query中存在重要词未命中；</li>
+<li>分散。query中的紧密词语分散命中；</li>
+</ol>
+<p>特征计算公式为：</p>
+<span>$$\begin{gather*}
+
+\begin{array}{l}
+\text { neg_fea }=\sum_{i \in \text { non_stopwords }} \alpha * w_{i} \\
+\alpha=\text { is_omit }+\text { scatter_degree }
+\end{array}
+
+\end{gather*}$$</span><!-- Has MathJax -->
+<p>其中 non_stopwords表示query中的非停用词，<span>$w_i$</span><!-- Has MathJax -->表示query中第i个词的权重，<span>$\alpha$</span><!-- Has MathJax -->表示负面因子，<span>$is_omit$</span><!-- Has MathJax -->表示该词语是否遗漏，<span>$scatter_degree$</span><!-- Has MathJax -->表示分散系数，可根据词语之间的紧密度和命中情况归纳到几个区间。</p>
+<h2 id="特征分类-1"><a href="#特征分类-1" class="headerlink" title="特征分类"></a>特征分类</h2><p>按照正面、负面以及内容粒度可以对以上特征进行如下分类：</p>
+<p><img width="700" src="/images/search-fea-class.png"></p>
+<p>本文仅仅是讨论文本搜索特征设计的基本思路和方法，无论是特征的种类和计算方法都有很大的优化空间，抛砖引玉，抛砖引玉。</p>
+<h2 id="特征重要性"><a href="#特征重要性" class="headerlink" title="特征重要性"></a>特征重要性</h2><p>特征重要性的衡量方法一般有：</p>
+<ol>
+<li>单独统计各个指标在标注数据集上的效果，例如只根据命中特征进行排序后结果中逆序的比例；</li>
+<li>利用树模型，例如XGBoost进行训练，输出各个特征的重要性。</li>
+</ol>
+<p>一般来说，以上各个特征的重要性排序为：语义特征&gt;负面特征&gt;覆盖特征&gt;紧密特征&gt;命中特征&gt;意图特征。注意这只是在某个数据集上的测试结果，不一定适用于所有情况。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://cloud.tencent.com/developer/article/1056867?from=article.detail.1331631" target="_blank" rel="external">python根据BM25实现文本检索</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/10/22/常用推荐模型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -531,7 +902,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p><img src="/images/dxslre.png" alt="img"></p>
 <p>Softmax回归：</p>
 <p><img src="/images/smre.png" alt="img"></p>
-<h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>为什么不适用平方误差作为损失函数？</p>
+<h4 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h4><p>为什么不使用平方误差作为损失函数？</p>
 <ol>
 <li>平方误差损失函数加上sigmoid的函数将会是一个非凸的函数，不易求解，会得到局部解，用对数似然函数得到高阶连续可导凸函数，可以得到最优解。</li>
 <li>对数损失函数更新起来很快，因为只和x，y有关，和sigmoid本身的梯度无关。如果使用平方损失函数，会发现梯度更新的速度和sigmod函数本身的梯度是很相关的。sigmod函数在它在定义域内的梯度都不大于0.25。这样训练会非常的慢。</li>
@@ -624,7 +995,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p><img src="/images/lirvsfm.png" alt="img"></p>
 <p><strong>FM模型演化：</strong></p>
 <p><img src="/images/fmhis.png" alt="img"></p>
-<p>FFM(Field Factorization Machine)是在FM的基础上引入了“场（Field）”的概念而形成的新模型。在FM中计算特征<span>$x_i$</span><!-- Has MathJax --> 与其他特征的交叉影响时，使用的都是同一个隐向量 <span>$V_i$</span><!-- Has MathJax --> 。而FFM将特征按照事先的规则分为多个场(Field)，特征 <img src="https://www.zhihu.com/equation?tex=x_i" alt="[公式]"> 属于某个特定的场f。每个特征将被映射为多个隐向量 <span>$V_{i 1}, \ldots, V_{i f}$</span><!-- Has MathJax -->  ，每个隐向量对应一个场。当两个特征<span>$x_i,x_j$</span><!-- Has MathJax -->  ,组合时，用对方对应的场对应的隐向量做内积:<span>$w_{i j}=\mathbf{v}_{i, f_{j}}^{T} \mathbf{v}_{j, f_{i}}$</span><!-- Has MathJax --> </p>
+<p>FFM(Field Factorization Machine)是在FM的基础上引入了“场（Field）”的概念而形成的新模型。在FM中计算特征<span>$x_i$</span><!-- Has MathJax --> 与其他特征的交叉影响时，使用的都是同一个隐向量 <span>$V_i$</span><!-- Has MathJax --> 。而FFM将特征按照事先的规则分为多个场(Field)，特征 <span>$x_i$</span><!-- Has MathJax -->属于某个特定的场f。每个特征将被映射为多个隐向量 <span>$V_{i 1}, \ldots, V_{i f}$</span><!-- Has MathJax -->  ，每个隐向量对应一个场。当两个特征<span>$x_i,x_j$</span><!-- Has MathJax -->  ,组合时，用对方对应的场对应的隐向量做内积:<span>$w_{i j}=\mathbf{v}_{i, f_{j}}^{T} \mathbf{v}_{j, f_{i}}$</span><!-- Has MathJax --> </p>
 <p>FFM 由于引入了场，使得每两组特征交叉的隐向量都是独立的，可以取得更好的组合效果， FM 可以看做只有一个场的 FFM。</p>
 <p>DeepFM模型将深度神经网络模型与FM模型结合，模型结构如下图所示：</p>
 <p><img src="/images/deepfm.png" alt="img"></p>
@@ -1233,7 +1604,7 @@ f\left(\theta_{k+1}\right) \approx f\left(\theta_{k}\right)+\frac{\partial f\lef
 <p>另外，梯度提升树用于分类模型时，是<strong>梯度提升决策树<code>GBDT</code></strong>；用于回归模型时，是<strong>梯度提升回归树<code>GBRT</code>，</strong>二者的区别主要是损失函数不同。</p>
 <p><strong>GBRT</strong>算法的伪代码如下：</p>
 <p> <img src="/images/GBRT.png" alt=""></p>
-<p>另外，Freidman从bagging策略受到启发，采用<strong>随机梯度提升</strong>来修改了原始的梯度提升算法，即每一轮迭代中，新的决策树拟合的是原始训练集的一个子集（而并不是原始训练集）的残差，这个子集是通过对原始训练集的无放回随机采样而来，类似于自助采样法。这种方法<strong>引入了随机性，有助于改善过拟合</strong>，另一个好处是<strong>未被采样的另一部分字集可以用来计算包外估计误差</strong>。</p>
+<p>另外，Freidman从bagging策略受到启发，采用<strong>随机梯度提升</strong>来修改了原始的梯度提升算法，即每一轮迭代中，新的决策树拟合的是原始训练集的一个子集（而并不是原始训练集）的残差，这个子集是通过对原始训练集的无放回随机采样而来，类似于自助采样法。这种方法<strong>引入了随机性，有助于改善过拟合</strong>，另一个好处是<strong>未被采样的另一部分子集可以用来计算包外估计误差</strong>。</p>
 <p>这时我们再看一下LambdaMART算法的流程：</p>
 <p><img src="/images/LambdaMART2.png" alt=""></p>
 <p>对比GBRT和LambdaMART算法流程可以发现两者非常相似，主要区别是LambdaMART将GBRT中要拟合的负梯度替换为Lambda梯度，而LambdaMART对排序的最核心的改进正是这个Lambda梯度，具体介绍可以参考<a href="[http://octopuscoder.github.io/2020/01/19/%E6%90%9C%E7%B4%A2%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/](http://octopuscoder.github.io/2020/01/19/搜索排序算法/">搜索排序算法</a>)中关于RankNet和LambdaRank的介绍。</p>
@@ -1370,13 +1741,14 @@ n d c g(swap(1,4))=\frac{d c g(swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.
 
 \end{gather*}$$</span><!-- Has MathJax -->
 <p>Ranklib中直接取σ=1，如下图，蓝，红，绿三种颜色分别对应σ=1，2，4时ρ函数的曲线情形（横坐标是<span>$s_i-s_j$</span><!-- Has MathJax -->）:</p>
+<p><img src="/images/lambdamart-pfuc.png" alt="lambdamart-pfuc"></p>
 <p>初始时，模型为空，所有模型预测得分都是0，所以<span>$s_i=s_j=0，&rho;_{ij}=1/2$</span><!-- Has MathJax -->，lambda(i,j)的计算公式为：</p>
 <span>$$\begin{gather*}
 
 \lambda_{i j}=\rho_{i j} *|\operatorname{deltaNDCG}(i, j)|
 
 \end{gather*}$$</span><!-- Has MathJax -->
-<p>上式为Ranklib中实际使用的公式，而在paper中，还需要再乘以-σ，在σ=1时，就是符号正好相反，这两种方式是等价的，符号并不影响模型训练结果（其实大可以把代码中lambda的值前面加一个负号，只是注意在每轮计算train, valid和最后计算test的ndcg的时候，模型预测的得分modelScores要按升序排列——越负的doc越好，而不是源代码中按降序。最后训练出的模型是一样的，这说明这两种方式完全对称，所以符号的问题可以省略。甚至不乘以-σ，更符合人的习惯——分数越大越好，降序排列结果。）：</p>
+<p>上式为Ranklib中实际使用的公式，而在paper中，还需要再乘以-σ，在σ=1时，就是符号正好相反，这两种方式是等价的，符号并不影响模型训练结果（其实大可以把代码中lambda的值前面加一个负号，只是注意在每轮计算train, valid和最后计算test的ndcg的时候，模型预测的得分modelScores要按升序排列——越负的doc越好，而不是源代码中按降序。最后训练出的模型是一样的，这说明这两种方式完全对称，所以符号的问题可以省略。甚至不乘以-σ，更符合人的习惯——分数越大越好，降序排列结果：</p>
 <span>$$\begin{gather*}
 
 \lambda_{i}=\sum_{j(l a b e l(i)&gt;l a b e l(j))} \lambda_{i j}-\sum_{j(label(i)&lt;label(j))} \lambda_{i j}
@@ -1574,10 +1946,10 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 </ol>
 <p>时效性模型：[待补充]。<br>个性化模型：逻辑回归(Logistic Regression）。<br>点击模型：深度置信网络(DeepBeliefNetworks)。</p>
 <h2 id="相关性模型"><a href="#相关性模型" class="headerlink" title="相关性模型"></a>相关性模型</h2><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><img width="700" src="/images/search_kinds.png"></p>
+<p>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</p>
 <h3 id="迭代过程"><a href="#迭代过程" class="headerlink" title="迭代过程"></a>迭代过程</h3><p><img width="700" src="/images/search_process.png"></p>
 <h3 id="主流模型及评测指标"><a href="#主流模型及评测指标" class="headerlink" title="主流模型及评测指标"></a>主流模型及评测指标</h3><p><img width="700" src="/images/search_evalute.png"></p>
 <h3 id="主流模型对比"><a href="#主流模型对比" class="headerlink" title="主流模型对比"></a>主流模型对比</h3><p><img height="500" src="/images/serach_model_compare.png"></p>
-<p>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</p>
 <h3 id="模型详情"><a href="#模型详情" class="headerlink" title="模型详情"></a>模型详情</h3><h4 id="RankSVM"><a href="#RankSVM" class="headerlink" title="RankSVM"></a>RankSVM</h4><p>RankSVM(2003)，将排序问题转化为pairwise的分类问题，然后使用SVM分类模型进行学习并求解，举例说明，两组query及其召回的documents，其中query-doc的相关程度等级分为三档，如下图所示：<br><img width="700" src="/images/search_ranksvm1.png"><br>同一个query下的不同相关度的doc的feature vector可以进行组合，形成新的feature vector：x1-x2，x1-x3，x2-x3。同时label也会被重新赋值，例如L1-L2，L1-L3，L2-L3。这几个feature vector的label被赋值成分类问题中的positive label。进一步，为了形成一个标准的分类问题，我们还需要有negative samples，这里我们就使用前述的几个新的positive feature vector的反方向向量作为相应的negative samples：x2-x1，x3-x1，x3-x2。另外，需要注意的是，我们在组合形成新的feature vector的时候，不能使用在原始排序问题中处于相同相似度等级的两个feature vector，也不能使用处于不同query下的两个feature vector。<br><img width="700" src="/images/search_ranksvm2.png"></p>
 <h4 id="RankNet"><a href="#RankNet" class="headerlink" title="RankNet"></a>RankNet</h4><p>微软(2005)提出，属于pairwise算法，从概率的角度来解决排序问题。RankNet的核心是提出了一种概率损失函数来学习Ranking Function，并应用Ranking Function对文档进行排序。这里的Ranking Function可以是任意对参数可微的模型，也就是说，该概率损失函数并不依赖于特定的机器学习模型，在论文中，RankNet是基于神经网络实现的。除此之外，GBDT等模型也可以应用于该框架。<br>对于任意一个doc对(Ui,Uj)，模型输出的score分别为si和sj，那么根据模型的预测，Ui比Uj与Query更相关的概率为Pij。由于RankNet使用的模型一般为神经网络，根据经验sigmoid函数能提供一个比较好的概率评估。<br>那么根据模型的预测，Ui比Uj与Query更相关的概率为：<br><span>$$\begin{gather*}
 P_{i j}=P\left(U_{i}&gt;U_{j}\right)=\frac{1}{1+e^{-\sigma\left(s_{i}-s_{j}\right)}}
@@ -1641,7 +2013,7 @@ L(f)=\frac{1}{2} \sum_{i=1}^{N}\left(\max \left\{0, \tau-\left(f\left(x_{i}^{(1)
 f\left(x_{i}^{(1)}\right), \quad f\left(x_{i}^{(2)}\right), \quad i=1, \cdots, N
 \end{gather*}$$</span><!-- Has MathJax --><br>然后求解loss function对这两个未知变量的梯度（分别对两个未知变量求导），如下：<br><span>$$\begin{gather*}
 -\max \left\{0, f\left(x_{i}^{(2)}\right)-f\left(x_{i}^{(1)}\right)+\tau\right\}, \quad \max \left\{0, f\left(x_{i}^{(2)}\right)-f\left(x_{i}^{(1)}\right)+\tau\right\}, \quad i=1, \cdots, N
-\end{gather*}$$</span><!-- Has MathJax --><br>如果两个变量之差大于0，则此时对应的loss为0，我们无需对f(x)进行迭代更新；反之loss不为0，我们需要对f(x)进行迭代更新，即使得新的f(x)在这个instance上的两个点的预测值能够更接近真实值。f(x)更新类似于梯度下降方法中参数的更新：<br><span>$$\begin{gather*}
+\end{gather*}$$</span><!-- Has MathJax --><br>如果<span>$f\left(x_{i}^{(1)}\right)-f\left(x_{i}^{(2)}\right) \geq \tau$</span><!-- Has MathJax -->，则此时对应的loss为0，我们无需对f(x)进行迭代更新；如果f\left(x<em>{i}^{(1)}\right)-f\left(x</em>{i}^{(2)}\right)&lt;\tauloss不为0，我们需要对f(x)进行迭代更新，即使得新的f(x)在这个instance上的两个点的预测值能够更接近真实值。f(x)更新类似于梯度下降方法中参数的更新：<br><span>$$\begin{gather*}
 f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 \end{gather*}$$</span><!-- Has MathJax --><br>pairwise方法中，具体为：<br><span>$$\begin{gather*}
 \begin{aligned}
@@ -1700,7 +2072,7 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 </ol>
 <p><strong>LambdaMART是不是很好懂？</strong></p>
 <p><img width="300" src="/images/Emoticon1.png"></p>
-<p>有较多博客、资料在此戛然而止，好像上述资料已经足够理解LambdaMART了，这也让我一度怀疑自己的IQ，基础和我一样不太好的兄弟们可以进入另一篇博客，我们从提升树、梯度提升树和梯度提升决策树说起，并结合Ranklib源码和具体的例子，以及微软的相关技术报告一起来看看LambdaMART的<a href="">真相</a>。</p>
+<p>有较多博客、资料在此戛然而止，好像上述资料已经足够理解LambdaMART了，这也让我一度怀疑自己的IQ，基础和我一样不太好的兄弟们可以进入另一篇博客，我们从提升树、梯度提升树和梯度提升决策树说起，并结合Ranklib源码和具体的例子，以及微软的相关技术报告一起来看看LambdaMART的<a href="https://octopuscoder.github.io/2020/03/27/LambdaMART%E4%BB%8E%E6%94%BE%E5%BC%83%E5%88%B0%E5%85%A5%E9%97%A8/" target="_blank" rel="external">真相</a>。</p>
 <blockquote>
 <p>爱奇艺实践：<br>在没有加入稀疏类特征之前，我们的模型是LambdaMART模型，在IR领域是最先进的模型，该模型是一个gbdt模型，基于boosting思想，不断增加决策树，来减小残差。该模型在很多竞赛中表现良好，因为不用过多的特征处理，树模型会考虑特征本身的数据分布，同时有很好的学习泛化能力，树结构很难兼容高维稀疏特征，比方说我们的document是上亿级的特征，很难每个节点走一次树的分割，所以对于加入稀疏特征的时候，树模型会遇到瓶颈。但是在处理高维稀疏特征的时候，像LR、FM、FFM可以认为是线性模型，特征的增加并不会对此类模型造成压力，上亿维也没关系。LR模型弱点在于特征组合能力不足，很多情况下特征组合方式比较重要，树模型从根节点到叶子节点的路径其实是一种组合方式。如下图所示：</p>
 </blockquote>
@@ -1708,7 +2080,6 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 <h4 id="深度模型"><a href="#深度模型" class="headerlink" title="深度模型"></a>深度模型</h4><h5 id="DNN"><a href="#DNN" class="headerlink" title="DNN"></a>DNN</h5><p>爱奇艺实现：<br><img width="700" src="/images/search_iqiyi_dnn.jpg"><br>底层是query和document的描述文本做多粒度切词，之后做embedding后加权平均，得到document和query的向量表达，拼接这两组向量，同时再做点积，（两个向量越来越相近，拼接的时候希望上层网络学到两个向量的相似性，需要有足够的样本和正负样例，所以我们自己做了点积）。除了向量特征，模型也适用了稠密特征，即利用gbdt抽取特征，与embedding特征做拼接，最后经过三个全连接层，接sigmoid函数，就可以得到样本的score，并在此基础上用ndcg的衡量标准去计算损失，从而反向优化网络结构。而在online服务侧，则直接用样本去predict得分。这个模型上线之后，效果非常明显。其中，二次搜索率降低（二次搜索率越低越好，说明用户一次搜中）。</p>
 <h5 id="Wide-amp-Deep"><a href="#Wide-amp-Deep" class="headerlink" title="Wide&amp;Deep"></a>Wide&amp;Deep</h5><p>美团点评模型框架：<br><img width="700" src="/images/search_wd_structure.png"><br>美团点评模型具体实现：<br><img width="700" src="/images/search_wd_model.png"><br>在训练时，分别对样本数据进行清洗和提权。在特征方面，对于连续特征，用Min-Max方法做归一化。在交叉特征方面，结合业务需求，提炼出多个在业务场景意义比较重大的交叉特征。用Adam做为优化器，用Cross Entropy做为损失函数。在训练期间，与Wide &amp; Deep Learning论文中不同之处在于，将组合特征作为输入层分别输入到对应的Deep组件和Wide组件中。然后在Deep部分将全部输入数据送到3个ReLU层，在最后通过Sigmoid层进行打分。训练数据7000万+，并用超过3000万的测试数据进行线下模型预估。Batch－Size设为50000，Epoch设为20。<br>线上AB实验结果：<br><img width="700" src="/images/search_wd_abtest.png"></p>
 <h5 id="LambdaDNN"><a href="#LambdaDNN" class="headerlink" title="LambdaDNN"></a>LambdaDNN</h5><p>大众点评搜索排序模型，基于TensorFlow分布式框架实现。<br><img width="700" src="/images/search_lambdaDnn.png"><br>NDCG的计算公式中，折损的权重是随着位置呈指数变化的。然而实际曝光点击率随位置变化的曲线与NDCG的理论折损值存在着较大的差异。<br>对于移动端的场景来说，用户在下拉滑动列表进行浏览时，视觉的焦点会随着滑屏、翻页而发生变动。例如用户翻到第二页时，往往会重新聚焦，因此，会发现第二页头部的曝光点击率实际上是高于第一页尾部位置的。我们尝试了两种方案去微调NDCG中的指数位置折损：<br>根据实际曝光点击率拟合折损曲线：根据实际统计到的曝光点击率数据，拟合公式替代NDCG中的指数折损公式，绘制的曲线如图12所示。<br>计算Position Bias作为位置折损：Position Bias在业界有较多的讨论，用户点击商户的过程可以分为观察和点击两个步骤：a.用户需要首先看到该商户，而看到商户的概率取决于所在的位置；b.看到商户后点击商户的概率只与商户的相关性有关。步骤a计算的概率即为Position Bias，这块内容可以讨论的东西很多，这里不再详述。<br><img width="700" src="/images/search_ndcg.png"><br>经过上述对NDCG计算改造训练出的LambdaDNN模型，相较Base树模型和Pointwise DNN模型，在业务指标上有了非常显著的提升。<br><img width="700" src="/images/search_lm_dnn_lmDnn.png"></p>
-<h5 id="LambdaDeepFM"><a href="#LambdaDeepFM" class="headerlink" title="LambdaDeepFM"></a>LambdaDeepFM</h5><p>[待补充]</p>
 <h5 id="LambdaDCN"><a href="#LambdaDCN" class="headerlink" title="LambdaDCN"></a>LambdaDCN</h5><p>Lambda梯度除了与DNN网络相结合外，也可以与绝大部分常见的网络结构相结合。为了进一步学习到更多交叉特征，美团点评团队在LambdaDNN的基础上分别尝试了LambdaDeepFM和LambdaDCN网络；其中DCN网络是一种加入Cross的并行网络结构，交叉的网络每一层的输出特征与第一层的原始输入特征进行显性的两两交叉，相当于每一层学习特征交叉的映射去拟合层之间的残差。<br><img width="700" src="/images/search_lambdaDcn.png"><br>离线的对比实验表明，Lambda梯度与DCN网络结合之后充分发挥了DCN网络的特点，简洁的多项式交叉设计有效地提升模型的训练效果。NDCG指标对比效果如下图所示：<br><img width="500" src="/images/search_dcn_compare.png"></p>
 <h4 id="补充模型"><a href="#补充模型" class="headerlink" title="补充模型"></a>补充模型</h4><h5 id="FM"><a href="#FM" class="headerlink" title="FM"></a>FM</h5><p><img width="700" src="/images/search_fm.png"></p>
 <h5 id="DSSM"><a href="#DSSM" class="headerlink" title="DSSM"></a>DSSM</h5><p><img width="700" src="/images/search_dssm.png"></p>
@@ -1902,7 +2273,7 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 <li>根据训练所得模型和打分函数进行打分；</li>
 <li>获得每个<query,doc>对打分，并完成排序。</query,doc></li>
 </ol>
-<p>值得注意的是，目前使用比较多的XGBoost ranking模型是LambdaRank，但尚未完成，所以目前使用pairwise rank，参考<a href="https://github.com/dmlc/xgboost/tree/master/demo/rank" target="_blank" rel="external">dmlc/xgboost</a> .</p>
+<p>值得注意的是，目前使用比较多的XGBoost ranking模型是LambdaRank，但尚未完成，参考<a href="https://github.com/dmlc/xgboost/tree/master/demo/rank" target="_blank" rel="external">dmlc/xgboost</a> .</p>
 <p><strong>代码示例</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line">import os,sys,json</div><div class="line">import math</div><div class="line">import random</div><div class="line">import numpy as np</div><div class="line">import pandas as pd</div><div class="line">import sklearn.utils</div><div class="line">import xgboost as xgb</div><div class="line"></div><div class="line">enableFeatures = [</div><div class="line">    &quot;fea1&quot;,</div><div class="line">    &quot;fea2&quot;</div><div class="line">]</div><div class="line"></div><div class="line">train_data = pd.read_csv(&quot;train.csv&quot;, sep=&quot;\t&quot;)</div><div class="line">test_data = pd.read_csv(&quot;test.csv&quot;, sep=&quot;\t&quot;)</div><div class="line">print(&quot;all data &#123;0&#125;&quot;.format(train_data.shape))</div><div class="line">print(&quot;all data &#123;0&#125;&quot;.format(test_data.shape))</div><div class="line"></div><div class="line"># 分组处理数据</div><div class="line">traingroups = &#123;&#125;</div><div class="line">validgroups = &#123;&#125;</div><div class="line"></div><div class="line">for qid, df in list(train_data.groupby(&quot;group_id&quot;)):</div><div class="line">    group = traingroups.setdefault(qid, &#123;&#125;)</div><div class="line">    group[&quot;length&quot;] = len(df)</div><div class="line">    group[&quot;weight&quot;] = 1</div><div class="line">    group[&quot;df&quot;] = df</div><div class="line"></div><div class="line">for qid, df in list(test_data.groupby(&quot;group_id&quot;)):</div><div class="line">    group = validgroups.setdefault(qid, &#123;&#125;)</div><div class="line">    group[&quot;length&quot;] = len(df)</div><div class="line">    group[&quot;weight&quot;] = 1</div><div class="line">    group[&quot;df&quot;] = df</div><div class="line"></div><div class="line">print(&quot;groups&quot;)</div><div class="line">traingroups = [group for qid, group in traingroups.items() ]</div><div class="line">validgroups = [group for qid, group in validgroups.items() ]</div><div class="line"></div><div class="line">print(&quot;concat&quot;)</div><div class="line">train_X = pd.concat(map(lambda x: sklearn.utils.shuffle(x[&quot;df&quot;]), traingroups), ignore_index=True)</div><div class="line">valid_X = pd.concat(map(lambda x: sklearn.utils.shuffle(x[&quot;df&quot;]), validgroups), ignore_index=True)</div><div class="line">train_y = train_X[&quot;label&quot;]</div><div class="line">valid_y = valid_X[&quot;label&quot;]</div><div class="line"></div><div class="line">train_X = train_X[enableFeatures]</div><div class="line">valid_X = valid_X[enableFeatures]</div><div class="line">train_X, valid_X = train_X.align(valid_X, join=&quot;left&quot;, axis=1)</div><div class="line"></div><div class="line">print(&quot;data length weight&quot;)</div><div class="line">train_q = np.array(list(map(lambda x: x[&quot;length&quot;], traingroups)))</div><div class="line">valid_q = np.array(list(map(lambda x: x[&quot;length&quot;], validgroups)))</div><div class="line">train_w = np.array(list(map(lambda x: x[&quot;weight&quot;], traingroups)))</div><div class="line">valid_w = np.array(list(map(lambda x: x[&quot;weight&quot;], validgroups)))</div><div class="line"></div><div class="line">print(&quot;model train&quot;)</div><div class="line">#&quot;rank:ndcg&quot;</div><div class="line">ranker = xgb.XGBRanker(objective=&quot;rank:pairwise&quot;)</div><div class="line">ranker.fit(train_X, train_y, train_q, sample_weight=train_w,</div><div class="line">    eval_set=[(valid_X, valid_y)], eval_group=[valid_q], sample_weight_eval_set=[valid_w],</div><div class="line">    eval_metric=[&quot;ndcg@5-&quot;, &quot;ndcg@10-&quot;], early_stopping_rounds=5, verbose=True,</div><div class="line">    callbacks=[xgb.callback.reset_learning_rate(lambda x,y: 0.95 ** x * 0.1)])</div><div class="line">ranker.feature_names = map(str, train_X.columns)</div><div class="line">with open(&quot;xgb_pair.model.features&quot;, &quot;w&quot;) as fw:</div><div class="line">    fw.write( &quot;,&quot;.join(ranker.feature_names))</div><div class="line">ranker.save_model(&apos;xgb_pair.model&apos;)</div><div class="line">model = xgb.Booster(model_file=&apos;xgb_pair.model&apos;)</div><div class="line">print(ranker.get_booster().get_score(importance_type=&apos;gain&apos;) )</div></pre></td></tr></table></figure></p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://blog.csdn.net/seasongirl/article/details/100178083" target="_blank" rel="external">用xgboost做排序任务——xgboost下的learning2rank</a><br><a href="https://blog.csdn.net/zuolixiangfisher/article/details/81072922" target="_blank" rel="external">Learning to Rank系列之概述</a><br><a href="http://www.bdpt.net/cn/2018/11/20/rank教程-06-learning-to-rank-概述/" target="_blank" rel="external">Learning to Rank 概述</a></p>
 
@@ -2206,7 +2577,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>所有词语处理完毕后，判断Doc特征向量的每一位，如果大于0，则置1，否则置0；</li>
 <li>获得各Doc的特征向量后，可利用海明距离判断两篇文档的相似性，一般地，距离&lt;=3时认为两者是相似的。</li>
 </ol>
-<p>上述过程可以理解为Doc的特征降维过程，我们将降维后的特征向量成为fingerprints。完成降维后，我们需要思考如何设计索引来加快查找过程。<br>第一种方案是对查询向量Q进行变化，查找64位所有3位以内的变化的组合，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/438114/ae5a47cb-068c-32b6-a4d5-6a5b808b0b26.jpg" alt=""><br>单一内容Q需要进行四万多次查询，时间复杂度太高。<br>第二种方案是对已生成Doc的fingerprints进行3位以内的组合变化，但需要多占据四万多倍的原始空间，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437527/d31f3880-d43e-33ac-89c3-3e11a3f4f95e.jpg" alt=""><br>如何找到一种空间和时间的平衡呢？假设海明距离在3以内的两个文档是相似的，那么只要将64位的二进制串分为4块，根据鸽巢原理，两个文档的fingerprints中至少有一块是完全相同的，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437559/689719df-54b7-318c-bc90-e289f84344b9.jpg" alt=""><br>由于查询时无法预知是哪一块区域相同，因此需要对四块中的每一块都建立索引，假设样本库中有<span>$2^32$</span><!-- Has MathJax -->，约43亿的fingerprints，那么每个table中包含<span>$2^(32-16)$</span><!-- Has MathJax -->=65536个候选结果，大大减少了海明距离的计算成本。上图所示的索引结构在MongoDB中实现非常简单。此外，索引块数k和table中候选结果数量m也是一个平衡抉择的过程，k越大，m越小，空间复杂度升高；k越小，m越大，时间复杂度升高。下图是k=4时索引示意图：<br><img src="http://dl.iteye.com/upload/attachment/437586/b72b8dc2-9139-3078-ad24-b689f64fd71a.jpg" alt=""></p>
+<p>上述过程可以理解为Doc的特征降维过程，我们将降维后的特征向量称为fingerprints。完成降维后，我们需要思考如何设计索引来加快查找过程。<br>第一种方案是对查询向量Q进行变化，查找64位所有3位以内的变化的组合，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/438114/ae5a47cb-068c-32b6-a4d5-6a5b808b0b26.jpg" alt=""><br>单一内容Q需要进行四万多次查询，时间复杂度太高。<br>第二种方案是对已生成Doc的fingerprints进行3位以内的组合变化，但需要多占据四万多倍的原始空间，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437527/d31f3880-d43e-33ac-89c3-3e11a3f4f95e.jpg" alt=""><br>如何找到一种空间和时间的平衡呢？假设海明距离在3以内的两个文档是相似的，那么只要将64位的二进制串分为4块，根据鸽巢原理，两个文档的fingerprints中至少有一块是完全相同的，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437559/689719df-54b7-318c-bc90-e289f84344b9.jpg" alt=""><br>由于查询时无法预知是哪一块区域相同，因此需要对四块中的每一块都建立索引，假设样本库中有<span>$2^{32}$</span><!-- Has MathJax -->个，约43亿的fingerprints，那么每个table中包含<span>$2^{32-16}$</span><!-- Has MathJax -->=65536个候选结果，大大减少了海明距离的计算成本。上图所示的索引结构在MongoDB中实现非常简单。此外，索引块数k和table中候选结果数量m也是一个平衡抉择的过程，k越大，m越小，空间复杂度升高；k越小，m越大，时间复杂度升高。下图是k=4时索引示意图：<br><img src="http://dl.iteye.com/upload/attachment/437586/b72b8dc2-9139-3078-ad24-b689f64fd71a.jpg" alt=""></p>
 <h2 id="MinHash"><a href="#MinHash" class="headerlink" title="MinHash"></a>MinHash</h2><p>与SimHash不同，MinHash要从衡量两个文档的相似度说起。Jaccard相似度用于描述两个集合的相似程度，假设有两个集合A和B，相似度=A与B交集的元素个数／A与B并集的元素个数，公式为：<br><span>$$\begin{gather*}
 J(A, B)=\frac{|A \cap B|}{|A \cup B|}
 \end{gather*}$$</span><!-- Has MathJax --><br>海量文本直接求Jaccard相似度复杂度太高，两个文档需要逐个词比较，为降低复杂度，我们使用两个文档的最小哈希值相等的概率来等价于两个文档的Jaccard相似度，并可以证明两者是相等的。首先说明一下如何求一个集合的最小哈希值，假设现在有4个集合，分别为S1，S2，S3，S4；其中，S1={a,d}, S2={c}, S3={b,d,e}, S4={a,c,d}，所以全集U={a,b,c,d,e}。我们可以构造如下0-1矩阵：</p>
@@ -2392,302 +2763,6 @@ J(A, B)=\frac{|A \cap B|}{|A \cup B|}
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/14/TextRank算法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/14/TextRank算法/" itemprop="url">TextRank算法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-14T15:25:17+08:00">
-                2019-05-14
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-<p>TextRank算法可以用于提取文本关键词和生成摘要，其思想来源于PageRank算法。Google的两位创始人在斯坦福大学读研期间从事网页排序研究时，受到学术界对学术论文重要性的评估方法（论文引用次数）启发，提出了PageRank算法。PageRank算法的核心思想比较直观：</p>
-<ol>
-<li>如果一个网页被很多其他网页链接到，说明这个网页很重要，对应的PR(PageRank)值也越高；</li>
-<li>如果一个PR值较高的网页链接了某个网页，则该网页的PR值也会相应提高。</li>
-</ol>
-<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><h3 id="PageRank"><a href="#PageRank" class="headerlink" title="PageRank"></a>PageRank</h3><p>将网页之间的链接抽象为一张有向图，如下图所示：<br><img width="500" src="/images/dgraph.png"></p>
-<p><center><strong><em><a href="https://www.cnblogs.com/mcomco/p/10304383.html" target="_blank" rel="external">图片来源</a></em></strong></center><br>图结构构造完成后，可使用以下公式计算网页的PR值：<br><span>$$\begin{gather*}
-S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|O u t\left(V_{j}\right)\right|} S\left(V_{j}\right)
-\end{gather*}$$</span><!-- Has MathJax --><br><span>$S\left(V_{i}\right)$</span><!-- Has MathJax -->表示网页i的PR值，即网页的重要性指标。d是阻尼系数，一般取0.85。<span>$I n\left(V_{i}\right)$</span><!-- Has MathJax -->表示指向网页i的网页集合。<span>$|O u t\left(V_{j}\right)|$</span><!-- Has MathJax -->表示网页j指向的网页总数，<span>$S\left(V_{j}\right)$</span><!-- Has MathJax -->表示网页j的PR值。可将各网页PR值设置为1，经过多次迭代，满足收敛条件后获得各个网页的PR值。</p>
-<blockquote>
-<p>阻尼系数:</p>
-<p>PageRank算法可以视为对网页跳转的模拟，当有些网页只有入链而没有出链时，则无法从这些网页跳转出去，使得每个网页的PageRank值最终为0。下图给出了这个问题的实例，网页C没有到其他页面的链接，随着算法的不断迭代，每个网页的权重值不断减少，最终收敛于0。为了避免这个问题，在算法中引入阻尼系数d，作为网页随机跳转的概率。</p>
-</blockquote>
-<h3 id="TextRank"><a href="#TextRank" class="headerlink" title="TextRank"></a>TextRank</h3><h4 id="关键词提取"><a href="#关键词提取" class="headerlink" title="关键词提取"></a>关键词提取</h4><p>以下面的文章为例，首先进行过滤停用词等预处理（中文需要分词），然后建立如图所示单词之间的连接图，此时PageRank算法中网页之间的链接关系体现为一定窗口大小内单词之间的相邻关系，例如以“systems”为中心，窗口大小为3时，”types”, “linear”和“compatibility”与其具有“链接关系“。<br><img src="/images/keywords.png" alt=""></p>
-<p><center><strong><em><a href="https://upload-images.jianshu.io/upload_images/3579920-09c220dd15b3f13b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/996" target="_blank" rel="external">图片来源</a></em></strong></center><br>图构造完成后，单词的TR值计算公式为：<br><span>$$\begin{gather*}
-W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{j i}}{\sum_{V_{k} \in O u t\left(V_{j}\right)} w_{j k}} W S\left(V_{j}\right)
-\end{gather*}$$</span><!-- Has MathJax --><br>TR值计算公式与PR值十分类似，区别在于加入了一个参数<span>$w_{j i}$</span><!-- Has MathJax -->，一般来说<span>$w_{j i}$</span><!-- Has MathJax -->的值为文章中第j个单词和第i个单词在一定窗口大小的共现次数。后续的迭代过程与PR值计算类似。</p>
-<h4 id="摘要生成"><a href="#摘要生成" class="headerlink" title="摘要生成"></a>摘要生成</h4><p>将文本中的每个句子看作图中的一个节点，句子之间的“链接关系”由句子间的相似性体现。句子相似性有多种计算方式，这里使用一种很简单的方法，计算两个句子共有词比例。句子相似性公式：<br><span>$$\begin{gather*}
-\text {Similarity}\left(S_{i}, S_{j}\right)=\frac{\left|\left\{w_{k} | w_{k} \in S_{i} \&amp; w_{k} \in S_{j}\right\}\right|}{\log \left(\left|S_{i}\right|\right)+\log \left(\left|S_{j}\right|\right)}
-\end{gather*}$$</span><!-- Has MathJax --><br><span>$S_{i}, S_{j}$</span><!-- Has MathJax -->分别表示第i个和第j个句子，$w_{k}$表示句子中的词语，公式中分子表示两个句子共有词的个数，分母表示两个句子词总数对数求和。后续TR值计算和迭代过程与关键词提取类似。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><blockquote>
-<p><a href="http://www.cnblogs.com/xueyinzhe/p/7101295.html" target="_blank" rel="external">http://www.cnblogs.com/xueyinzhe/p/7101295.html</a><br><a href="https://blog.csdn.net/woshiliulei0/article/details/81479434" target="_blank" rel="external">https://blog.csdn.net/woshiliulei0/article/details/81479434</a></p>
-</blockquote>
-<p><strong><em>本文中图片均来自互联网</em></strong></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/使用TensorFlow-Serving快速部署模型/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/07/使用TensorFlow-Serving快速部署模型/" itemprop="url">使用TensorFlow Serving快速部署模型</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T11:41:42+08:00">
-                2019-05-07
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="工业产品中TensorFlow使用方法"><a href="#工业产品中TensorFlow使用方法" class="headerlink" title="工业产品中TensorFlow使用方法"></a>工业产品中TensorFlow使用方法</h1><ol>
-<li>用TensorFlow的C++/Java/Nodejs API直接使用保存的TensorFlow模型：类似Caffe，适合做桌面软件。</li>
-<li>直接将使用TensorFlow的Python代码放到Flask等Web程序中，提供Restful接口：实现和调试方便，但效率不太高，不大适合高负荷场景，且没有版本管理、模型热更新等功能。</li>
-<li>将TensorFlow模型托管到TensorFlow Serving中，提供RPC或Restful服务：实现方便，高效，自带版本管理、模型热更新等，很适合大规模线上业务。</li>
-</ol>
-<blockquote>
-<p>参考链接：<a href="https://cloud.tencent.com/developer/article/1375668" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1375668</a> </p>
-</blockquote>
-<h1 id="TensorFlow-Serving简介"><a href="#TensorFlow-Serving简介" class="headerlink" title="TensorFlow Serving简介"></a>TensorFlow Serving简介</h1><p><a href="https://github.com/tensorflow/serving" target="_blank" rel="external">Tensorflow Serving</a>是Google官方提供的模型部署方式，正确导出模型后，可一分钟完成部署（官方广告）。TF1.8后，Tensorflow Serving支持RESTfull API和grpc的请求方式，模型部署完成后可很方便的利用post请求进行测试。</p>
-<h1 id="TensorFlow-Serving服务框架"><a href="#TensorFlow-Serving服务框架" class="headerlink" title="TensorFlow Serving服务框架"></a>TensorFlow Serving服务框架</h1><p>框架分为模型训练、模型上线和服务使用三部分。模型训练与正常的训练过程一致，只是导出时需要按照TF Serving的标准定义输入、输出和签名。模型上线时指定端口号和模型路径后，通过tensorflow_model_server命令启动服务。服务使用可通过grpc和RESTfull方式请求。<br><img width="724" src="https://ss.csdn.net/p?http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtzxrqiba6BicbqCjDDQ313ohCZJQ5u0LTnK5okv89ibHbf2pI6YWMq05UNjjoiaxxibxd6pqk6l07T04rA/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1"></p>
-<h1 id="模型导出"><a href="#模型导出" class="headerlink" title="模型导出"></a>模型导出</h1><p>需指定模型的输入和输出，并在tags中包含”serve”，在实际使用中，TF Serving要求导出模型包含”serve”这个tag。此外，还需要指定默认签名，tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY = “serving_default”，此外tf.saved_model.signature_constants定义了三类签名，分别是：</p>
-<ul>
-<li>分类classify</li>
-<li>回归regress</li>
-<li>预测predict</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">CLASSIFY_METHOD_NAME = &quot;tensorflow/serving/classify&quot;</div><div class="line">PREDICT_METHOD_NAME = &quot;tensorflow/serving/predict&quot;</div><div class="line">REGRESS_METHOD_NAME = &quot;tensorflow/serving/regress&quot;</div></pre></td></tr></table></figure>
-<p>一般而言，用predict就完事了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">with sess.graph.as_default() as graph:</div><div class="line">    builder = tf.saved_model.builder.SavedModelBuilder(saved_model_dir)</div><div class="line">    signature = tf.saved_model.signature_def_utils.predict_signature_def(inputs=&#123;&apos;image&apos;: in_image&#125;,</div><div class="line">                                      outputs=&#123;&apos;prediction&apos;: graph.get_tensor_by_name(&apos;final_result:0&apos;)&#125;,)</div><div class="line">    builder.add_meta_graph_and_variables(sess=sess,</div><div class="line">                                         tags=[&quot;serve&quot;],</div><div class="line">                                         signature_def_map=&#123;&apos;predict&apos;:signature, tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:signature&#125;)</div><div class="line">    builder.save()</div></pre></td></tr></table></figure></p>
-<h1 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tensorflow_model_server --port=8500 --rest_api_port=8501 --model_name=模型名 --model_base_path=模型所在路径</div></pre></td></tr></table></figure>
-<h1 id="请求服务"><a href="#请求服务" class="headerlink" title="请求服务"></a>请求服务</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -d &apos;&#123;&quot;inputs&quot;: [[1.1,1.2,0.8,1.3]]&#125;&apos; -X POST http://localhost:8501/v1/models/模型名:predict</div></pre></td></tr></table></figure>
-<p>python可以通过post请求，golang可以通过grpc服务请求。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2741,7 +2816,7 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
             
               <a href="/archives/">
             
-                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-count">28</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -2796,7 +2871,7 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
