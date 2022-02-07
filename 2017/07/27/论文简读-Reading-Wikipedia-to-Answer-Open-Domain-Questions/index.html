@@ -107,7 +107,7 @@
 <meta property="og:image" content="http://yoursite.com/images/aij.png">
 <meta property="og:image" content="http://yoursite.com/images/bj.png">
 <meta property="og:image" content="http://yoursite.com/images/pred.png">
-<meta property="og:updated_time" content="2017-08-07T06:35:19.000Z">
+<meta property="og:updated_time" content="2022-02-06T09:48:19.632Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Reading Wikipedia to Answer Open-Domain Questions">
 <meta name="twitter:description" content="ACL 2017入选论文，作者为来自斯坦福的Danqi Chen(cs224n助教)。Facebook于2017.7.27日开放源码，项目名为DrQA。  GitHub地址：https://github.com/facebookresearch/DrQA  DrQA的主要任务是大规模机器阅读（MRS）。DrQA会在一个非常庞大的非结构化文档语料库中寻找问题的答案。这个系统最大的挑战是文档检索">
@@ -352,7 +352,7 @@
 <p>DrQA的主要任务是大规模机器阅读（MRS）。DrQA会在一个非常庞大的非结构化文档语料库中寻找问题的答案。这个系统最大的挑战是文档检索与文本的机器理解如何更好的结合。</p>
 <p><img src="/images/rwaodq-model.png" alt="模型结构图"></p>
 <h2 id="文档检索"><a href="#文档检索" class="headerlink" title="文档检索"></a>文档检索</h2><p>采用基于二元语法哈希（bigram hashing）和TF-IDF匹配的搜索方法。</p>
-<h2 id="文档阅读理解"><a href="#文档阅读理解" class="headerlink" title="文档阅读理解"></a>文档阅读理解</h2><p>篇章和问题均采用三层双向LSTM，128个hidden units进行编码。</p>
+<h2 id="文档阅读理解"><a href="#文档阅读理解" class="headerlink" title="文档阅读理解"></a>文档阅读理解</h2><p>篇章和问题均采用三层双向LSTM，128个hidden units进行编码。<br><a id="more"></a></p>
 <h3 id="篇章编码"><a href="#篇章编码" class="headerlink" title="篇章编码"></a>篇章编码</h3><h4 id="Word-embedding"><a href="#Word-embedding" class="headerlink" title="Word embedding"></a>Word embedding</h4><p>GloVe, 300-dimensional</p>
 <h4 id="Exact-match"><a href="#Exact-match" class="headerlink" title="Exact match."></a>Exact match.</h4><p>篇章中的某个词的原始、全部转换为小写和形态上是否匹配。</p>
 <h4 id="Token-features"><a href="#Token-features" class="headerlink" title="Token features."></a>Token features.</h4><p><img src="/images/tf.png" alt="tf"></p>

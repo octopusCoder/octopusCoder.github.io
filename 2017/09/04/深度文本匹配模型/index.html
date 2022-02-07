@@ -98,7 +98,7 @@
 <meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      简介机器问答是自然语言处理领域的核心任务，一个典型的开放式问答系统分为三个部分：(1) 问题分析和候选篇章检索；(2) 候选篇章排序；（3）答案选择。本文主要关注答案选择部分，传统的模型大多基于特征工程实现，使用词法、句法和语法等特征，需">
 <meta property="og:type" content="article">
 <meta property="og:title" content="问答系统模型总结">
-<meta property="og:url" content="http://yoursite.com/2017/09/04/问答系统模型总结/index.html">
+<meta property="og:url" content="http://yoursite.com/2017/09/04/深度文本匹配模型/index.html">
 <meta property="og:site_name" content="小菜鸡">
 <meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      简介机器问答是自然语言处理领域的核心任务，一个典型的开放式问答系统分为三个部分：(1) 问题分析和候选篇章检索；(2) 候选篇章排序；（3）答案选择。本文主要关注答案选择部分，传统的模型大多基于特征工程实现，使用词法、句法和语法等特征，需">
 <meta property="og:locale" content="zh-Hans">
@@ -126,7 +126,7 @@
 <meta property="og:image" content="http://yoursite.com/images/camttcmp.png">
 <meta property="og:image" content="http://yoursite.com/images/camtttest.png">
 <meta property="og:image" content="http://yoursite.com/images/LDCMODEL.png">
-<meta property="og:updated_time" content="2019-05-13T09:48:18.000Z">
+<meta property="og:updated_time" content="2022-02-06T09:51:51.763Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="问答系统模型总结">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      简介机器问答是自然语言处理领域的核心任务，一个典型的开放式问答系统分为三个部分：(1) 问题分析和候选篇章检索；(2) 候选篇章排序；（3）答案选择。本文主要关注答案选择部分，传统的模型大多基于特征工程实现，使用词法、句法和语法等特征，需">
@@ -160,7 +160,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/09/04/问答系统模型总结/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/09/04/深度文本匹配模型/"/>
 
 
 
@@ -292,7 +292,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/04/问答系统模型总结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/04/深度文本匹配模型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jeb">
@@ -375,8 +375,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p>注：本文所使用的图片均来自对应论文。</p>
 </blockquote>
 <h2 id="基本模型Siamese-Network"><a href="#基本模型Siamese-Network" class="headerlink" title="基本模型Siamese Network"></a>基本模型Siamese Network</h2><p>Siamese网络[1]的特点是包含两路结构非常相似的网络，网络之间的参数共享，在最后进行连接，适用于计算两路输入信息的相似性。</p>
-<h3 id="Attentive-pooling-networks"><a href="#Attentive-pooling-networks" class="headerlink" title="Attentive pooling networks"></a>Attentive pooling networks</h3><p>dos Santos在根据Query选择Candidate answer一文[2]中使用了Siamese网络作为Baseline。模型如下图所示：<br><img src="/images/apnmodel.png" alt="图1"></p>
-<p>Question和Candidate answer中的每个单词首先经过word embedding处理后获得Question和Candidate answer对应的表示矩阵，然后分别利用CNN或者BiLSTM处理后获得对应的特征矩阵，在特征矩阵上应用Column-wise max pooling后获得Question和Candidate answer对应的向量$r_q$和$r_a$，最后计算两个向量之间的余弦相似度。模型的损失函数采用Hinge loss函数，即:<span>$L=max\{0,m-s_\theta(q,a^+)+s_\theta(q,a^-)\}$</span><!-- Has MathJax --></p>
+<h3 id="Attentive-pooling-networks"><a href="#Attentive-pooling-networks" class="headerlink" title="Attentive pooling networks"></a>Attentive pooling networks</h3><p>dos Santos在根据Query选择Candidate answer一文[2]中使用了Siamese网络作为Baseline。模型如下图所示：<br><img src="/images/apnmodel.png" alt="图1"><br><a id="more"></a><br>Question和Candidate answer中的每个单词首先经过word embedding处理后获得Question和Candidate answer对应的表示矩阵，然后分别利用CNN或者BiLSTM处理后获得对应的特征矩阵，在特征矩阵上应用Column-wise max pooling后获得Question和Candidate answer对应的向量$r_q$和$r_a$，最后计算两个向量之间的余弦相似度。模型的损失函数采用Hinge loss函数，即:<span>$L=max\{0,m-s_\theta(q,a^+)+s_\theta(q,a^-)\}$</span><!-- Has MathJax --></p>
 <h3 id="Multi-Perspective-Sentence-Similarity-Modeling-with-Convolutional-Neural-Networks"><a href="#Multi-Perspective-Sentence-Similarity-Modeling-with-Convolutional-Neural-Networks" class="headerlink" title="Multi-Perspective Sentence Similarity Modeling with Convolutional Neural Networks"></a>Multi-Perspective Sentence Similarity Modeling with Convolutional Neural Networks</h3><p>Hua He[3]于2015年提出的用于句子相似度计算的MPCNN模型仍然遵循Siamese network，模型使用CNN网络提取多粒度特征，配合多种pooling策略，在相似性计算层采用了多种计算方法，在以CNN构建的Siamese network模型上进行了创新。模型结构如下图所示：<br><img src="/images/MPSSM1.png" alt="图3"></p>
 <p>模型使用了两种卷积核，如下图所示：<br><img src="/images/MMSSMfliter.png" alt="图4"><br>上图左边的卷积核即常用的卷积核，文中称为holistic filters。右边的卷积核限制了卷积的维度，对输入word embeddings各维度进行处理，文中称为per-dimension filters。<br>模型使用了三种pooling类型，分别为max-pooling, min-pooling和mean-pooling，并与上述两种filters进行组合，如下图所示：<br><img src="/images/MPSMblock.png" alt="图5"></p>
 <p>模型使用了大小不同的卷积窗口，并与上述两种filters和pooling类型进行组合，如下图所示：<br><img src="/images/MSBMMwin.png" alt="图6"></p>

@@ -112,7 +112,7 @@
 <meta property="og:image" content="http://yoursite.com/images/aoafor11.png">
 <meta property="og:image" content="http://yoursite.com/images/aoafor12.png">
 <meta property="og:image" content="http://yoursite.com/images/aoaexp.png">
-<meta property="og:updated_time" content="2017-08-17T09:48:40.000Z">
+<meta property="og:updated_time" content="2022-02-06T09:26:39.993Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Attention-over-Attention Neural Networks for Reading Comprehension">
 <meta name="twitter:description" content="科大讯飞与哈工大联合实验室最近(截止2017.8.9)在SQuAD数据集上的准确率夺得全球第一名，力压微软亚洲研究院。本篇论文是该实验室在2016年发布的，是模型的早期版本。印象中当时在SQuAD榜单上single model准确率第二名，整体排名大概是第7名，F1 score约为79+，此处信息有待核实。准确率第一名的模型为“Interactive AoA Reader”，基于交互式层叠注意力。">
@@ -347,7 +347,7 @@
       
 
       
-        <p>科大讯飞与哈工大联合实验室最近(截止2017.8.9)在SQuAD数据集上的准确率夺得全球第一名，力压微软亚洲研究院。本篇论文是该实验室在2016年发布的，是模型的早期版本。印象中当时在SQuAD榜单上single model准确率第二名，整体排名大概是第7名，F1 score约为79+，此处信息有待核实。准确率第一名的模型为“Interactive AoA Reader”，基于交互式层叠注意力。主要思想是根据给定的问题对篇章进行多次过滤，同时根据已经被过滤的文章进一步筛选出问题中的关键提问点，交互式地精确划定答案的范围。个人猜想其思想与斯坦福大学CS224n公开课Lecture 16中提出的Dynamic Memory Network基本一致。由于新模型的论文可能暂时没有发表，这里先对早期模型进行一下总结。</p>
+        <p>科大讯飞与哈工大联合实验室最近(截止2017.8.9)在SQuAD数据集上的准确率夺得全球第一名，力压微软亚洲研究院。本篇论文是该实验室在2016年发布的，是模型的早期版本。印象中当时在SQuAD榜单上single model准确率第二名，整体排名大概是第7名，F1 score约为79+，此处信息有待核实。准确率第一名的模型为“Interactive AoA Reader”，基于交互式层叠注意力。主要思想是根据给定的问题对篇章进行多次过滤，同时根据已经被过滤的文章进一步筛选出问题中的关键提问点，交互式地精确划定答案的范围。个人猜想其思想与斯坦福大学CS224n公开课Lecture 16中提出的Dynamic Memory Network基本一致。由于新模型的论文可能暂时没有发表，这里先对早期模型进行一下总结。<br><a id="more"></a></p>
 <h1 id="任务描述"><a href="#任务描述" class="headerlink" title="任务描述"></a>任务描述</h1><p>面向完形填空型阅读理解任务，可利用一个三元组表示：<d,q,a>，D表示文档，Q表示查询，A表示答案。测试数据集使用了CNN News和CBTest。</d,q,a></p>
 <h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p><img src="/images/aoamodel.png" alt="aoamodel"><br>模型主要思想是直接从文档级别的注意力选择答案，而不是计算文档的混合特征。</p>
 <h2 id="Contextual-Embedding"><a href="#Contextual-Embedding" class="headerlink" title="Contextual Embedding"></a>Contextual Embedding</h2><p>首先将单词转换为one-hot表示，然后利用一个共享embedding matrix We将单词转换为向量表示（与使用word2vec类似）。利用双向GRUs分别获得文档和查询单词的文法表示，每个单词的表示由GRU前向和后向表示连接而成。<br><img src="/images/aoace.png" alt="aoace"></p>
@@ -397,8 +397,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/08/18/论文简读-Sentence-Similarity-Learning-by-Lexical-Decomposition-and-Composition/" rel="prev" title="论文简读-Sentence Similarity Learning by Lexical Decomposition and Composition">
-                论文简读-Sentence Similarity Learning by Lexical Decomposition and Composition <i class="fa fa-chevron-right"></i>
+              <a href="/2017/08/23/tensorflow-broadcast-details/" rel="prev" title="TensorFlow-Broadcast details">
+                TensorFlow-Broadcast details <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

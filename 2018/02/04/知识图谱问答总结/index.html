@@ -115,7 +115,7 @@
 <meta property="og:image" content="http://yoursite.com/images/sqmodelscore.png">
 <meta property="og:image" content="http://yoursite.com/images/WQEVARES.png">
 <meta property="og:image" content="http://yoursite.com/images/kbqadata.png">
-<meta property="og:updated_time" content="2018-02-13T13:50:21.000Z">
+<meta property="og:updated_time" content="2022-02-06T09:53:09.138Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="知识图谱问答总结">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      目前知识图谱问答主流方法有基于语义解析、信息抽取和向量建模三种，近些年来流行的深度学习技术主要在向量建模方面进行改进。截止2016年，在公开数据集WebQuestion上表现最好的模型主要是对语义解析进行了改进，将问题转换为查询图，并利用">
@@ -367,7 +367,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <blockquote>
 <p>“Where was Obama born?”</p>
 </blockquote>
-<h3 id="语义解析树"><a href="#语义解析树" class="headerlink" title="语义解析树"></a>语义解析树</h3><p>首先利用语义解析工具对问题进行解析，如下图所示：<br><img src="/images/smtr.png" alt="语义解析"><br>图中红色部分为逻辑形式，绿色部分为原始问题，蓝色部分表示词汇映射和构建对应的操作，语义解析树根节点即为解析结果。<br>模型的训练主要是针对每一种语义解析结果的分类概率，对于训练数据问题-答案对，通过最大化log-likelihood损失函数，利用随机梯度下降对参数进行更新。</p>
+<h3 id="语义解析树"><a href="#语义解析树" class="headerlink" title="语义解析树"></a>语义解析树</h3><p>首先利用语义解析工具对问题进行解析，如下图所示：<br><img src="/images/smtr.png" alt="语义解析"><br>图中红色部分为逻辑形式，绿色部分为原始问题，蓝色部分表示词汇映射和构建对应的操作，语义解析树根节点即为解析结果。<br>模型的训练主要是针对每一种语义解析结果的分类概率，对于训练数据问题-答案对，通过最大化log-likelihood损失函数，利用随机梯度下降对参数进行更新。<br><a id="more"></a></p>
 <h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><p>KBQA常用的数据集是WebQuestion，包含5810组问题-答案对，该文章的方法在WQ数据集上达到了32.9%的正确率。<br>该文章开放了语义解析器<a href="https://nlp.stanford.edu/software/sempre/" target="_blank" rel="external">Sempre</a>。</p>
 <h2 id="信息抽取"><a href="#信息抽取" class="headerlink" title="信息抽取"></a>信息抽取</h2><p>信息抽取的方法首先提取问题中的实体，然后在知识库中查找该实体以及以该实体节点为中心的知识库子图，候选答案则从子图中的节点或边获得。而具体答案的选择则需使用规则或模版进行抽取，同时利用问题和候选答案的特征，建立分类模型，通过候选答案的特征进行筛选，最终得到答案。<br>本部分以X Yao[2]发表于2014年ACL会议的文章为例，简述基于信息抽取方法的知识图谱问答过程。仍以一个具体问题为线索，例如：</p>
 <blockquote>
@@ -432,7 +432,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/04/问答系统模型总结/" rel="next" title="问答系统模型总结">
+              <a href="/2017/09/04/深度文本匹配模型/" rel="next" title="问答系统模型总结">
                 <i class="fa fa-chevron-left"></i> 问答系统模型总结
               </a>
             

@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="小菜鸡">
 <meta property="og:description" content="Given a positive integer n, find the least number of perfect square numbers(for example, 1, 4, 9, 16, …) which sum to n.For example, given n = 12, return 3 because 12 = 4 + 4 + 4; given n = 13, retur">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2016-09-03T03:30:38.000Z">
+<meta property="og:updated_time" content="2022-02-06T09:55:16.191Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LeetCode-279.Perfect Squares">
 <meta name="twitter:description" content="Given a positive integer n, find the least number of perfect square numbers(for example, 1, 4, 9, 16, …) which sum to n.For example, given n = 12, return 3 because 12 = 4 + 4 + 4; given n = 13, retur">
@@ -345,9 +345,8 @@
 <li>广度优先搜索。最少个数，对应空间搜索树的最小深度，很多类似的最小问题都可以用广度优先搜索解决，不过这题BFS并不适合，效率不高，代码较长，且有很多细节容易出错，不建议使用。</li>
 </ol>
 <h1 id="编码与解释"><a href="#编码与解释" class="headerlink" title="编码与解释"></a>编码与解释</h1><h5 id="1-动态规划：见另一篇文章。"><a href="#1-动态规划：见另一篇文章。" class="headerlink" title="1. 动态规划：见另一篇文章。"></a>1. 动态规划：见另一篇文章。</h5><h5 id="2-数学方法。"><a href="#2-数学方法。" class="headerlink" title="2. 数学方法。"></a>2. 数学方法。</h5><blockquote>
-<p>四平方定理：每个正整数均可表示为4个整数的平方和。<br>更多：<a href="https://zh.wikipedia.org/wiki/四平方和定理" target="_blank" rel="external">https://zh.wikipedia.org/wiki/四平方和定理</a><br>三平方定理：每个自然数均可表示为3个整数的平方和，当且仅当该数不能表示为n=pow(4,a)*(8b+7),a,b是整数。<br>更多<a href="https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem" target="_blank" rel="external">https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem</a></p>
+<p>四平方定理：每个正整数均可表示为4个整数的平方和。<br>更多：<a href="https://zh.wikipedia.org/wiki/四平方和定理" target="_blank" rel="external">https://zh.wikipedia.org/wiki/四平方和定理</a><br>三平方定理：每个自然数均可表示为3个整数的平方和，当且仅当该数不能表示为n=pow(4,a)<em>(8b+7),a,b是整数。<br>更多<a href="https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem" target="_blank" rel="external">https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem</a><br><a id="more"></a><br>有了两个定理后，作为一个菜鸡程序员，应该也能搞定代码。注意两个小细节：<br><strong>1.使用&amp;,==等不明确优先级的运算符时，最好加上括号！</strong><br><em>*2.不要忘记单独对结果为2时的判断，见代码注释处//check</em></em></p>
 </blockquote>
-<p>有了两个定理后，作为一个菜鸡程序员，应该也能搞定代码。注意两个小细节：<br><strong>1.使用&amp;,==等不明确优先级的运算符时，最好加上括号！</strong><br><strong>2.不要忘记单独对结果为2时的判断，见代码注释处//check</strong></p>
 <pre><code>//cpp
 class Solution {
 public:

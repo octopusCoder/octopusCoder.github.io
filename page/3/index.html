@@ -267,7 +267,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/18/论文简读-Sentence-Similarity-Learning-by-Lexical-Decomposition-and-Composition/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/23/tensorflow-broadcast-details/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jeb">
@@ -286,7 +286,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/08/18/论文简读-Sentence-Similarity-Learning-by-Lexical-Decomposition-and-Composition/" itemprop="url">论文简读-Sentence Similarity Learning by Lexical Decomposition and Composition</a></h1>
+                <a class="post-title-link" href="/2017/08/23/tensorflow-broadcast-details/" itemprop="url">TensorFlow-Broadcast details</a></h1>
         
 
         <div class="post-meta">
@@ -298,8 +298,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-18T14:23:11+08:00">
-                2017-08-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-23T17:36:00+08:00">
+                2017-08-23
               </time>
             
 
@@ -340,8 +340,26 @@
       
         
           
-            <p>作者为Zhiguo Wang等人，属于IBM T.J. Watson Research Center，发表于2016年。大多数的传统的句子相似性计算方法只关注两个句子相似的部分，而忽略不相似的部分，但在某些情况下，不相似的部分对于决定两个句子是否相似也很重要。本文通过对句子lexical semantics进行分解和合成同时考虑相关性和不相关性，利用两通道的CNN将相关部分和不相关部分进行合成得到特征。模型主要涉及矩阵数学运算，CNN参数调整，没有使用RNN，训练速度较快。</p>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><h1 id="Model-Overview"><a href="#Model-Overview" class="headerlink" title="Model Overview"></a>Model Overview</h1>
+            <p>TensorFlow官方网站对Broadcast的解释不够详细，具体要参考Scipy网站的解析。</p>
+<blockquote>
+<p><a href="https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html" target="_blank" rel="external">https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html</a></p>
+</blockquote>
+<p>Broadcasting用于处理不同形状的numpy arrays的算术操作，形状较小的array通过复制自身，”broadcast”到与较大的array匹配的形状。例如：</p>
+<blockquote>
+<p>a = np.array([1.0, 2.0, 3.0])<br>b = 2.0<br>a * b<br>array([ 2.,  4.,  6.])</p>
+</blockquote>
+<p>处理两个array时，NumPy element-wise地比较它们的形状，两个array的dimensions必须满足以下两个条件之一：</p>
+<blockquote>
+<ol>
+<li>they are equal</li>
+<li>one of them is 1</li>
+</ol>
+</blockquote>
+<p>例如：</p>
+<blockquote>
+<p>A      (4d array):  8 x 1 x 6 x 1<br>B      (3d array):      7 x 1 x 5<br>Result (4d array):  8 x 7 x 6 x 5</p>
+</blockquote>
+
           
         
       
@@ -461,25 +479,14 @@
 
       
         
-          
-            <p>科大讯飞与哈工大联合实验室最近(截止2017.8.9)在SQuAD数据集上的准确率夺得全球第一名，力压微软亚洲研究院。本篇论文是该实验室在2016年发布的，是模型的早期版本。印象中当时在SQuAD榜单上single model准确率第二名，整体排名大概是第7名，F1 score约为79+，此处信息有待核实。准确率第一名的模型为“Interactive AoA Reader”，基于交互式层叠注意力。主要思想是根据给定的问题对篇章进行多次过滤，同时根据已经被过滤的文章进一步筛选出问题中的关键提问点，交互式地精确划定答案的范围。个人猜想其思想与斯坦福大学CS224n公开课Lecture 16中提出的Dynamic Memory Network基本一致。由于新模型的论文可能暂时没有发表，这里先对早期模型进行一下总结。</p>
-<h1 id="任务描述"><a href="#任务描述" class="headerlink" title="任务描述"></a>任务描述</h1><p>面向完形填空型阅读理解任务，可利用一个三元组表示：<d,q,a>，D表示文档，Q表示查询，A表示答案。测试数据集使用了CNN News和CBTest。</d,q,a></p>
-<h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p><img src="/images/aoamodel.png" alt="aoamodel"><br>模型主要思想是直接从文档级别的注意力选择答案，而不是计算文档的混合特征。</p>
-<h2 id="Contextual-Embedding"><a href="#Contextual-Embedding" class="headerlink" title="Contextual Embedding"></a>Contextual Embedding</h2><p>首先将单词转换为one-hot表示，然后利用一个共享embedding matrix We将单词转换为向量表示（与使用word2vec类似）。利用双向GRUs分别获得文档和查询单词的文法表示，每个单词的表示由GRU前向和后向表示连接而成。<br><img src="/images/aoace.png" alt="aoace"></p>
-<h2 id="Pair-wise-Matching-Score"><a href="#Pair-wise-Matching-Score" class="headerlink" title="Pair-wise Matching Score"></a>Pair-wise Matching Score</h2><p>计算每个文档单词与查询单词的匹配值，直接求dot product。<br><img src="/images/aoapms.png" alt="aoapms"></p>
-<h2 id="Individual-Attentions"><a href="#Individual-Attentions" class="headerlink" title="Individual Attentions"></a>Individual Attentions</h2><p>通过Pair-wise Matching获得了匹配矩阵M，在矩阵列上使用softmax函数获得每一列的注意力权重，则每一列的结果表示给定一个query单词，仅document-level的注意力。α(t)表示给定t时刻的query单词时document-level的注意力分布，可以认为是query-to-document注意力。<br><img src="/images/aoaia.png" alt="aoaia"></p>
-<h2 id="Attention-over-Attention"><a href="#Attention-over-Attention" class="headerlink" title="Attention-over-Attention"></a>Attention-over-Attention</h2><p>首先，计算给定一个document单词时query单词的注意力分布，β(t)表示给定t时刻document单词时query-level注意力分布。<br><img src="/images/aoad2q.png" alt="aoad2q"><br>通过上面的计算获得了query-to-document注意力α和document-to-query注意力β。下面对query-level的注意力求均值：<br><img src="/images/aoaavg.png" alt="aoaavg"><br>最后计算α与β dot product的结果，作为“attended document-level注意力”。这里的计算表示在t时刻给定query word时对每个仅document-level注意力进行加权求和。每个query word的贡献值可以被显式的学习，最后document-level的注意力经过每个query word的重要性加权获得。<br><img src="/images/aoaab.png" alt="aoaab"></p>
-<h2 id="Final-Predictions"><a href="#Final-Predictions" class="headerlink" title="Final Predictions"></a>Final Predictions</h2><p>与《Text understanding with the attention sum reader network》一文类似，本文也采用了sum attention机制获得答案。最终的输出应该被映射到词汇空间V，而非document-level attention |D|，这个对结果影响很大。<br><img src="/images/aoafor11.png" alt="aoafor11"><br>I(w, D)表示单词w在document D中出现的位置。训练时目标函数最大化正确答案的log-likelihood。<br><img src="/images/aoafor12.png" alt="aoafor12"></p>
-<h1 id="N-best-Re-ranking-Strategy"><a href="#N-best-Re-ranking-Strategy" class="headerlink" title="N-best Re-ranking Strategy"></a>N-best Re-ranking Strategy</h1><p>一般来说，做完形填空时，都会将候选答案填到句子中，二次检查其是否适合、流畅和符合语法。本文提出了N-best re-ranking策略来进行二次检查。模型输出N个可能性最大的候选答案，然后将这些答案一一填充到句子中，然后对句子进行打分。此种Re-ranking的方法适用于完形填空型阅读理解任务。</p>
-<h2 id="Feature-Scoring"><a href="#Feature-Scoring" class="headerlink" title="Feature Scoring"></a>Feature Scoring</h2><p>使用了三种特征：</p>
-<ol>
-<li>Global N-gram LM. 利用训练集中的document数据训练语言模型，计算句子的流畅度。</li>
-<li>Local N-gram LM. 利用测试集中的document数据训练语言模型，计算句子的流畅度。sample-by-sample训练方式，不是在整个测试集上训练，该模型在测试sample中有许多未知词时比较有用。</li>
-<li>Word-class LM. 与global相似，该模型在整个训练集的document数据上进行训练，词转换为对应的词类编号，编号通过聚类方法（mkcls tool）获得。</li>
-</ol>
-<h1 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h1><p><img src="/images/aoaexp.png" alt="aoaexp"><br>在CNNnews,CBTest NE 和 CN数据集上进行了测试，达到了state-of-art水平。</p>
-
-          
+          <p>科大讯飞与哈工大联合实验室最近(截止2017.8.9)在SQuAD数据集上的准确率夺得全球第一名，力压微软亚洲研究院。本篇论文是该实验室在2016年发布的，是模型的早期版本。印象中当时在SQuAD榜单上single model准确率第二名，整体排名大概是第7名，F1 score约为79+，此处信息有待核实。准确率第一名的模型为“Interactive AoA Reader”，基于交互式层叠注意力。主要思想是根据给定的问题对篇章进行多次过滤，同时根据已经被过滤的文章进一步筛选出问题中的关键提问点，交互式地精确划定答案的范围。个人猜想其思想与斯坦福大学CS224n公开课Lecture 16中提出的Dynamic Memory Network基本一致。由于新模型的论文可能暂时没有发表，这里先对早期模型进行一下总结。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/08/论文简读-Attention-over-Attention-Neural-Networks-for-Reading-Comprehension/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -598,25 +605,16 @@
 
       
         
-          
-            <p>论文发表于2017.7.14，作者为Zhiguo Wang等人，属于IBM Watson实验中心，截止2017.8.6，在TREC QA数据集上测试准确率排名第一。论文的主要目标是解决自然语言句子匹配的问题，在释义识别、自然语言推断和答案选择三个方面均取得了state-of-the-art水平。</p>
+          <p>论文发表于2017.7.14，作者为Zhiguo Wang等人，属于IBM Watson实验中心，截止2017.8.6，在TREC QA数据集上测试准确率排名第一。论文的主要目标是解决自然语言句子匹配的问题，在释义识别、自然语言推断和答案选择三个方面均取得了state-of-the-art水平。</p>
 <h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p><img src="/images/bimpm-model.png" alt="模型结构图"></p>
-<p>模型自下而上分为五层，分别为单词表示层、文法表示层、匹配层、聚合层和预测层，其中匹配层为模型的核心，文中共提出了四种匹配策略，这里的匹配也就是Attention机制。<br>假设要匹配的句子分别为P和Q。下面以P-&gt;Q方向为例进行说明，Q-&gt;P方向同理。</p>
-<h2 id="单词表示层"><a href="#单词表示层" class="headerlink" title="单词表示层"></a>单词表示层</h2><p>单词级别使用了GloVe模型，字符级别对字符embedding进行随机初始化，逐个输入LSTM，在训练中进行学习，由单词中的字符组成单词的向量表示。</p>
-<h2 id="文法表示层"><a href="#文法表示层" class="headerlink" title="文法表示层"></a>文法表示层</h2><p>使用双向LSTM对P和Q进行编码。</p>
-<h2 id="匹配层"><a href="#匹配层" class="headerlink" title="匹配层"></a>匹配层</h2><p>本层是模型的核心层，包含四种匹配策略，分别为：Full-Matching、Maxpooling-Matching、Attentive-Matching和 Max-Attentive-Matching。在介绍四种匹配策略之前，先对论文的关键点Multi-Perspective进行说明。</p>
-<h3 id="Multi-Perspective"><a href="#Multi-Perspective" class="headerlink" title="Multi-Perspective"></a>Multi-Perspective</h3><p>l表示perspectives数，W是一个可训练的参数矩阵，维度为l * d。<br><img src="/images/bimpm-eql3.png" alt="eql-3"><br><img src="/images/bimpm-eql4.png" alt="eql-4"><br>根据上面的公式，每两个向量的匹配结果为一个l维的向量m，m = [m1,…,mk,…,ml]。</p>
-<h3 id="four-matching-strategies"><a href="#four-matching-strategies" class="headerlink" title="four matching strategies"></a>four matching strategies</h3><p><img src="/images/bimpm-match.png" alt="four"></p>
-<h4 id="Full-Matching"><a href="#Full-Matching" class="headerlink" title="Full-Matching"></a>Full-Matching</h4><p><img src="/images/fm.png" alt="fm"><br>P中每一个前向(反向)文法向量与Q前向(反向)的最后一个时间步的输出进行匹配。</p>
-<h4 id="Maxpooling-Matching"><a href="#Maxpooling-Matching" class="headerlink" title="Maxpooling-Matching"></a>Maxpooling-Matching</h4><p><img src="/images/maxpool.png" alt="maxpool"><br>P中每一个前向(反向)文法向量与Q前向(反向)每一个时间步的输出进行匹配，最后仅保留匹配最大的结果向量。</p>
-<h4 id="Attentive-Matching"><a href="#Attentive-Matching" class="headerlink" title="Attentive-Matching"></a>Attentive-Matching</h4><p>先计算P中每一个前向(反向)文法向量与Q中每一个前向(反向)文法向量的余弦相似度，然后利用余弦相似度作为权重对Q各个文法向量进行加权求平均作为Q的整体表示，最后P中每一个前向(后向)文法向量与Q对应的整体表示进行匹配。<br><img src="/images/calcos.png" alt="calcos"><br><img src="/images/mean.png" alt="mean"><br><img src="/images/ammatch.png" alt="ammatch"></p>
-<h4 id="Max-Attentive-Matching"><a href="#Max-Attentive-Matching" class="headerlink" title="Max-Attentive-Matching"></a>Max-Attentive-Matching</h4><p>与Attentive-Matching类似，不同的是不进行加权求和，而是直接取Q中余弦相似度最高的单词文法向量作为Q整体向量表示，与P中每一个前向(反向)文法向量进行匹配。</p>
-<h2 id="聚合层"><a href="#聚合层" class="headerlink" title="聚合层"></a>聚合层</h2><p>利用双向LSTM对匹配层输出的匹配向量进行处理，取得P、Q前向和后向最后一个时间步的输出向量，连接后输入预测层。</p>
-<h2 id="预测层"><a href="#预测层" class="headerlink" title="预测层"></a>预测层</h2><p>利用一个两层的前向神经网络处理固定长度的匹配向量，在输出层应用softmax函数获得Pr(y|P,Q)。</p>
-<h1 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h1><h2 id="the-influence-of-multi-perspective-cosine-matching-function"><a href="#the-influence-of-multi-perspective-cosine-matching-function" class="headerlink" title="the influence of multi-perspective cosine matching function"></a>the influence of multi-perspective cosine matching function</h2><p><img src="/images/lres.png" alt="lres"><br>l=0时相当于直接计算余弦相似度。</p>
-<h2 id="Experiments-on-Answer-Sentence-Selection"><a href="#Experiments-on-Answer-Sentence-Selection" class="headerlink" title="Experiments on Answer Sentence Selection"></a>Experiments on Answer Sentence Selection</h2><p><img src="/images/trecqa.png" alt="trecqa"><br>截止2017.8.7，在TREC-QA数据集上的表现算是并列第一吧。</p>
-
-          
+<p>模型自下而上分为五层，分别为单词表示层、文法表示层、匹配层、聚合层和预测层，其中匹配层为模型的核心，文中共提出了四种匹配策略，这里的匹配也就是Attention机制。<br>假设要匹配的句子分别为P和Q。下面以P-&gt;Q方向为例进行说明，Q-&gt;P方向同理。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/06/论文简读-Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -735,8 +733,7 @@
 
       
         
-          
-            <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+          <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
 
 <p>ACL 2017入选论文，作者为来自斯坦福的Danqi Chen(cs224n助教)。Facebook于2017.7.27日开放源码，项目名为DrQA。</p>
@@ -746,16 +743,14 @@
 <p>DrQA的主要任务是大规模机器阅读（MRS）。DrQA会在一个非常庞大的非结构化文档语料库中寻找问题的答案。这个系统最大的挑战是文档检索与文本的机器理解如何更好的结合。</p>
 <p><img src="/images/rwaodq-model.png" alt="模型结构图"></p>
 <h2 id="文档检索"><a href="#文档检索" class="headerlink" title="文档检索"></a>文档检索</h2><p>采用基于二元语法哈希（bigram hashing）和TF-IDF匹配的搜索方法。</p>
-<h2 id="文档阅读理解"><a href="#文档阅读理解" class="headerlink" title="文档阅读理解"></a>文档阅读理解</h2><p>篇章和问题均采用三层双向LSTM，128个hidden units进行编码。</p>
-<h3 id="篇章编码"><a href="#篇章编码" class="headerlink" title="篇章编码"></a>篇章编码</h3><h4 id="Word-embedding"><a href="#Word-embedding" class="headerlink" title="Word embedding"></a>Word embedding</h4><p>GloVe, 300-dimensional</p>
-<h4 id="Exact-match"><a href="#Exact-match" class="headerlink" title="Exact match."></a>Exact match.</h4><p>篇章中的某个词的原始、全部转换为小写和形态上是否匹配。</p>
-<h4 id="Token-features"><a href="#Token-features" class="headerlink" title="Token features."></a>Token features.</h4><p><img src="/images/tf.png" alt="tf"></p>
-<h4 id="Aligned-question-embedding"><a href="#Aligned-question-embedding" class="headerlink" title="Aligned question embedding."></a>Aligned question embedding.</h4><p>与问题计算注意力权重后获得的特征。</p>
-<p><img src="/images/aij.png" alt="aij"></p>
-<h3 id="问题编码"><a href="#问题编码" class="headerlink" title="问题编码"></a>问题编码</h3><p>使用一个需要学习的权值向量计算问题各个单词的注意力权重，然后加权求和作为问题的整体表示。<br><img src="/images/bj.png" alt="bj"></p>
-<h3 id="预测"><a href="#预测" class="headerlink" title="预测"></a>预测</h3><p><img src="/images/pred.png" alt="pred"><br>获得篇章单词与问题的相似度结果后，选择Pstart(i)×Pend(i′)最大的作为答案开始坐标和结束坐标，坐标之间即为答案，同时可利用i ≤ i′ ≤ i+15限制答案长度。</p>
-
-          
+<h2 id="文档阅读理解"><a href="#文档阅读理解" class="headerlink" title="文档阅读理解"></a>文档阅读理解</h2><p>篇章和问题均采用三层双向LSTM，128个hidden units进行编码。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/07/27/论文简读-Reading-Wikipedia-to-Answer-Open-Domain-Questions/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -874,8 +869,7 @@
 
       
         
-          
-            <blockquote>
+          <blockquote>
 <p>Given a positive integer n, find the least number of perfect square numbers<br>(for example, 1, 4, 9, 16, …) which sum to n.<br>For example, given n = 12, return 3 because 12 = 4 + 4 + 4; given n = 13, return 2 because 13 = 4 + 9.</p>
 </blockquote>
 <h1 id="算法思想"><a href="#算法思想" class="headerlink" title="算法思想"></a>算法思想</h1><ol>
@@ -884,94 +878,14 @@
 <li>广度优先搜索。最少个数，对应空间搜索树的最小深度，很多类似的最小问题都可以用广度优先搜索解决，不过这题BFS并不适合，效率不高，代码较长，且有很多细节容易出错，不建议使用。</li>
 </ol>
 <h1 id="编码与解释"><a href="#编码与解释" class="headerlink" title="编码与解释"></a>编码与解释</h1><h5 id="1-动态规划：见另一篇文章。"><a href="#1-动态规划：见另一篇文章。" class="headerlink" title="1. 动态规划：见另一篇文章。"></a>1. 动态规划：见另一篇文章。</h5><h5 id="2-数学方法。"><a href="#2-数学方法。" class="headerlink" title="2. 数学方法。"></a>2. 数学方法。</h5><blockquote>
-<p>四平方定理：每个正整数均可表示为4个整数的平方和。<br>更多：<a href="https://zh.wikipedia.org/wiki/四平方和定理" target="_blank" rel="external">https://zh.wikipedia.org/wiki/四平方和定理</a><br>三平方定理：每个自然数均可表示为3个整数的平方和，当且仅当该数不能表示为n=pow(4,a)*(8b+7),a,b是整数。<br>更多<a href="https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem" target="_blank" rel="external">https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem</a></p>
-</blockquote>
-<p>有了两个定理后，作为一个菜鸡程序员，应该也能搞定代码。注意两个小细节：<br><strong>1.使用&amp;,==等不明确优先级的运算符时，最好加上括号！</strong><br><strong>2.不要忘记单独对结果为2时的判断，见代码注释处//check</strong></p>
-<pre><code>//cpp
-class Solution {
-public:
-    int numSquares(int n) {
-        if(n&lt;=0) return 0;
-        if(isSqure(n)) return 1;
-        while((n&amp;3)==0) n&gt;&gt;=2;
-        if((n&amp;7)==7) return 4;
-        int sqrt_n=(int)sqrt(n);
-        for(int i=1;i&lt;=sqrt_n;++i){//check
-            if(isSqure(n-i*i)) return 2;
-        } 
-        return 3;
-    }
-    bool isSqure(int n)
-    {
-        int sqrt_n=(int)sqrt(n);
-        return sqrt_n*sqrt_n==n?1:0;
-    }
-};
-</code></pre><h5 id="3-广度优先搜索"><a href="#3-广度优先搜索" class="headerlink" title="3.广度优先搜索"></a>3.广度优先搜索</h5><p>搜索树大致形状：</p>
-<blockquote>
-<pre><code>             0 
-  1       4      9     16
-2 5...   5...  10..  17...
-</code></pre></blockquote>
-<p>无论是广度优先还是深度优先(回溯常用)，关键都是要画出空间搜索树。三个细节要注意：<br><strong>注释1：提高效率，跳过同层已计算过的节点。</strong><br><strong>注释2：为什么不能使用else？结合空间搜索树考虑，else的情况包括cur+i&lt;n&amp;&amp;num[cur+i-1]!=0，什么意思呢，表示该节点对应的该值在之前已经考虑过，但是能直接从这里break吗？不能！因为该值只是被计算过，不代表该节点右边的兄弟节点应该被跳过。这些兄弟节点仍然应该被计算。</strong><br><strong>注释3：队列q.pop()的在循环中的正确位置</strong></p>
-<pre><code>//cpp
-class Solution {
-public:
-    int numSquares(int n) {
-        if(n&lt;=0) return 0;
-        vector&lt;int&gt; num(n,0);
-        vector&lt;int&gt; ps;
-        for(int i=1;i&lt;=n/i;++i)
-        {
-            ps.push_back(i*i);
-            num[i*i-1]=1;
-        }
-        if(ps.back()==n) return 1;
-        queue&lt;int&gt; q;
-        for(int &amp;i:ps) q.push(i);
-        int numSq=1;
-    while(!q.empty())
-    {
-        ++numSq;
-        int size=q.size();
-            while(size--)
-            {
-                int cur=q.front();
-                for(int &amp;i:ps)
-                {
-                    if(cur+i==n) return numSq;
-                    else if(cur+i&lt;n&amp;&amp;num[cur+i-1]==0)//1
-                    {
-                        q.push(cur+i);
-                        num[cur+i-1]=numSq;
-                    }
-                    else if(cur+i&gt;n) break;//2
-                }
-                q.pop();//3
-            }
-        }
-        return numSq;
-    }
-};
-</code></pre><p>运行时间对比(600 test cases)：</p>
-<table>
-<thead>
-<tr>
-<th>动态规划(优化版)</th>
-<th style="text-align:center">数学</th>
-<th style="text-align:right">广度优先</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>16ms</td>
-<td style="text-align:center">3ms</td>
-<td style="text-align:right">68ms</td>
-</tr>
-</tbody>
-</table>
-
-          
+<p>四平方定理：每个正整数均可表示为4个整数的平方和。<br>更多：<a href="https://zh.wikipedia.org/wiki/四平方和定理" target="_blank" rel="external">https://zh.wikipedia.org/wiki/四平方和定理</a><br>三平方定理：每个自然数均可表示为3个整数的平方和，当且仅当该数不能表示为n=pow(4,a)<em>(8b+7),a,b是整数。<br>更多<a href="https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem" target="_blank" rel="external">https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem</a><br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/09/03/LeetCode-279-Perfect-Squares/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

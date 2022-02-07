@@ -95,19 +95,19 @@
 
 
 
-<meta name="description" content="Tensorflow HubTF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙，你懂得）：  https://www.tensorflow.org/hub  模型结构首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完">
+<meta name="description" content="Tensorflow HubTF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙）：  https://www.tensorflow.org/hub  模型结构首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完成基于人">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于Tensorflow Hub进行迁移学习完成人脸BMI指数预测">
 <meta property="og:url" content="http://yoursite.com/2019/05/07/基于Tensorflow-Hub进行迁移学习完成人脸BMI指数预测/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="Tensorflow HubTF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙，你懂得）：  https://www.tensorflow.org/hub  模型结构首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完">
+<meta property="og:description" content="Tensorflow HubTF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙）：  https://www.tensorflow.org/hub  模型结构首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完成基于人">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/face2bmimodel.png">
 <meta property="og:image" content="http://yoursite.com/images/svr.png">
-<meta property="og:updated_time" content="2019-05-07T03:50:37.000Z">
+<meta property="og:updated_time" content="2022-02-06T09:25:43.383Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于Tensorflow Hub进行迁移学习完成人脸BMI指数预测">
-<meta name="twitter:description" content="Tensorflow HubTF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙，你懂得）：  https://www.tensorflow.org/hub  模型结构首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完">
+<meta name="twitter:description" content="Tensorflow HubTF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙）：  https://www.tensorflow.org/hub  模型结构首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完成基于人">
 <meta name="twitter:image" content="http://yoursite.com/images/face2bmimodel.png">
 
 
@@ -339,7 +339,7 @@
       
 
       
-        <h1 id="Tensorflow-Hub"><a href="#Tensorflow-Hub" class="headerlink" title="Tensorflow Hub"></a>Tensorflow Hub</h1><p>TF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙，你懂得）：</p>
+        <h1 id="Tensorflow-Hub"><a href="#Tensorflow-Hub" class="headerlink" title="Tensorflow Hub"></a>Tensorflow Hub</h1><p>TF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙）：</p>
 <blockquote>
 <p><a href="https://www.tensorflow.org/hub" target="_blank" rel="external">https://www.tensorflow.org/hub</a></p>
 </blockquote>
@@ -347,7 +347,7 @@
 <blockquote>
 <p>参考论文链接：<a href="https://arxiv.org/abs/1703.03156" target="_blank" rel="external">https://arxiv.org/abs/1703.03156</a></p>
 </blockquote>
-<h2 id="人脸识别"><a href="#人脸识别" class="headerlink" title="人脸识别"></a>人脸识别</h2><p>这里介绍golang版本解决方案，python的资源丰富，例如<a href="https://github.com/ageitgey/face_recognition" target="_blank" rel="external">face_recognition</a>等。<a href="https://github.com/Kagami/go-face" target="_blank" rel="external">go-face</a>提供了纯go版本的人脸识别功能，不需要安装opencv等复杂的环境依赖，相关的依赖也可以通过apt-get方式快速安装，值得注意的是其需要人脸识别的模型文件shape_predictor和dlib_face_recognition，具体介绍可以参考其github主页。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">//主要代码</div><div class="line">const dataDir = &quot;testdata&quot;</div><div class="line"></div><div class="line">func main() &#123;</div><div class="line">	// Init the recognizer.</div><div class="line">	rec, err := face.NewRecognizer(dataDir)</div><div class="line">	if err != nil &#123;</div><div class="line">		log.Fatalf(&quot;Can&apos;t init face recognizer: %v&quot;, err)</div><div class="line">	&#125;</div><div class="line">	// Free the resources when you&apos;re finished.</div><div class="line">	defer rec.Close()</div><div class="line"></div><div class="line">	// Test</div><div class="line">	testImage := filepath.Join(dataDir, &quot;face.jpg&quot;)</div><div class="line">	// Recognize faces on that image.</div><div class="line">	faces, err := rec.RecognizeFile(testImagePristin)</div><div class="line">	if err != nil &#123;</div><div class="line">		log.Fatalf(&quot;Can&apos;t recognize: %v&quot;, err)</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="人脸识别"><a href="#人脸识别" class="headerlink" title="人脸识别"></a>人脸识别</h2><p>这里介绍golang版本解决方案，python的资源丰富，例如<a href="https://github.com/ageitgey/face_recognition" target="_blank" rel="external">face_recognition</a>等。<a href="https://github.com/Kagami/go-face" target="_blank" rel="external">go-face</a>提供了纯go版本的人脸识别功能，不需要安装opencv等复杂的环境依赖，相关的依赖也可以通过apt-get方式快速安装，值得注意的是其需要人脸识别的模型文件shape_predictor和dlib_face_recognition，具体介绍可以参考其github主页。<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">//主要代码</div><div class="line">const dataDir = &quot;testdata&quot;</div><div class="line"></div><div class="line">func main() &#123;</div><div class="line">	// Init the recognizer.</div><div class="line">	rec, err := face.NewRecognizer(dataDir)</div><div class="line">	if err != nil &#123;</div><div class="line">		log.Fatalf(&quot;Can&apos;t init face recognizer: %v&quot;, err)</div><div class="line">	&#125;</div><div class="line">	// Free the resources when you&apos;re finished.</div><div class="line">	defer rec.Close()</div><div class="line"></div><div class="line">	// Test</div><div class="line">	testImage := filepath.Join(dataDir, &quot;face.jpg&quot;)</div><div class="line">	// Recognize faces on that image.</div><div class="line">	faces, err := rec.RecognizeFile(testImagePristin)</div><div class="line">	if err != nil &#123;</div><div class="line">		log.Fatalf(&quot;Can&apos;t recognize: %v&quot;, err)</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h2 id="tfhub"><a href="#tfhub" class="headerlink" title="tfhub"></a>tfhub</h2><p>这里使用google发布的inception_v3模型，由于网络原因，如果在代码中无法下载可以选择手动下载并指定路径，下载时url为：</p>
 <blockquote>
 <p><a href="https://storage.googleapis.com/tfhub-modules/google/imagenet/inception_v3/feature_vector/1.tar.gz" target="_blank" rel="external">https://storage.googleapis.com/tfhub-modules/google/imagenet/inception_v3/feature_vector/1.tar.gz</a></p>

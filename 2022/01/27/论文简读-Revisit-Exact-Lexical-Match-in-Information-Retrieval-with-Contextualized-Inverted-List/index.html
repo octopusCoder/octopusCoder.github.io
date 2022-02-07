@@ -95,12 +95,12 @@
 
 
 
-<meta name="description" content="论文地址：https://arxiv.org/abs/2104.07186  文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化召回算法则经历了从无监督计算预训练词向量（word2vec、Glove）相似度，到有监督地计算query和doc相似度（DSSM），再到基于大规模预训练语言模型（">
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       论文地址：https://arxiv.org/abs/2104.07186  文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文简读-Revisit Exact Lexical Match in Information Retrieval with Contextualized Inverted List">
 <meta property="og:url" content="http://yoursite.com/2022/01/27/论文简读-Revisit-Exact-Lexical-Match-in-Information-Retrieval-with-Contextualized-Inverted-List/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="论文地址：https://arxiv.org/abs/2104.07186  文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化召回算法则经历了从无监督计算预训练词向量（word2vec、Glove）相似度，到有监督地计算query和doc相似度（DSSM），再到基于大规模预训练语言模型（">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       论文地址：https://arxiv.org/abs/2104.07186  文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/coil-cam.png">
 <meta property="og:image" content="http://yoursite.com/images/coil-dpr.png">
@@ -114,10 +114,10 @@
 <meta property="og:image" content="http://yoursite.com/images/coil-t2.png">
 <meta property="og:image" content="http://yoursite.com/images/coil-t3.png">
 <meta property="og:image" content="http://yoursite.com/images/coil-case.png">
-<meta property="og:updated_time" content="2022-01-27T16:40:35.124Z">
+<meta property="og:updated_time" content="2022-02-06T09:48:47.033Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Revisit Exact Lexical Match in Information Retrieval with Contextualized Inverted List">
-<meta name="twitter:description" content="论文地址：https://arxiv.org/abs/2104.07186  文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化召回算法则经历了从无监督计算预训练词向量（word2vec、Glove）相似度，到有监督地计算query和doc相似度（DSSM），再到基于大规模预训练语言模型（">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });       论文地址：https://arxiv.org/abs/2104.07186  文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化">
 <meta name="twitter:image" content="http://yoursite.com/images/coil-cam.png">
 
 
@@ -349,7 +349,16 @@
       
 
       
-        <blockquote>
+        <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<blockquote>
 <p>论文地址：<a href="https://arxiv.org/abs/2104.07186" target="_blank" rel="external">https://arxiv.org/abs/2104.07186</a></p>
 </blockquote>
 <p>文本搜索领域常见的召回算法大致可以分为基于词汇匹配和向量召回两种，基于词汇匹配的算法以BM25为代表，通过计算query和doc词语匹配度来衡量相关性；向量化召回算法则经历了从无监督计算预训练词向量（word2vec、Glove）相似度，到有监督地计算query和doc相似度（DSSM），再到基于大规模预训练语言模型（BERT）计算相似度的迭代过程。</p>
@@ -362,7 +371,7 @@
 <li>词汇不匹配导致漏召回：例如”cat”和”kitty”都表示“猫”；</li>
 <li>语义不匹配导致错召回：例如”bank of river”和”bank in finance”中的bank表示不同含义，前者是“河岸”，而后者是“银行”，当query中的bank表示银行时，可能会将包含”bank of river”的文章进行召回。</li>
 </ol>
-<p>上述两个问题可以通过词形归一、N-grams匹配和查询扩展等技术进行缓解，但本质上仍然是基于词袋假设，无法从根本上解决。</p>
+<p>上述两个问题可以通过词形归一、N-grams匹配和查询扩展等技术进行缓解，但本质上仍然是基于词袋假设，无法从根本上解决。<br><a id="more"></a></p>
 <h2 id="向量化-Neural-IR"><a href="#向量化-Neural-IR" class="headerlink" title="向量化-Neural IR"></a>向量化-Neural IR</h2><h3 id="无监督词向量"><a href="#无监督词向量" class="headerlink" title="无监督词向量"></a>无监督词向量</h3><p>早期的无监督词向量代表模型有word2vec和Glove，计算query和doc相似度时可以有以下方法：</p>
 <ol>
 <li>首先将query和doc各个词语映射到对应向量，然后利用max pool、avg pool等方法获得query向量和doc向量，最后利用余弦距离等计算相似度；</li>
@@ -427,6 +436,10 @@ h_{d}^{\mathrm{BM} 25}(d, t)=\frac{t f_{t, d}\left(1+k_{1}\right)}{t f_{t, d}+k_
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/01/30/论文简读-Context-Aware-Sentence-Passage-Term-Importance-Estimation-For-First-Stage-Retrieval/" rel="prev" title="论文简读-Context-Aware Sentence/Passage Term Importance Estimation For First Stage Retrieval">
+                论文简读-Context-Aware Sentence/Passage Term Importance Estimation For First Stage Retrieval <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>

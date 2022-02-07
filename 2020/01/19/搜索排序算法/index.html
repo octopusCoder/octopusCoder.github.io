@@ -129,7 +129,7 @@
 <meta property="og:image" content="http://yoursite.com/images/search_dbn.png">
 <meta property="og:image" content="http://yoursite.com/images/search_irgan.png">
 <meta property="og:image" content="http://yoursite.com/images/search_model_compare.png">
-<meta property="og:updated_time" content="2020-12-07T10:56:08.000Z">
+<meta property="og:updated_time" content="2022-02-06T09:50:04.034Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搜索排序算法">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包">
@@ -384,7 +384,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>按照样本生成方法和Loss Function不同分为point wise、pair wise和list wise三种，参考<a href="https://wesure.lexiangla.com/teams/dm/docs/1665fb8a09d111ea81c20a58ac131706?company_from=wesure" target="_blank" rel="external">L2R算法介绍</a>。2019年Google提出的group wise模型 TF Ranking。</li>
 <li>按照模型结构划分，可分为线性排序模型、树模型、深度学习模型，以及组合模型（GBDT+LR，Deep&amp;Wide）。</li>
 </ol>
-<p>时效性模型：[待补充]。<br>个性化模型：逻辑回归(Logistic Regression）。<br>点击模型：深度置信网络(DeepBeliefNetworks)。</p>
+<p>时效性模型：[待补充]。<br>个性化模型：逻辑回归(Logistic Regression）。<br>点击模型：深度置信网络(DeepBeliefNetworks)。<br><a id="more"></a></p>
 <h2 id="相关性模型"><a href="#相关性模型" class="headerlink" title="相关性模型"></a>相关性模型</h2><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><img width="700" src="/images/search_kinds.png"></p>
 <p>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</p>
 <h3 id="迭代过程"><a href="#迭代过程" class="headerlink" title="迭代过程"></a>迭代过程</h3><p><img width="700" src="/images/search_process.png"></p>

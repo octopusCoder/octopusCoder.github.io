@@ -111,7 +111,7 @@
 <meta property="og:image" content="http://yoursite.com/images/FairCo5.png">
 <meta property="og:image" content="http://yoursite.com/images/FairCo6.png">
 <meta property="og:image" content="http://yoursite.com/images/FairCo7.png">
-<meta property="og:updated_time" content="2020-11-06T10:14:21.000Z">
+<meta property="og:updated_time" content="2022-02-06T09:45:24.236Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Controlling Fairness and Bias in Dynamic Learning-to-Rank">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        前言本篇论文获得SIGIR 2020 Best Paper，旨在通过构建公平的无偏统计量，解决动态排序中的不公平问题。排序算法广泛应用于推荐和搜索场景，但目前的算法大多存在马太效应，例如热搜场景，排名越靠前被点击的概率也就越大，在一段">
@@ -375,9 +375,10 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p>那么公平的动态排序算法要具有两个性质：</p>
 <ol>
 <li><strong>无偏性</strong>。用来描述用户偏好的统计量是无偏的。</li>
-<li><strong>公平性</strong>。算法可以根据相关性对曝光量进行公平的分配。</li>
+<li><strong>公平性</strong>。算法可以根据相关性对曝光量进行公平的分配。<a id="more"></a>
+<h2 id="文章排序模型"><a href="#文章排序模型" class="headerlink" title="文章排序模型"></a>文章排序模型</h2></li>
 </ol>
-<h2 id="文章排序模型"><a href="#文章排序模型" class="headerlink" title="文章排序模型"></a>文章排序模型</h2><p>仍以文章排序模型为例，该模型存在Exposure Unfairness和Impact Unfairness，如下图所示：</p>
+<p>仍以文章排序模型为例，该模型存在Exposure Unfairness和Impact Unfairness，如下图所示：</p>
 <p><img src="/images/FairCo3.png" alt="calcos"></p>
 <h3 id="曝光"><a href="#曝光" class="headerlink" title="曝光"></a>曝光</h3><p>为保证文章得到公平曝光，我们希望单位相关度下的期望曝光是一致的，即曝光可以表示为相关度的函数：</p>
 <span>$$\begin{gather*}

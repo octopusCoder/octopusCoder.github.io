@@ -113,7 +113,7 @@
 <meta property="og:image" content="http://yoursite.com/images/ammatch.png">
 <meta property="og:image" content="http://yoursite.com/images/lres.png">
 <meta property="og:image" content="http://yoursite.com/images/trecqa.png">
-<meta property="og:updated_time" content="2017-08-08T02:30:00.000Z">
+<meta property="og:updated_time" content="2022-02-06T09:27:01.317Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Bilateral Multi-Perspective Matching for Natural Language Sentences">
 <meta name="twitter:description" content="论文发表于2017.7.14，作者为Zhiguo Wang等人，属于IBM Watson实验中心，截止2017.8.6，在TREC QA数据集上测试准确率排名第一。论文的主要目标是解决自然语言句子匹配的问题，在释义识别、自然语言推断和答案选择三个方面均取得了state-of-the-art水平。 模型结构 模型自下而上分为五层，分别为单词表示层、文法表示层、匹配层、聚合层和预测层，其中匹配层为模型">
@@ -350,7 +350,7 @@
       
         <p>论文发表于2017.7.14，作者为Zhiguo Wang等人，属于IBM Watson实验中心，截止2017.8.6，在TREC QA数据集上测试准确率排名第一。论文的主要目标是解决自然语言句子匹配的问题，在释义识别、自然语言推断和答案选择三个方面均取得了state-of-the-art水平。</p>
 <h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p><img src="/images/bimpm-model.png" alt="模型结构图"></p>
-<p>模型自下而上分为五层，分别为单词表示层、文法表示层、匹配层、聚合层和预测层，其中匹配层为模型的核心，文中共提出了四种匹配策略，这里的匹配也就是Attention机制。<br>假设要匹配的句子分别为P和Q。下面以P-&gt;Q方向为例进行说明，Q-&gt;P方向同理。</p>
+<p>模型自下而上分为五层，分别为单词表示层、文法表示层、匹配层、聚合层和预测层，其中匹配层为模型的核心，文中共提出了四种匹配策略，这里的匹配也就是Attention机制。<br>假设要匹配的句子分别为P和Q。下面以P-&gt;Q方向为例进行说明，Q-&gt;P方向同理。<br><a id="more"></a></p>
 <h2 id="单词表示层"><a href="#单词表示层" class="headerlink" title="单词表示层"></a>单词表示层</h2><p>单词级别使用了GloVe模型，字符级别对字符embedding进行随机初始化，逐个输入LSTM，在训练中进行学习，由单词中的字符组成单词的向量表示。</p>
 <h2 id="文法表示层"><a href="#文法表示层" class="headerlink" title="文法表示层"></a>文法表示层</h2><p>使用双向LSTM对P和Q进行编码。</p>
 <h2 id="匹配层"><a href="#匹配层" class="headerlink" title="匹配层"></a>匹配层</h2><p>本层是模型的核心层，包含四种匹配策略，分别为：Full-Matching、Maxpooling-Matching、Attentive-Matching和 Max-Attentive-Matching。在介绍四种匹配策略之前，先对论文的关键点Multi-Perspective进行说明。</p>

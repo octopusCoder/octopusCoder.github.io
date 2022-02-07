@@ -267,6 +267,278 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/31/BERT二阶段fine-tune代码分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/31/BERT二阶段fine-tune代码分析/" itemprop="url">BERT二阶段fine tune代码分析</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-31T16:56:20+08:00">
+                2019-05-31
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>BERT除预训练代码run_pretraining.py外，还提供了run_classifier.py用于文本分类和run_squad.py用于阅读理解，下面通过对比三个代码总结出如何快速基于BERT做二阶段fine tune的方法。此外，如果TF Hub中有对应任务可使用的预训练模型，也可直接使用，例如同样用于分类的run_classifier_with_tfhub.py。</p>
+<h2 id="代码整体结构"><a href="#代码整体结构" class="headerlink" title="代码整体结构"></a>代码整体结构</h2><p>代码的整体流程如下图所示：<br><img src="/images/BERT.png" alt=""></p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>在bert_config_file文件中配置各个参数，例如attention_probs_dropout_prob和directionality等，config文件在BERT提供的预训练模型中。</p>
+<h3 id="输入处理"><a href="#输入处理" class="headerlink" title="输入处理"></a>输入处理</h3><p>结构图中以get input files表示整个的输入数据处理部分，不同于早期版本的数据处理过程，当前的TF版本将数据转化为features用于训练。所以需要建立相应的结构体承接数据，并建立对应的数据处理方法，最后转化为features，下表中convert_exps_to_features为convert_examples_to_features简写。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/05/31/BERT二阶段fine-tune代码分析/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/15/文本查重-SimHash和MinHash算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/15/文本查重-SimHash和MinHash算法/" itemprop="url">文本查重-SimHash和MinHash算法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T15:16:45+08:00">
+                2019-05-15
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<p>SimHash和MinHash算法主要应用于海量文本查重，两者都属于<a href="https://www.cnblogs.com/wt869054461/p/8148940.html" target="_blank" rel="external">局部敏感哈希</a>（Locality-Sensitive Hashing, LSH）算法，而LSH又是<a href="http://www.cnblogs.com/ljygoodgoodstudydaydayup/p/10519253.html" target="_blank" rel="external">近似最近邻查找</a>（Approximate Nearest  Neighbor, ANN）中的一类算法，其主要思想是利用降维和索引，加快查找过程。</p>
+<h2 id="SimHash"><a href="#SimHash" class="headerlink" title="SimHash"></a>SimHash</h2><p>算法的过程如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437426/baf42378-e625-35d2-9a89-471524a355d8.jpg" alt=""><br>具体过程为：</p>
+<ol>
+<li>确定文本Doc中各个词语（中文需分词）的权重，方法可以有多种，例如TfIdf和TextRank算法，则文档可表示为(feature, weight)组成的向量；</li>
+<li>初始化一个长度为64位（可综合空间和时间复杂度考虑具体数值）的Doc特征向量，各元素初始化为0；</li>
+<li>对Doc中每个词语利用hash函数计算一个长度为64位的特征向量；</li>
+<li>遍历词语特征向量，如果第i位为1，则Doc特征向量对应位+w，否则-w；</li>
+<li>所有词语处理完毕后，判断Doc特征向量的每一位，如果大于0，则置1，否则置0；</li>
+<li>获得各Doc的特征向量后，可利用海明距离判断两篇文档的相似性，一般地，距离&lt;=3时认为两者是相似的。
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/05/15/文本查重-SimHash和MinHash算法/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/14/TextRank算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -339,8 +611,7 @@
 
       
         
-          
-            <script type="text/x-mathjax-config">
+          <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 });
@@ -357,25 +628,14 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><h3 id="PageRank"><a href="#PageRank" class="headerlink" title="PageRank"></a>PageRank</h3><p>将网页之间的链接抽象为一张有向图，如下图所示：<br><img width="500" src="/images/dgraph.png"></p>
 <p><center><strong><em><a href="https://www.cnblogs.com/mcomco/p/10304383.html" target="_blank" rel="external">图片来源</a></em></strong></center><br>图结构构造完成后，可使用以下公式计算网页的PR值：<br><span>$$\begin{gather*}
 S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|O u t\left(V_{j}\right)\right|} S\left(V_{j}\right)
-\end{gather*}$$</span><!-- Has MathJax --><br><span>$S\left(V_{i}\right)$</span><!-- Has MathJax -->表示网页i的PR值，即网页的重要性指标。d是阻尼系数，一般取0.85。<span>$I n\left(V_{i}\right)$</span><!-- Has MathJax -->表示指向网页i的网页集合。<span>$|O u t\left(V_{j}\right)|$</span><!-- Has MathJax -->表示网页j指向的网页总数，<span>$S\left(V_{j}\right)$</span><!-- Has MathJax -->表示网页j的PR值。可将各网页PR值设置为1，经过多次迭代，满足收敛条件后获得各个网页的PR值。</p>
-<blockquote>
-<p>阻尼系数:</p>
-<p>PageRank算法可以视为对网页跳转的模拟，当有些网页只有入链而没有出链时，则无法从这些网页跳转出去，使得每个网页的PageRank值最终为0。下图给出了这个问题的实例，网页C没有到其他页面的链接，随着算法的不断迭代，每个网页的权重值不断减少，最终收敛于0。为了避免这个问题，在算法中引入阻尼系数d，作为网页随机跳转的概率。</p>
-</blockquote>
-<p><img src="/images/prnoout.png" alt="prnoout"></p>
-<h3 id="TextRank"><a href="#TextRank" class="headerlink" title="TextRank"></a>TextRank</h3><h4 id="关键词提取"><a href="#关键词提取" class="headerlink" title="关键词提取"></a>关键词提取</h4><p>以下面的文章为例，首先进行过滤停用词等预处理（中文需要分词），然后建立如图所示单词之间的连接图，此时PageRank算法中网页之间的链接关系体现为一定窗口大小内单词之间的相邻关系，例如以“systems”为中心，窗口大小为3时，”types”, “linear”和“compatibility”与其具有“链接关系“。<br><img src="/images/keywords.png" alt=""></p>
-<p><center><strong><em><a href="https://upload-images.jianshu.io/upload_images/3579920-09c220dd15b3f13b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/996" target="_blank" rel="external">图片来源</a></em></strong></center><br>图构造完成后，单词的TR值计算公式为：<br><span>$$\begin{gather*}
-W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{j i}}{\sum_{V_{k} \in O u t\left(V_{j}\right)} w_{j k}} W S\left(V_{j}\right)
-\end{gather*}$$</span><!-- Has MathJax --><br>TR值计算公式与PR值十分类似，区别在于加入了一个参数<span>$w_{j i}$</span><!-- Has MathJax -->，一般来说<span>$w_{j i}$</span><!-- Has MathJax -->的值为文章中第j个单词和第i个单词在一定窗口大小的共现次数。后续的迭代过程与PR值计算类似。</p>
-<h4 id="摘要生成"><a href="#摘要生成" class="headerlink" title="摘要生成"></a>摘要生成</h4><p>将文本中的每个句子看作图中的一个节点，句子之间的“链接关系”由句子间的相似性体现。句子相似性有多种计算方式，这里使用一种很简单的方法，计算两个句子共有词比例。句子相似性公式：<br><span>$$\begin{gather*}
-\text {Similarity}\left(S_{i}, S_{j}\right)=\frac{\left|\left\{w_{k} | w_{k} \in S_{i} \&amp; w_{k} \in S_{j}\right\}\right|}{\log \left(\left|S_{i}\right|\right)+\log \left(\left|S_{j}\right|\right)}
-\end{gather*}$$</span><!-- Has MathJax --><br><span>$S_{i}, S_{j}$</span><!-- Has MathJax -->分别表示第i个和第j个句子，$w_{k}$表示句子中的词语，公式中分子表示两个句子共有词的个数，分母表示两个句子词总数对数求和。后续TR值计算和迭代过程与关键词提取类似。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><blockquote>
-<p><a href="http://www.cnblogs.com/xueyinzhe/p/7101295.html" target="_blank" rel="external">http://www.cnblogs.com/xueyinzhe/p/7101295.html</a><br><a href="https://blog.csdn.net/woshiliulei0/article/details/81479434" target="_blank" rel="external">https://blog.csdn.net/woshiliulei0/article/details/81479434</a></p>
-</blockquote>
-<p><strong><em>本文中图片均来自互联网</em></strong></p>
-
-          
+\end{gather*}$$</span><!-- Has MathJax --><br><span>$S\left(V_{i}\right)$</span><!-- Has MathJax -->表示网页i的PR值，即网页的重要性指标。d是阻尼系数，一般取0.85。<span>$I n\left(V_{i}\right)$</span><!-- Has MathJax -->表示指向网页i的网页集合。<span>$|O u t\left(V_{j}\right)|$</span><!-- Has MathJax -->表示网页j指向的网页总数，<span>$S\left(V_{j}\right)$</span><!-- Has MathJax -->表示网页j的PR值。可将各网页PR值设置为1，经过多次迭代，满足收敛条件后获得各个网页的PR值。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/05/14/TextRank算法/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -494,8 +754,7 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
 
       
         
-          
-            <h1 id="工业产品中TensorFlow使用方法"><a href="#工业产品中TensorFlow使用方法" class="headerlink" title="工业产品中TensorFlow使用方法"></a>工业产品中TensorFlow使用方法</h1><ol>
+          <h1 id="工业产品中TensorFlow使用方法"><a href="#工业产品中TensorFlow使用方法" class="headerlink" title="工业产品中TensorFlow使用方法"></a>工业产品中TensorFlow使用方法</h1><ol>
 <li>用TensorFlow的C++/Java/Nodejs API直接使用保存的TensorFlow模型：类似Caffe，适合做桌面软件。</li>
 <li>直接将使用TensorFlow的Python代码放到Flask等Web程序中，提供Restful接口：实现和调试方便，但效率不太高，不大适合高负荷场景，且没有版本管理、模型热更新等功能。</li>
 <li>将TensorFlow模型托管到TensorFlow Serving中，提供RPC或Restful服务：实现方便，高效，自带版本管理、模型热更新等，很适合大规模线上业务。</li>
@@ -504,20 +763,14 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
 <p>参考链接：<a href="https://cloud.tencent.com/developer/article/1375668" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1375668</a> </p>
 </blockquote>
 <h1 id="TensorFlow-Serving简介"><a href="#TensorFlow-Serving简介" class="headerlink" title="TensorFlow Serving简介"></a>TensorFlow Serving简介</h1><p><a href="https://github.com/tensorflow/serving" target="_blank" rel="external">Tensorflow Serving</a>是Google官方提供的模型部署方式，正确导出模型后，可一分钟完成部署（官方广告）。TF1.8后，Tensorflow Serving支持RESTfull API和grpc的请求方式，模型部署完成后可很方便的利用post请求进行测试。</p>
-<h1 id="TensorFlow-Serving服务框架"><a href="#TensorFlow-Serving服务框架" class="headerlink" title="TensorFlow Serving服务框架"></a>TensorFlow Serving服务框架</h1><p>框架分为模型训练、模型上线和服务使用三部分。模型训练与正常的训练过程一致，只是导出时需要按照TF Serving的标准定义输入、输出和签名。模型上线时指定端口号和模型路径后，通过tensorflow_model_server命令启动服务。服务使用可通过grpc和RESTfull方式请求。<br><img width="724" src="https://ss.csdn.net/p?http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtzxrqiba6BicbqCjDDQ313ohCZJQ5u0LTnK5okv89ibHbf2pI6YWMq05UNjjoiaxxibxd6pqk6l07T04rA/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1"></p>
-<h1 id="模型导出"><a href="#模型导出" class="headerlink" title="模型导出"></a>模型导出</h1><p>需指定模型的输入和输出，并在tags中包含”serve”，在实际使用中，TF Serving要求导出模型包含”serve”这个tag。此外，还需要指定默认签名，tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY = “serving_default”，此外tf.saved_model.signature_constants定义了三类签名，分别是：</p>
-<ul>
-<li>分类classify</li>
-<li>回归regress</li>
-<li>预测predict</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">CLASSIFY_METHOD_NAME = &quot;tensorflow/serving/classify&quot;</div><div class="line">PREDICT_METHOD_NAME = &quot;tensorflow/serving/predict&quot;</div><div class="line">REGRESS_METHOD_NAME = &quot;tensorflow/serving/regress&quot;</div></pre></td></tr></table></figure>
-<p>一般而言，用predict就完事了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">with sess.graph.as_default() as graph:</div><div class="line">    builder = tf.saved_model.builder.SavedModelBuilder(saved_model_dir)</div><div class="line">    signature = tf.saved_model.signature_def_utils.predict_signature_def(inputs=&#123;&apos;image&apos;: in_image&#125;,</div><div class="line">                                      outputs=&#123;&apos;prediction&apos;: graph.get_tensor_by_name(&apos;final_result:0&apos;)&#125;,)</div><div class="line">    builder.add_meta_graph_and_variables(sess=sess,</div><div class="line">                                         tags=[&quot;serve&quot;],</div><div class="line">                                         signature_def_map=&#123;&apos;predict&apos;:signature, tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:signature&#125;)</div><div class="line">    builder.save()</div></pre></td></tr></table></figure></p>
-<h1 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tensorflow_model_server --port=8500 --rest_api_port=8501 --model_name=模型名 --model_base_path=模型所在路径</div></pre></td></tr></table></figure>
-<h1 id="请求服务"><a href="#请求服务" class="headerlink" title="请求服务"></a>请求服务</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl -d &apos;&#123;&quot;inputs&quot;: [[1.1,1.2,0.8,1.3]]&#125;&apos; -X POST http://localhost:8501/v1/models/模型名:predict</div></pre></td></tr></table></figure>
-<p>python可以通过post请求，golang可以通过grpc服务请求。</p>
-
-          
+<h1 id="TensorFlow-Serving服务框架"><a href="#TensorFlow-Serving服务框架" class="headerlink" title="TensorFlow Serving服务框架"></a>TensorFlow Serving服务框架</h1><p>框架分为模型训练、模型上线和服务使用三部分。模型训练与正常的训练过程一致，只是导出时需要按照TF Serving的标准定义输入、输出和签名。模型上线时指定端口号和模型路径后，通过tensorflow_model_server命令启动服务。服务使用可通过grpc和RESTfull方式请求。<br><img width="724" src="https://ss.csdn.net/p?http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtzxrqiba6BicbqCjDDQ313ohCZJQ5u0LTnK5okv89ibHbf2pI6YWMq05UNjjoiaxxibxd6pqk6l07T04rA/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1"><br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/05/07/使用TensorFlow-Serving快速部署模型/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -636,8 +889,7 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
 
       
         
-          
-            <h1 id="Tensorflow-Hub"><a href="#Tensorflow-Hub" class="headerlink" title="Tensorflow Hub"></a>Tensorflow Hub</h1><p>TF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙，你懂得）：</p>
+          <h1 id="Tensorflow-Hub"><a href="#Tensorflow-Hub" class="headerlink" title="Tensorflow Hub"></a>Tensorflow Hub</h1><p>TF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙）：</p>
 <blockquote>
 <p><a href="https://www.tensorflow.org/hub" target="_blank" rel="external">https://www.tensorflow.org/hub</a></p>
 </blockquote>
@@ -645,23 +897,14 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
 <blockquote>
 <p>参考论文链接：<a href="https://arxiv.org/abs/1703.03156" target="_blank" rel="external">https://arxiv.org/abs/1703.03156</a></p>
 </blockquote>
-<h2 id="人脸识别"><a href="#人脸识别" class="headerlink" title="人脸识别"></a>人脸识别</h2><p>这里介绍golang版本解决方案，python的资源丰富，例如<a href="https://github.com/ageitgey/face_recognition" target="_blank" rel="external">face_recognition</a>等。<a href="https://github.com/Kagami/go-face" target="_blank" rel="external">go-face</a>提供了纯go版本的人脸识别功能，不需要安装opencv等复杂的环境依赖，相关的依赖也可以通过apt-get方式快速安装，值得注意的是其需要人脸识别的模型文件shape_predictor和dlib_face_recognition，具体介绍可以参考其github主页。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">//主要代码</div><div class="line">const dataDir = &quot;testdata&quot;</div><div class="line"></div><div class="line">func main() &#123;</div><div class="line">	// Init the recognizer.</div><div class="line">	rec, err := face.NewRecognizer(dataDir)</div><div class="line">	if err != nil &#123;</div><div class="line">		log.Fatalf(&quot;Can&apos;t init face recognizer: %v&quot;, err)</div><div class="line">	&#125;</div><div class="line">	// Free the resources when you&apos;re finished.</div><div class="line">	defer rec.Close()</div><div class="line"></div><div class="line">	// Test</div><div class="line">	testImage := filepath.Join(dataDir, &quot;face.jpg&quot;)</div><div class="line">	// Recognize faces on that image.</div><div class="line">	faces, err := rec.RecognizeFile(testImagePristin)</div><div class="line">	if err != nil &#123;</div><div class="line">		log.Fatalf(&quot;Can&apos;t recognize: %v&quot;, err)</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h2 id="tfhub"><a href="#tfhub" class="headerlink" title="tfhub"></a>tfhub</h2><p>这里使用google发布的inception_v3模型，由于网络原因，如果在代码中无法下载可以选择手动下载并指定路径，下载时url为：</p>
-<blockquote>
-<p><a href="https://storage.googleapis.com/tfhub-modules/google/imagenet/inception_v3/feature_vector/1.tar.gz" target="_blank" rel="external">https://storage.googleapis.com/tfhub-modules/google/imagenet/inception_v3/feature_vector/1.tar.gz</a></p>
-</blockquote>
-<p>模型下载完成并指定路径后可直接在hub中使用并获得输入图片的feature vector。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">height, width = hub.get_expected_image_size(module_spec)</div><div class="line">resized_input_tensor = tf.placeholder(tf.float32, [None, height, width, 3], name=&quot;input_tensor&quot;)</div><div class="line">m = hub.Module(module_spec)</div><div class="line">bottleneck_tensor = m(resized_input_tensor)</div></pre></td></tr></table></figure></p>
-<h2 id="SVR模型"><a href="#SVR模型" class="headerlink" title="SVR模型"></a>SVR模型</h2><p>对于一般的回归问题，给定训练样本，模型希望学习得到一个f(x)与y尽可能的接近，只有f(x)和y完全相同时，损失才为零，而支持向量回归可以容忍f(x)与y之前最多有ε的偏差，当且仅当f(x)与y的差别绝对值大于ε时，才计算损失。此时相当于以f(x)为中心，构建一个宽度为2ε的间隔带，若训练样本落入此间隔带，则认为是被预测正确的。如下图所示：<br><img src="/images/svr.png" alt="图片"><br>参考链接：</p>
-<blockquote>
-<p><a href="https://blog.csdn.net/zb123455445/article/details/78354489" target="_blank" rel="external">https://blog.csdn.net/zb123455445/article/details/78354489</a></p>
-</blockquote>
-<p>Tensorflow中实现SVR模型首先设置和初始化W, b和ε，通过W*x+b获得final_tensor，最后计算loss，公式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">with tf.name_scope(&apos;loss&apos;):</div><div class="line">    loss = tf.reduce_mean(tf.maximum(0., tf.subtract(tf.abs(tf.subtract(final_tensor, ground_truth_input)), epsilon)))</div></pre></td></tr></table></figure></p>
-<h1 id="模型代码"><a href="#模型代码" class="headerlink" title="模型代码"></a>模型代码</h1><p>训练代码参考了tensorflow提供的鲜花分类的retrain.py代码，主要对loss函数，数据处理和模型导出做了修改。</p>
-<blockquote>
-<p>参考连接：<a href="https://github.com/tensorflow/hub/raw/master/examples/image_retraining/retrain.py" target="_blank" rel="external">https://github.com/tensorflow/hub/raw/master/examples/image_retraining/retrain.py</a></p>
-</blockquote>
-
-          
+<h2 id="人脸识别"><a href="#人脸识别" class="headerlink" title="人脸识别"></a>人脸识别</h2><p>这里介绍golang版本解决方案，python的资源丰富，例如<a href="https://github.com/ageitgey/face_recognition" target="_blank" rel="external">face_recognition</a>等。<a href="https://github.com/Kagami/go-face" target="_blank" rel="external">go-face</a>提供了纯go版本的人脸识别功能，不需要安装opencv等复杂的环境依赖，相关的依赖也可以通过apt-get方式快速安装，值得注意的是其需要人脸识别的模型文件shape_predictor和dlib_face_recognition，具体介绍可以参考其github主页。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/05/07/基于Tensorflow-Hub进行迁移学习完成人脸BMI指数预测/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -780,159 +1023,17 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
 
       
         
-          
-            <h2 id="BERT"><a href="#BERT" class="headerlink" title="BERT"></a>BERT</h2><p>2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。2018年1月3日微软亚洲研究院提交的R-NET模型在EM值（Exact Match表示预测答案和真实答案完全匹配）上以82.650的最高分领先，并率先超越人类分数82.304。而当谷歌一出手，便知有没有，目前SQuAD排行榜上已经被BERT霸屏，排行前列的模型几乎全部基于BERT。关于通用语言模型的介绍，可以参考另一篇翻译的博客，以及张俊林老师的介绍，参考链接附在本文末尾。</p>
+          <h2 id="BERT"><a href="#BERT" class="headerlink" title="BERT"></a>BERT</h2><p>2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。2018年1月3日微软亚洲研究院提交的R-NET模型在EM值（Exact Match表示预测答案和真实答案完全匹配）上以82.650的最高分领先，并率先超越人类分数82.304。而当谷歌一出手，便知有没有，目前SQuAD排行榜上已经被BERT霸屏，排行前列的模型几乎全部基于BERT。关于通用语言模型的介绍，可以参考另一篇翻译的博客，以及张俊林老师的介绍，参考链接附在本文末尾。</p>
 <h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>谷歌已开放源码：</p>
 <blockquote>
-<p><a href="https://github.com/google-research/bert" target="_blank" rel="external">https://github.com/google-research/bert</a></p>
-</blockquote>
-<p>其中create_pretraining_data.py用于创建训练数据，run_pretraining.py用于进行预训练。此外，谷歌还提供了二阶段fine tunning的训练代码，run_classifier.py用于句子分类任务，run_squad.py用于机器阅读理解任务，可直接使用。而基于BERT的语言模型可直接对预训练模型进行改造后获得，参考链接：</p>
-<blockquote>
-<p><a href="https://github.com/xu-song/bert-as-language-model" target="_blank" rel="external">https://github.com/xu-song/bert-as-language-model</a></p>
-</blockquote>
-<p>作者主要对get_masked_lm_output函数进行了改造，具体地，计算masked lm loss时不使用masked_lm_weights，参考代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">#原代码</div><div class="line">def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,</div><div class="line">                         label_ids, label_weights):</div><div class="line">  &quot;&quot;&quot;Get loss and log probs for the masked LM.&quot;&quot;&quot;</div><div class="line">  input_tensor = gather_indexes(input_tensor, positions)</div><div class="line"></div><div class="line">  with tf.variable_scope(&quot;cls/predictions&quot;):</div><div class="line">    # We apply one more non-linear transformation before the output layer.</div><div class="line">    # This matrix is not used after pre-training.</div><div class="line">    with tf.variable_scope(&quot;transform&quot;):</div><div class="line">      input_tensor = tf.layers.dense(</div><div class="line">          input_tensor,</div><div class="line">          units=bert_config.hidden_size,</div><div class="line">          activation=modeling.get_activation(bert_config.hidden_act),</div><div class="line">          kernel_initializer=modeling.create_initializer(</div><div class="line">              bert_config.initializer_range))</div><div class="line">      input_tensor = modeling.layer_norm(input_tensor)</div><div class="line"></div><div class="line">    # The output weights are the same as the input embeddings, but there is</div><div class="line">    # an output-only bias for each token.</div><div class="line">    output_bias = tf.get_variable(</div><div class="line">        &quot;output_bias&quot;,</div><div class="line">        shape=[bert_config.vocab_size],</div><div class="line">        initializer=tf.zeros_initializer())</div><div class="line">    logits = tf.matmul(input_tensor, output_weights, transpose_b=True)</div><div class="line">    logits = tf.nn.bias_add(logits, output_bias)</div><div class="line">    log_probs = tf.nn.log_softmax(logits, axis=-1)</div><div class="line"></div><div class="line">    label_ids = tf.reshape(label_ids, [-1])</div><div class="line">    label_weights = tf.reshape(label_weights, [-1])</div><div class="line"></div><div class="line">    one_hot_labels = tf.one_hot(</div><div class="line">        label_ids, depth=bert_config.vocab_size, dtype=tf.float32)</div><div class="line"></div><div class="line">    # The `positions` tensor might be zero-padded (if the sequence is too</div><div class="line">    # short to have the maximum number of predictions). The `label_weights`</div><div class="line">    # tensor has a value of 1.0 for every real prediction and 0.0 for the</div><div class="line">    # padding predictions.</div><div class="line">    per_example_loss = -tf.reduce_sum(log_probs * one_hot_labels, axis=[-1])</div><div class="line">    numerator = tf.reduce_sum(label_weights * per_example_loss)</div><div class="line">    denominator = tf.reduce_sum(label_weights) + 1e-5</div><div class="line">    loss = numerator / denominator</div><div class="line"></div><div class="line">  return (loss, per_example_loss, log_probs)</div></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">#改造后代码</div><div class="line">def get_masked_lm_output(bert_config, input_tensor, output_weights, positions,</div><div class="line">                         label_ids):</div><div class="line">  &quot;&quot;&quot;Get loss and log probs for the masked LM.&quot;&quot;&quot;</div><div class="line">  input_tensor = gather_indexes(input_tensor, positions)</div><div class="line"></div><div class="line">  with tf.variable_scope(&quot;cls/predictions&quot;):</div><div class="line">    # We apply one more non-linear transformation before the output layer.</div><div class="line">    # This matrix is not used after pre-training.</div><div class="line">    with tf.variable_scope(&quot;transform&quot;):</div><div class="line">      input_tensor = tf.layers.dense(</div><div class="line">          input_tensor,</div><div class="line">          units=bert_config.hidden_size,</div><div class="line">          activation=modeling.get_activation(bert_config.hidden_act),</div><div class="line">          kernel_initializer=modeling.create_initializer(</div><div class="line">              bert_config.initializer_range))</div><div class="line">      input_tensor = modeling.layer_norm(input_tensor)</div><div class="line"></div><div class="line">    # The output weights are the same as the input embeddings, but there is</div><div class="line">    # an output-only bias for each token.</div><div class="line">    output_bias = tf.get_variable(</div><div class="line">        &quot;output_bias&quot;,</div><div class="line">        shape=[bert_config.vocab_size],</div><div class="line">        initializer=tf.zeros_initializer())</div><div class="line">    logits = tf.matmul(input_tensor, output_weights, transpose_b=True)</div><div class="line">    logits = tf.nn.bias_add(logits, output_bias)</div><div class="line">    log_probs = tf.nn.log_softmax(logits, axis=-1)</div><div class="line"></div><div class="line">    label_ids = tf.reshape(label_ids, [-1])</div><div class="line"></div><div class="line">    one_hot_labels = tf.one_hot(</div><div class="line">        label_ids, depth=bert_config.vocab_size, dtype=tf.float32)</div><div class="line">    per_example_loss = -tf.reduce_sum(log_probs * one_hot_labels, axis=[-1])</div><div class="line">    loss = tf.reshape(per_example_loss, [-1, tf.shape(positions)[1]])</div><div class="line">    # TODO: dynamic gather from per_example_loss</div><div class="line">  return loss</div></pre></td></tr></table></figure>
-<p>Python中可直接构造输入，然后利用Tensorflow高级API来获得结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">result = estimator.predict(input_fn=predict_input_fn)</div></pre></td></tr></table></figure></p>
-<p>estimator.predict的预测结果在model_fn_builder中指定：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">if mode == tf.estimator.ModeKeys.PREDICT:</div><div class="line">    output_spec = tf.contrib.tpu.TPUEstimatorSpec(</div><div class="line">    mode=mode, predictions=masked_lm_example_loss, scaffold_fn=scaffold_fn)  # 输出mask_word的score</div></pre></td></tr></table></figure></p>
-<p>BERT作为语言模型时，一个不便之处是需要逐个计算每个token的prob，然后计算句子的ppl。</p>
-<blockquote>
-<p>ppl: 自然语言处理领域（NLP）中，衡量语言模型好坏的指标。根据每个词来估计一句话出现的概率，并用句子长度作normalize，ppl值越小，表示该句子越合理。</p>
-</blockquote>
-<p>结果解析，ppl计算代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">def parse_result(result, all_tokens, output_file=None):</div><div class="line">  with tf.gfile.GFile(output_file, &quot;w&quot;) as writer:</div><div class="line">    tf.logging.info(&quot;***** Predict results *****&quot;)</div><div class="line">    i = 0</div><div class="line">    sentences = []</div><div class="line">    for word_loss in result:</div><div class="line">      # start of a sentence</div><div class="line">      if all_tokens[i] == &quot;[CLS]&quot;:</div><div class="line">        sentence = &#123;&#125;</div><div class="line">        tokens = []</div><div class="line">        sentence_loss = 0.0</div><div class="line">        word_count_per_sent = 0</div><div class="line">        i += 1</div><div class="line"></div><div class="line">      # add token</div><div class="line">      tokens.append(&#123;&quot;token&quot;: tokenization.printable_text(all_tokens[i]),</div><div class="line">                     &quot;prob&quot;: float(np.exp(-word_loss[0])) &#125;)</div><div class="line">      sentence_loss += word_loss[0]</div><div class="line">      word_count_per_sent += 1</div><div class="line">      i += 1</div><div class="line"></div><div class="line">      token_count_per_word = 0</div><div class="line">      while is_subtoken(all_tokens[i]):</div><div class="line">        token_count_per_word += 1</div><div class="line">        tokens.append(&#123;&quot;token&quot;: tokenization.printable_text(all_tokens[i]),</div><div class="line">                       &quot;prob&quot;: float(np.exp(-word_loss[token_count_per_word]))&#125;)</div><div class="line">        sentence_loss += word_loss[token_count_per_word]</div><div class="line">        i += 1</div><div class="line"></div><div class="line">      # end of a sentence</div><div class="line">      if all_tokens[i] == &quot;[SEP]&quot;:</div><div class="line">        sentence[&quot;tokens&quot;] = tokens</div><div class="line">        sentence[&quot;ppl&quot;] = float(np.exp(sentence_loss / word_count_per_sent))</div><div class="line">        sentences.append(sentence)</div><div class="line">        i += 1</div><div class="line"></div><div class="line">    if output_file is not None:</div><div class="line">      tf.logging.info(&quot;Saving results to %s&quot; % output_file)</div><div class="line">      writer.write(json.dumps(sentences, indent=2, ensure_ascii=False))</div></pre></td></tr></table></figure></p>
-<h2 id="模型训练、导出和部署"><a href="#模型训练、导出和部署" class="headerlink" title="模型训练、导出和部署"></a>模型训练、导出和部署</h2><p>由于预训练模型中masked lm loss节点并未命名，所以添加name后需要启动很短暂的预训练，同时将模型导出。get_masked_lm_output函数参考bert-as-language-model中的代码进行相应改造。Tensorflow版本升级后，使用estimator接受输入，原来我们最爱的placeholder找不到了，而在部署模型时，仍需要使用placeholder接受输入，可在run_pretraining.py导出模型时添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">if FLAGS.do_export:</div><div class="line">    estimator._export_to_tpu = False</div><div class="line">    name_to_features = [(&quot;input_ids&quot;, tf.int32), (&quot;input_mask&quot;, tf.int32),</div><div class="line">                            (&quot;segment_ids&quot;, tf.int32), (&quot;masked_lm_positions&quot;, tf.int32), (&quot;masked_lm_ids&quot;, tf.int32),</div><div class="line">                            (&quot;masked_lm_weights&quot;, tf.float32), (&quot;next_sentence_labels&quot;, tf.int32)]</div><div class="line">    feature_placeholders = &#123;name: tf.placeholder(dtype, [1, FLAGS.max_seq_length],</div><div class="line">                                                     name=&apos;bert/&apos; + name + &quot;_placeholder&quot;) for name, dtype in</div><div class="line">                                name_to_features&#125;</div><div class="line">    serving_input_fn = tf.estimator.export.build_raw_serving_input_receiver_fn(feature_placeholders)</div><div class="line">    path = estimator.export_savedmodel(&quot;./export/&quot;, serving_input_fn)</div></pre></td></tr></table></figure></p>
-<p>本文部署模型使用golang语言，基于tfgo实现模型的加载和tensorflow对应节点的计算。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">//模型加载</div><div class="line">model := tg.LoadModel(*modleDir, []string&#123;&quot;serve&quot;&#125;, nil)</div></pre></td></tr></table></figure></p>
-<p>参考run_pretraining.py导出模型时的代码，golang程序中需要构造7个输入，而masked_lm_weights和next_sentence_labels对于语言模型没有影响，可按自己喜爱构造。以下面的例子说明一下输入的构造标准：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">//输入句子</div><div class="line">何异浮云过太空</div><div class="line">//处理后的句子</div><div class="line">[[CLS] 何 异 浮 云 过 太 空 [SEP]]</div><div class="line">------------------------token 1-----------------------------</div><div class="line">//input_ids</div><div class="line">[101 103 2460 3859 756 6814 1922 4958 102 0 0 0 ...]</div><div class="line">//input_mask</div><div class="line">[1 1 1 1 1 1 1 1 1 0 0 0 ...]</div><div class="line">//segment_ids</div><div class="line">[0 0 0 ...]</div><div class="line">//masked_lm_positions</div><div class="line">[1 0 0 0 ...]</div><div class="line">//masked_lm_ids</div><div class="line">[862 0 0 0 0 0 ...]</div><div class="line">------------------------token 2----------------------------</div><div class="line">[101 862 103 3859 756 6814 1922 4958 102 0 0 0 ...]</div><div class="line">[1 1 1 1 1 1 1 1 1 0 0 0 ...]</div><div class="line">[0 0 0 ...]</div><div class="line">[2 0 0 0 ...]</div><div class="line">[2460 0 0 0 ...]</div></pre></td></tr></table></figure></p>
-<p>Golang程序计算句子ppl：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">for i := 1; i &lt; ids_len - 1; i++&#123;</div><div class="line">	...</div><div class="line">	result := model.Exec([]tf.Output&#123;</div><div class="line">				model.Op(&quot;cls/predictions/lm_loss&quot;, 0),</div><div class="line">			&#125;, map[tf.Output]*tf.Tensor&#123;</div><div class="line">				model.Op(&quot;bert/input_ids_placeholder&quot;, 0):           inputX1,</div><div class="line">				model.Op(&quot;bert/input_mask_placeholder&quot;, 0):           inputX2,</div><div class="line">				model.Op(&quot;bert/segment_ids_placeholder&quot;, 0):           inputX3,</div><div class="line">				model.Op(&quot;bert/masked_lm_positions_placeholder&quot;, 0):           inputX4,</div><div class="line">				model.Op(&quot;bert/masked_lm_ids_placeholder&quot;, 0):           inputX5,</div><div class="line">				model.Op(&quot;bert/masked_lm_weights_placeholder&quot;, 0):           inputX6,</div><div class="line">				model.Op(&quot;bert/next_sentence_labels_placeholder&quot;, 0):           inputX7,</div><div class="line">			&#125;)</div><div class="line">	</div><div class="line">	val := result[0].Value().([][]float32)[0][0]</div><div class="line">	sentence_loss += float64(val)</div><div class="line">	...</div><div class="line">&#125;</div><div class="line"></div><div class="line">ppl := math.Pow(math.E, sentence_loss / float64(ids_len))</div></pre></td></tr></table></figure></p>
-<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><blockquote>
-<p><a href="https://zhuanlan.zhihu.com/p/49271699" target="_blank" rel="external">从Word Embedding到Bert模型</a><br><a href="https://zhuanlan.zhihu.com/p/56865533" target="_blank" rel="external">效果惊人的GPT 2.0模型</a><br><a href="http://octopuscoder.github.io/2019/03/11/通用语言模型/" target="_blank" rel="external">通用语言模型</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/11/通用语言模型/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/03/11/通用语言模型/" itemprop="url">通用语言模型</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-11T16:50:20+08:00">
-                2019-03-11
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>翻译自：<a href="https://lilianweng.github.io/lil-log/2019/01/31/generalized-language-models.html" target="_blank" rel="external">https://lilianweng.github.io/lil-log/2019/01/31/generalized-language-models.html</a></p>
-</blockquote>
-<p>[待续]</p>
-
-          
+<p><a href="https://github.com/google-research/bert" target="_blank" rel="external">https://github.com/google-research/bert</a><br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/03/25/基于BERT的语言模型/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1051,8 +1152,7 @@ W S\left(V_{i}\right)=(1-d)+d * \sum_{V_{j} \in I n\left(V_{i}\right)} \frac{w_{
 
       
         
-          
-            <script type="text/x-mathjax-config">
+          <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 });
@@ -1065,29 +1165,14 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <blockquote>
 <p><a href="http://octopuscoder.github.io/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/" target="_blank" rel="external">http://octopuscoder.github.io/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/</a></p>
 </blockquote>
-<p>copyNet在解码阶段会出现多次重复的情况，Pointer-Generator Networks使用Coverage mechanism来解决这个问题，下面具体介绍模型实现细节。</p>
-<h2 id="Sequence-to-sequence-attentional-model"><a href="#Sequence-to-sequence-attentional-model" class="headerlink" title="Sequence-to-sequence attentional model"></a>Sequence-to-sequence attentional model</h2><p>文中首先使用Seq2Seq模型，并结合Attention实现了baseline model，如下图所示：<br><img src="/images/Baselinesequence2sequence.png" alt="rnn-encoder"><br>文中提到其attention分布计算方式与Bahdanau[1]在机器翻译中的公式类似，这里补充说明一下，attention机制在NLP领域首次应用正是Bahdanau等人的工作。本文公式如下：<br><img src="/images/attentiondistribution.png" alt="rnn-encoder"><br>其中<span>$h_t$</span><!-- Has MathJax -->表示encoder hidden states，<span>$s_t$</span><!-- Has MathJax -->表示decoder state。v，<span>$W_h$</span><!-- Has MathJax -->，<span>$W_s$</span><!-- Has MathJax -->和<span>$b_{attn}$</span><!-- Has MathJax -->均为可学习的参数。<br>但本文并未说明<span>$s_t$</span><!-- Has MathJax -->的计算方式，如果按照Bahdanau一文中的计算方式，貌似有些问题。不妨回顾一下：<br><img src="/images/Bahdanau.png" alt="rnn-encoder"><br>这里暂时偷个懒，公式中的符号就不一一介绍了，可以对比本文的表示方法，基本类似。可以看到，Bahdanau一文中先计算<span>$c_{i}$</span><!-- Has MathJax -->，然后利用<span>$c_{i}$</span><!-- Has MathJax -->，<span>$y_{i-1}$</span><!-- Has MathJax -->和<span>$s_{i-1}$</span><!-- Has MathJax -->来计算<span>$s_{i}$</span><!-- Has MathJax -->。而本文在计算context vectors时已经使用了<span>$s_{t}$</span><!-- Has MathJax -->。而如果本文<span>$s_{t}$</span><!-- Has MathJax -->计算方式与Bahdanau一文中一致的话，不免有一些矛盾。而公式1中如果是<span>$s_{t-1}$</span><!-- Has MathJax -->的话就一致了，此处存疑。<br>Attention distribution表示的是源句子单词的权值分布，用于在解码时有侧重的产生下一个单词。下一步，利用attention distribution产生context vector :<br><img src="/images/contextvector.png" alt="rnn-encoder"><br>vocab概率分布<span>$P_{vocab}$</span><!-- Has MathJax -->由context vector和decoder state <span>$s_t$</span><!-- Has MathJax -->拼接后产生：<br><img src="/images/Pvocab.png" alt="rnn-encoder"><br>其中V, V’, b和b’是可学习的参数。<span>$P_{vocab}$</span><!-- Has MathJax -->是词表中所有词的概率分布，而预测词语w的概率为：<br><span>$$\begin{gather*}
-p\left(w\right) =P_{vocab}\left(w\right)
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<p>训练过程中，每一个时间t的loss由目标word <span>$W^{\ast }_{t}$</span><!-- Has MathJax -->的negative log likelihood计算得出：<br><span>$$\begin{gather*}
-loss_{t}=-\log P\left( w^{*}_{t}\right)
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<p>所有输入序列的总loss为：<br><span>$$\begin{gather*}
-loss=\dfrac {1}{T}\Sigma ^{T}_{t=0}loss_{t}
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<h2 id="Pointer-generator-network"><a href="#Pointer-generator-network" class="headerlink" title="Pointer-generator network"></a>Pointer-generator network</h2><p>Pointer-generator network可以看作baseline model与pointer network[2]的结合。<br><img src="/images/pointergenerator.png" alt="rnn-encoder"><br>decoder阶段可以利用pointer从源文本copy，也可以从一个固定的词表中生成。模型在每个时间t计算生成概率<span>$p_{gen}$</span><!-- Has MathJax -->，公式如下：<br><img src="/images/Pgen.png" alt="rnn-encoder"><br>公式中各参数说明参考上文符号，其中<span>$x_{t}$</span><!-- Has MathJax -->表示decoder输入，<span>$b_{ptr}$</span><!-- Has MathJax -->表示可学习参数。在生成词语时，<span>$p_{gen}$</span><!-- Has MathJax -->作为soft switch选择是根据<span>$P_{vocab}$</span><!-- Has MathJax -->从词表中抽取，还是根据注意力分布<span>$a^t$</span><!-- Has MathJax -->从输入序列中抽取。两个词表构成extended vocabulary，生成单词时的联合概率计算公式为：<br><img src="/images/Pwunion.png" alt="rnn-encoder"><br>如果w是一个out-of-vocabulary (OOV)单词，则<span>$P_{vocab}(w)$</span><!-- Has MathJax -->=0；同理，如果w在输入文档中没有出现，那么<span>$\Sigma _{i:w_{i}=w}a^{t}_{i}$</span><!-- Has MathJax -->=0。Pointer-generator模型的主要优势就是可以产生OOV单词。</p>
-<h2 id="Coverage-mechanism"><a href="#Coverage-mechanism" class="headerlink" title="Coverage mechanism"></a>Coverage mechanism</h2><p>Sequence-to-sequence模型在生成句子或摘要时普遍存在重复的问题，在关于copy-net介绍中也提到了这一点。该模型利用coverage mechanism来解决重复的问题，保留一个coverage vector <span>$c^t$</span><!-- Has MathJax -->，由所有之前decoder时间步的注意力分布相加获得，计算公式如下：<br><img src="/images/coveragevector.png" alt="rnn-encoder"><br>直观看来，<span>$c^t$</span><!-- Has MathJax -->代表了源文档中各个词语截至目前由attention mechanism所决定的“受关注程度”。Coverage vector作为一个额外的信息输入attention mechanism，则公式（1）变为：<br><img src="/images/changingequation1.png" alt="rnn-encoder"><br><span>$w_c$</span><!-- Has MathJax -->是一个可学习参数，这使attention mechanism当前决策受到之前决策<span>$c^t$</span><!-- Has MathJax -->的影响，从而使attention mechanism不总是关注一个位置，避免产生重复的文本。<br>loss函数方面，该文定义了coverage loss来对重复关注同样的位置进行惩罚：<br><img src="/images/coverageloss.png" alt="rnn-encoder"><br>coverage loss是有界的，<span>$covloss_{t}\leq \sum _{i}a^{i}_{t}=1$</span><!-- Has MathJax -->。最终，coverage loss通过一个超参数$\lambda$来进行权衡，与原来的loss函数组合为新的loss函数：<br><img src="/images/compositeloss.png" alt="rnn-encoder"><br>直观上，可以这样理解。模型希望从loss角度对持续受到关注的位置进行惩罚，如果当前时刻某个位置受到的关注很多，不妨假设<span>$a^{t}_{i}&gt;c^{t}_{i}$</span><!-- Has MathJax -->，那么就要对其进行惩罚，惩罚程度为其累计收到的关注度，惩罚较大。而如果当前时刻某个位置受到的关注很少，不妨假设<span>$a^{t}_{i}&lt;c^{t}_{i}$</span><!-- Has MathJax -->，那么就对其进行较小的惩罚，取不妨假设<span>$a^{t}_{i}$</span><!-- Has MathJax -->。通过超参数$\lambda$来调和两方面的loss。</p>
-<h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><p>github地址：</p>
-<blockquote>
-<p><a href="https://github.com/abisee/pointer-generator" target="_blank" rel="external">https://github.com/abisee/pointer-generator</a></p>
-</blockquote>
-<p>由于Tensorflow升级，使部分代码需要更新，可以参考本人修改后的分支：</p>
-<blockquote>
-<p><a href="https://github.com/octopusCoder/pointer-generator" target="_blank" rel="external">https://github.com/octopusCoder/pointer-generator</a></p>
-</blockquote>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p>[1] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Ben- gio. 2015. Neural machine translation by jointly learning to align and translate. In International Con- ference on Learning Representations.<br>[2] Oriol Vinyals, Meire Fortunato, and Navdeep Jaitly. 2015. Pointer networks. In Neural Information Pro- cessing Systems.</p>
-
-          
+<p>copyNet在解码阶段会出现多次重复的情况，Pointer-Generator Networks使用Coverage mechanism来解决这个问题，下面具体介绍模型实现细节。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/02/20/论文简读-Get-To-The-Point-Summarization-with-Pointer-Generator-Networks/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1206,8 +1291,7 @@ loss=\dfrac {1}{T}\Sigma ^{T}_{t=0}loss_{t}
 
       
         
-          
-            <script type="text/x-mathjax-config">
+          <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 });
@@ -1223,23 +1307,14 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 </blockquote>
 <p>在对于歌曲名字的翻译上出现了错误，而在人工翻译中一般会将这些词语“照抄”，也就是本文主要说明的copy机制。</p>
 <h2 id="RNN-Encoder-Decoder"><a href="#RNN-Encoder-Decoder" class="headerlink" title="RNN Encoder-Decoder"></a>RNN Encoder-Decoder</h2><p>传统的RNN Encoder-Decoder模型编码过程为：<br><img src="/images/rnnencoder.png" alt="rnn-encoder"><br>解码过程为：<br><img src="/images/rnndecoder.png" alt="rnn-encoder"></p>
-<h2 id="CopyNet"><a href="#CopyNet" class="headerlink" title="CopyNet"></a>CopyNet</h2><p>模型整体结构图：<br><img src="/images/copymode.png" alt="rnn-encoder"><br>CopyNet与传统RNN模型在Decoder阶段主要有三点区别：</p>
-<ol>
-<li>预测。copynet根据generate-mode和copy-mode混合模型预测words。</li>
-<li>状态更新。copynet在更新t时刻的状态时，不仅使用t-1时刻预测word的embedding，还使用其附近的location-specific隐层状态。</li>
-<li>Reading M（M定义见模型结构图）。除了在M中使用attentive read机制外，copynet还使用了“selective read”机制，使模型具有content-based addressing和location-based addressing的混合能力。</li>
-</ol>
-<h3 id="Prediction-with-Copying-and-Generation"><a href="#Prediction-with-Copying-and-Generation" class="headerlink" title="Prediction with Copying and Generation"></a>Prediction with Copying and Generation</h3><p>给定decoder RNN在t时刻的状态，目标word预测概率由以下混合概率公式决定：<br><img src="/images/mixtureprobabilities.png" alt="rnn-encoder"><br>g表示generate-mode, c表示copy mode。<br>具体计算方法为：<br><img src="/images/probabilitytwomodes.png" alt="rnn-encoder"><br>Z表示两个mode共享的规范系数：<br><img src="/images/Z.png" alt="rnn-encoder"></p>
-<h4 id="Generate-Mode-Score"><a href="#Generate-Mode-Score" class="headerlink" title="Generate-Mode Score"></a>Generate-Mode Score</h4><p>与一般的RNN encoder-decoder 类似：<br><img src="/images/gmscore.png" alt="rnn-encoder"></p>
-<h4 id="Copy-Mode-Score"><a href="#Copy-Mode-Score" class="headerlink" title="Copy-Mode Score"></a>Copy-Mode Score</h4><p>第j个word得分计算公式为：<br><img src="/images/cmscore.png" alt="rnn-encoder"></p>
-<h3 id="State-Update"><a href="#State-Update" class="headerlink" title="State Update"></a>State Update</h3><p>Copynet利用解码器前一个状态$s_{t-1}$和公式2中的context vector $c_t$来更新当前解码器状态<span>$s_t$</span><!-- Has MathJax -->。针对copying机制，<span>$y_{t-1}$</span><!-- Has MathJax -->-&gt;<span>$s_t$</span><!-- Has MathJax -->做了一些修改。<span>$y_t$</span><!-- Has MathJax -->表示为<span>$\left[ e\left( y_{t-1}\right) ;&zeta;\left( y_{t-1}\right) \right] ^{T}$</span><!-- Has MathJax -->。其中<span>$e(y_t-1)$</span><!-- Has MathJax -->表示<span>$y_{t-1}$</span><!-- Has MathJax -->对应的词向量。<span>$&zeta;\left( y_{t-1}\right)$</span><!-- Has MathJax -->表示M中隐层状态的加权和，计算公式为：<br><img src="/images/weightedsum.png" alt="rnn-encoder"><br>公式中各个参数具体说明见论文。直观来看这个公式，当<span>$x_\tau=y_{t-1}$</span><!-- Has MathJax -->时，例如整体模型结构图中输入序列的“Tony”与解码器输出的“Tony”相同时，copy机制会影响<span>$y_{t-1}$</span><!-- Has MathJax -->，进而影响$s_t$状态的更新。<br>这一块没有理解很透彻，从encoder-decoder角度看，模型这样设计的合理性是什么？猜测是因为“拷贝的惯性”，当前词需要从编码器输入copy时，那么下一个词也很有可能需要拷贝？当然，论文中将解码器概率作为一个四分类问题，通过数据集训练来决定一个输入词的分类概率，这样看倒是能理解一些。解码器分类示意图：<br><img src="/images/4-class.png" alt="rnn-encoder"></p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>作者在Text Summarization和Single-turn Dialogue两个任务上进行了试验，取得了较好的效果。文本总结示例：<br><img src="/images/tmexample.png" alt="rnn-encoder"><br>在实际使用copynet模型时遇到了一些问题，通过对相似句子对的训练，期望可以改善Seq2Seq模型在翻译中对实体、成语等处理不佳的情况，实验结果表明在解码时确实能有效处理这些需要copy的词语，但是会出现多次重复的情况，例如：</p>
-<blockquote>
-<p>正确句子：嫦娥四号着陆器接受光照自主唤醒。<br>生成句子：嫦娥四号嫦娥四号嫦娥四号着陆器接受光照自主唤醒。</p>
-</blockquote>
-<p>猜测可能是由于在$s_{t-1}$-&gt;$s_t$更新时，通过selective reader引入了<span>$h_\tau$</span><!-- Has MathJax -->，而相邻单词<span>$h_{\tau+1}$</span><!-- Has MathJax -->与<span>$h_\tau$</span><!-- Has MathJax -->数值也比较接近，导致<span>$s_t$</span><!-- Has MathJax -->与<span>$s_{t-1}$</span><!-- Has MathJax -->也比较接近，使解码器输出的单词相同。具体原因有待进一步探究。</p>
-
-          
+<h2 id="CopyNet"><a href="#CopyNet" class="headerlink" title="CopyNet"></a>CopyNet</h2><p>模型整体结构图：<br><img src="/images/copymode.png" alt="rnn-encoder"><br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1358,8 +1433,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
       
         
-          
-            <script type="text/x-mathjax-config">
+          <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 });
@@ -1376,49 +1450,14 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <blockquote>
 <p>“Where was Obama born?”</p>
 </blockquote>
-<h3 id="语义解析树"><a href="#语义解析树" class="headerlink" title="语义解析树"></a>语义解析树</h3><p>首先利用语义解析工具对问题进行解析，如下图所示：<br><img src="/images/smtr.png" alt="语义解析"><br>图中红色部分为逻辑形式，绿色部分为原始问题，蓝色部分表示词汇映射和构建对应的操作，语义解析树根节点即为解析结果。<br>模型的训练主要是针对每一种语义解析结果的分类概率，对于训练数据问题-答案对，通过最大化log-likelihood损失函数，利用随机梯度下降对参数进行更新。</p>
-<h3 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h3><p>KBQA常用的数据集是WebQuestion，包含5810组问题-答案对，该文章的方法在WQ数据集上达到了32.9%的正确率。<br>该文章开放了语义解析器<a href="https://nlp.stanford.edu/software/sempre/" target="_blank" rel="external">Sempre</a>。</p>
-<h2 id="信息抽取"><a href="#信息抽取" class="headerlink" title="信息抽取"></a>信息抽取</h2><p>信息抽取的方法首先提取问题中的实体，然后在知识库中查找该实体以及以该实体节点为中心的知识库子图，候选答案则从子图中的节点或边获得。而具体答案的选择则需使用规则或模版进行抽取，同时利用问题和候选答案的特征，建立分类模型，通过候选答案的特征进行筛选，最终得到答案。<br>本部分以X Yao[2]发表于2014年ACL会议的文章为例，简述基于信息抽取方法的知识图谱问答过程。仍以一个具体问题为线索，例如：</p>
-<blockquote>
-<p>“what is the name of Justin Bieber brother?”</p>
-</blockquote>
-<h3 id="获得语法依存树"><a href="#获得语法依存树" class="headerlink" title="获得语法依存树"></a>获得语法依存树</h3><p>首先获得句子的语法依存树（Dependency Tree），如下图所示：<br><img src="/images/smdtr.jpg" alt="语义解析"><br>通过依存关系推理得到答案的类型，本例中答案是一个人名。在确定答案类型后，便可以在候选答案中进行筛选和选择。<br>本文首先提取问题中的问题词（qword），例如Who, When和Where这样的疑问词，对于上文给出的具体问题，问题词为”What”。然后确定问题焦点（qfocus），焦点词可以指示答案类型，例如name, time和price等。接着抽取问句的主题词（qtopic），主题词用于在知识库中进行查找，本例中的主题词为“Justin Bieber”。最后是提取问句中的中心动词（qverb），例如当中心动词为“eat”时，可以判断答案可能是某种食物。</p>
-<h3 id="依存树转化为问题图"><a href="#依存树转化为问题图" class="headerlink" title="依存树转化为问题图"></a>依存树转化为问题图</h3><p>通过问题词qword、问题焦点qfocus、问题主题词qtopic和问题中心动词qverb四个特征，可以将问题依存图转化为问题图：<br><img src="/images/smtoqt.png" alt="语义解析"><br>依存图包含了问题全部的信息，通过对问题进行信息抽取，转化为问题图，提取出对于查找答案的主要特征，删去不重要的信息。<br>获得问题图后，下面便是基于知识库进行查找和选择答案，选择答案可以看作一个二分类问题，即判断候选答案是否为正确答案。通过问题-答案数据，训练一个分类器模型，常用的有SVM，MLP和LR等，本文采用的是带L1正则化的逻辑回归。</p>
-<h3 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h3><p>分类模型确定后，下面就是选择特征。本文选择了三类特征，分别是问题特征、候选答案特征和问题-候选答案关联特征。问题特征基于问题图抽取，候选答案特征则基于知识图谱信息抽取，包括节点的关系和属性，如下图所示：<br><img src="/images/dagrin.png" alt="语义解析"><br>例如对于“Justin Bieber”这个qtopic节点，可以提取出gender=male，type=person等信息。知识图谱中的这些结构化的特征信息，对于选择正确答案提供了很大帮助。<br>问题-候选答案联合特征通过对问题中的特征和答案的特征进行组合获得，并且关联度较高的特征具有更高的权重。例如当问题的焦点词qfocus=price时，node type=number会比node type=person的关联特征权重高。</p>
-<h3 id="实验结果-1"><a href="#实验结果-1" class="headerlink" title="实验结果"></a>实验结果</h3><p>相比Jonathan Berant[1]的方法，本文在WebQuestion数据集上的F1-score达到了42.0%，有了较大提升。</p>
-<h2 id="向量建模"><a href="#向量建模" class="headerlink" title="向量建模"></a>向量建模</h2><h3 id="one-hot-amp-multi-hot表示方法"><a href="#one-hot-amp-multi-hot表示方法" class="headerlink" title="one-hot&amp;multi-hot表示方法"></a>one-hot&amp;multi-hot表示方法</h3><p>信息抽取方法中的特征，解释性较高，但涉及较多的语言学知识和人工构造的规则。向量建模的方法则利用分布式表达来构造问题和答案的特征，而深度学习技术也主要在这里进行提升。本部分首先以Antoine Bordes[3]等人在EMNLP 2014中发表的文章为例，简述如何利用向量建模的方法实现KBQA。<br>向量建模的方法与信息抽取思想类似，首先抽取问句中的主题词，根据主题词在知识库中搜索候选答案，不同于知识抽取中解释性较高的词法、属性等特征，向量建模方法将问题和候选答案映射到一个低维空间，得到其分布式表达，然后通过对该分布式表达进行训练，最大化问题向量与其对应正确答案的得分。模型训练完毕后，利用问题向量与候选答案向量的得分选择答案，得分最高的即为正确答案。</p>
-<h3 id="分布式表达"><a href="#分布式表达" class="headerlink" title="分布式表达"></a>分布式表达</h3><p>问题：输入空间的维度N = 字典大小+知识库实体数目 + 知识库实体关系数目。问题向量将对应维度代表的单词设置为在问题中出现的次数，其余为0.<br>答案：答案的向量化有三种方法。</p>
-<ol>
-<li>类似问题的方式，由于知识库中的实体唯一，因此答案可以表达为one-hot形式。</li>
-<li>加入知识库中与主题词相关的实体和实体关系信息。通过问题中的主题词可以定位到知识图谱中的某个节点，将该节点到答案节点路径上的边（实体关系）和点（实体）都以multi-hot形式作为答案的输入向量。</li>
-<li>加入知识库中候选答案节点的属性和关系信息。通过主题词定位节点后，将候选答案对应的知识库子图（1跳或两跳范围）信息也加入答案向量。</li>
-</ol>
-<h3 id="向量得分"><a href="#向量得分" class="headerlink" title="向量得分"></a>向量得分</h3><p>问题向量与答案向量点乘。<br>整体流程如下图所示：<br><img src="/images/infoextga.png" alt="语义解析"></p>
-<h3 id="训练分布式表达"><a href="#训练分布式表达" class="headerlink" title="训练分布式表达"></a>训练分布式表达</h3><p>构造正负样本，利用margin-based ranking损失函数，即hinge loss，进行训练。向量建模方法的一个缺点是在获得文本的分布式表达时需要较大的训练数据，因此作者除了WebQuestion外，还利用了Freebase和Wiki数据。</p>
-<h3 id="实验结果-2"><a href="#实验结果-2" class="headerlink" title="实验结果"></a>实验结果</h3><p>在WebQuestion数据集上F1-Score为39.2。</p>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>向量建模的方法，可解释性不如语义解析和信息抽取，语义解析将问题转化为一种逻辑表达形式，信息抽取中利用的特征也是可见的，但不需要人工去定义许多特征，也不需要词汇映射表、依存解析等外部资源，实现过程相对简洁。</p>
-<h2 id="深度学习"><a href="#深度学习" class="headerlink" title="深度学习"></a>深度学习</h2><p>近些年来流行的深度学习技术在KBQA领域也得到了广泛应用，例如CNN, RNN, Attention和Memory Network。本部分以2015年 ACL会议的Outstanding Paper为例，对深度学习技术在KBQA的应用进行简单介绍。Wen-tau Yih[4]等主要利用深度学习在语义解析方面进行了改进，针对传统方法的不足，将语义解析过程转化成查询图分阶段生成的过程，利用CNN获得自然语言到知识库的映射。截止2016年，该方法在WebQuestion取得了最好的效果。</p>
-<h3 id="传统语义解析方法的缺点"><a href="#传统语义解析方法的缺点" class="headerlink" title="传统语义解析方法的缺点"></a>传统语义解析方法的缺点</h3><p>传统方法一般时先将自然语言转化为逻辑形式，然后将逻辑形式转化为查询语句，最终在知识库中查找得到答案。生成逻辑形式的过程主要基于问句中的信息和语法解析器，几乎没有使用知识库中的信息。而信息抽取和向量建模不仅提取了问题特征，而且利用主题词在知识库中确定了候选答案的范围，并将候选答案在知识库中的信息也一并作为特征。传统语义解析方法对知识库信息利用不够，仅仅只关注问题这一方面。此外，语义解析中的词汇映射也较为困难，仅仅通过简单的统计方式，不能有效的将自然语言中的谓语关系映射到知识库中的实体关系。由此可见，如何有效利用知识库信息和利用深度学习通过分布式表达代替基于统计的词汇映射，是两个主要的改进方向。</p>
-<h3 id="查询图"><a href="#查询图" class="headerlink" title="查询图"></a>查询图</h3><p>仍以一个具体问题为例：</p>
-<blockquote>
-<p>Who first voiced Meg on Family Guy?</p>
-</blockquote>
-<p>为更好的利用知识库信息，利用查询图代替语法解析树对应的逻辑形式，如下图所示：<br><img src="/images/sega.png" alt="语义解析"><br>查询图包含四个部分：知识库实体（圆角矩形）、中间变量（白底圆圈）、聚合函数（菱形）和lambda变量，即答案（灰色圆圈）。根据查询图可以转化为对应的lambda表达式，通过lambda表达式在知识库中查询得到答案。</p>
-<h3 id="查询图阶段生成"><a href="#查询图阶段生成" class="headerlink" title="查询图阶段生成"></a>查询图阶段生成</h3><p>查询图中问题的主题词到答案的这条路径（上图中Family Guy-&gt;y-&gt;x），包含了所有中间变量，可以作为问题到答案的核心推导过程，称作核心推导链。对于核心推导链里的中间变量，可以对其增加一些约束（与其他实体的关系，如y-&gt;character(Meg Griifin)）和聚合函数（如y-&gt;from(argmin)）。<br><strong>查询图的生成可以分为以下步骤：确定问题主题词、确定核心推导链、增加约束和聚合</strong>，这个过程可以用下面的有限状态自动机表示：<br><img src="/images/rsm.png" alt="语义解析"><br>状态集合S={$\phi$,$S_e$,$S_p$,$S_c$}分别表示空集、仅含主题词节点、含核心推导链和含约束节点。动作集合A={$A_e$,$A_p$,$A_a$,$A_c$}分别表示选择主题词节点、选择核心推导链、加入聚合函数和加入约束。查询图的生成实际是一个搜索过程，但如何不加以限制，将达到指数级的复杂度，因此当处于某个状态s时，可以用奖励函数对其进行评估，奖励函数得分越高表示这个状态对应的查询图与正确的语义解析表达越接近。奖励函数可以用一个对数线性（log-linear）模型进行学习，在搜索时利用best-first策略结合优先队列进行启发式搜索。每次从队列中取出得分最高的状态分别执行动作集中的各个动作，生成新的状态并入队，始终记录得分最高的状态，最终得分最高的状态便是最后的查询图。下面仍以“Who first voiced Meg on Family Guy?”这个问题为例，简述各个阶段。</p>
-<h4 id="主题词链接"><a href="#主题词链接" class="headerlink" title="主题词链接"></a>主题词链接</h4><p>查询图生成的第一个动作是确定问题中的主题词，作者称为主题词链接。文中使用S-MART作为实体链接系统，该系统针对带噪音的短文本设计，用于提取问句中的主题词，并为相应的“实体-自然语言短语”链接给出一个打分，作者保留得分最高的10个实体作为候选，如下图所示：<br><img src="/images/tpword.png" alt="语义解析"></p>
-<h4 id="核心推导链"><a href="#核心推导链" class="headerlink" title="核心推导链"></a>核心推导链</h4><p>确定主题词后，在知识库中查找对应的实体节点，将该实体节点周围长度为1的路径和长度为2并且包含CVT节点（Compound Value Types，freebase中用于表示复杂数据而引入的概念）的路径（如下图$s_3$，$s_4$）作为核心推导链候选：<br><img src="/images/mainchain.png" alt="语义解析"><br>核心推导链其实是将自然语言问题映射为一个谓语序列（如cast-actor），可以利用CNN对该映射进行打分。将自然语言和谓语序列作为输入分别经过两个不同的CNN，得到对应的300维向量表示，利用相似度（如余弦距离）计算自然语言和谓语序列的语义相似度得分。值得注意的是，CNN的输入是字母三元组，作者把每个单词拆分为若干个字母三元组。</p>
-<h4 id="增加约束和聚合函数"><a href="#增加约束和聚合函数" class="headerlink" title="增加约束和聚合函数"></a>增加约束和聚合函数</h4><p>通过增加约束和聚合函数对查询图进行扩展，同时缩小答案的范围。作者基于自定义的规则来增加约束和聚合函数，例如当实体链接检测到句子中其他实体，则增加一个约束；如果句子中出现了first等时序敏感词，则增加聚合节点。大致过程如下图所示：<br><img src="/images/rsmpro.png" alt="语义解析"></p>
-<h4 id="奖励函数"><a href="#奖励函数" class="headerlink" title="奖励函数"></a>奖励函数</h4><p>上文已提到，奖励函数利用对数线性模型，仍然需要手工定义特征，用于模型训练。特征主要从三个方面选取：主题词链接、核心推导链和增加约束聚合。由于手工定义的特征种类较多，规则比较复杂，具体可参考论文[4]。问句“Who first voiced Meg on Family Guy?” 对应的查询图和各方面特征得分如下图所示：<br><img src="/images/sqmodelscore.png" alt="语义解析"></p>
-<h4 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h4><p>在信息抽取方法中，模型是根据特征判断答案是否正确进行训练的，是一个二分类过程。本文中根据查询图得到的实体和真实答案的F1-score进行排序，利用lambda-rank算法对一个单层神经网络进行训练。lamdba-rank算法是对RankNet算法的改进，用于排序优化算法。这种方法相对于二分类的精确匹配对答案的要求相对“宽松”，虽然有时查询图得到的答案与正确答案不完全相同，但至少比错误的查询图要好。</p>
-<h4 id="实验结果-3"><a href="#实验结果-3" class="headerlink" title="实验结果"></a>实验结果</h4><p>截止2016年，本文在WebQuestion数据集取得了最好的效果，达到了52.5的F1-score。</p>
-<h2 id="模型对比"><a href="#模型对比" class="headerlink" title="模型对比"></a>模型对比</h2><p>2014年以前主要都是基于语义解析、信息抽取等传统方法。自2015年开始，出现了基于深度学习技术的端到端系统，相比传统方法整体有了一些提升。但截至2016年，最好的方法是利用深度学习技术对传统的语义解析过程进行提升实现的。综合来看，单纯端到端的系统确实减少了大量人工构建特征所耗费的工作量，但传统方法仍然有许多可以借鉴的点，而且由于KBQA的答案信息主要来自知识库，而知识库中的信息相对结构化，这些结构化信息对于寻找答案有着很强的指导，因此不论是传统方法也好，还是基于深度学习的端到端系统，如何充分利用知识库中的信息，并且和问题建立有效联系，都是KBQA中最重要的一点。下图为各模型在WebQuestion数据集上的测试结果：<br><img src="/images/WQEVARES.png" alt="语义解析"></p>
-<h2 id="公开数据集"><a href="#公开数据集" class="headerlink" title="公开数据集"></a>公开数据集</h2><p><img src="/images/kbqadata.png" alt="语义解析"></p>
-<blockquote>
-<p>参考资料：<br><a href="https://zhuanlan.zhihu.com/p/25759682" target="_blank" rel="external">揭开知识库问答KB-QA的面纱知乎专栏</a><br>刘康-基于深度学习的知识库问答研究进展</p>
-</blockquote>
-<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p>[1] Berant J, Chou A, Frostig R, et al. Semantic parsing on freebase from question-answer pairs[J]. Proceedings of Emnlp, 2014.<br>[2] Yao X, Durme B V. Information Extraction over Structured Data: Question Answering with Freebase[C]// Meeting of the Association for Computational Linguistics. 2014:956-966.<br>[3] Bordes A, Chopra S, Weston J. Question Answering with Subgraph Embeddings[J]. Computer Science, 2014.<br>[4] Yih W T, Chang M W, He X, et al. Semantic Parsing via Staged Query Graph Generation: Question Answering with Knowledge Base[C]// Meeting of the Association for Computational Linguistics and the, International Joint Conference on Natural Language Processing. 2015:1321-1331.</p>
-
-          
+<h3 id="语义解析树"><a href="#语义解析树" class="headerlink" title="语义解析树"></a>语义解析树</h3><p>首先利用语义解析工具对问题进行解析，如下图所示：<br><img src="/images/smtr.png" alt="语义解析"><br>图中红色部分为逻辑形式，绿色部分为原始问题，蓝色部分表示词汇映射和构建对应的操作，语义解析树根节点即为解析结果。<br>模型的训练主要是针对每一种语义解析结果的分类概率，对于训练数据问题-答案对，通过最大化log-likelihood损失函数，利用随机梯度下降对参数进行更新。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/02/04/知识图谱问答总结/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1465,7 +1504,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/04/问答系统模型总结/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/04/深度文本匹配模型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jeb">
@@ -1484,7 +1523,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2017/09/04/问答系统模型总结/" itemprop="url">问答系统模型总结</a></h1>
+                <a class="post-title-link" href="/2017/09/04/深度文本匹配模型/" itemprop="url">问答系统模型总结</a></h1>
         
 
         <div class="post-meta">
@@ -1537,8 +1576,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
       
         
-          
-            <script type="text/x-mathjax-config">
+          <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
 tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 });
@@ -1552,429 +1590,14 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p>注：本文所使用的图片均来自对应论文。</p>
 </blockquote>
 <h2 id="基本模型Siamese-Network"><a href="#基本模型Siamese-Network" class="headerlink" title="基本模型Siamese Network"></a>基本模型Siamese Network</h2><p>Siamese网络[1]的特点是包含两路结构非常相似的网络，网络之间的参数共享，在最后进行连接，适用于计算两路输入信息的相似性。</p>
-<h3 id="Attentive-pooling-networks"><a href="#Attentive-pooling-networks" class="headerlink" title="Attentive pooling networks"></a>Attentive pooling networks</h3><p>dos Santos在根据Query选择Candidate answer一文[2]中使用了Siamese网络作为Baseline。模型如下图所示：<br><img src="/images/apnmodel.png" alt="图1"></p>
-<p>Question和Candidate answer中的每个单词首先经过word embedding处理后获得Question和Candidate answer对应的表示矩阵，然后分别利用CNN或者BiLSTM处理后获得对应的特征矩阵，在特征矩阵上应用Column-wise max pooling后获得Question和Candidate answer对应的向量$r_q$和$r_a$，最后计算两个向量之间的余弦相似度。模型的损失函数采用Hinge loss函数，即:<span>$L=max\{0,m-s_\theta(q,a^+)+s_\theta(q,a^-)\}$</span><!-- Has MathJax --></p>
-<h3 id="Multi-Perspective-Sentence-Similarity-Modeling-with-Convolutional-Neural-Networks"><a href="#Multi-Perspective-Sentence-Similarity-Modeling-with-Convolutional-Neural-Networks" class="headerlink" title="Multi-Perspective Sentence Similarity Modeling with Convolutional Neural Networks"></a>Multi-Perspective Sentence Similarity Modeling with Convolutional Neural Networks</h3><p>Hua He[3]于2015年提出的用于句子相似度计算的MPCNN模型仍然遵循Siamese network，模型使用CNN网络提取多粒度特征，配合多种pooling策略，在相似性计算层采用了多种计算方法，在以CNN构建的Siamese network模型上进行了创新。模型结构如下图所示：<br><img src="/images/MPSSM1.png" alt="图3"></p>
-<p>模型使用了两种卷积核，如下图所示：<br><img src="/images/MMSSMfliter.png" alt="图4"><br>上图左边的卷积核即常用的卷积核，文中称为holistic filters。右边的卷积核限制了卷积的维度，对输入word embeddings各维度进行处理，文中称为per-dimension filters。<br>模型使用了三种pooling类型，分别为max-pooling, min-pooling和mean-pooling，并与上述两种filters进行组合，如下图所示：<br><img src="/images/MPSMblock.png" alt="图5"></p>
-<p>模型使用了大小不同的卷积窗口，并与上述两种filters和pooling类型进行组合，如下图所示：<br><img src="/images/MSBMMwin.png" alt="图6"></p>
-<p>相似性计算层根据四个条件选择局部比较区域，分别是： 1) 是否来自同一个building block; 2）是否来自相同窗口大小的卷积层；3) 是否来自同一pooling层； 4) 是否来自卷积层中同一filter。当至少满足两个条件时进行相似性比较，相似性计算采用余弦相似度和欧式距离。该模型是基于CNN构建的Siamese network，采用了不同的卷积核，多种pooling策略等，模型比较复杂。</p>
-<h3 id="LSTM-BASED-DEEP-LEARNING-MODELS-FOR-NON-FACTOID-ANSWER-SELECTION"><a href="#LSTM-BASED-DEEP-LEARNING-MODELS-FOR-NON-FACTOID-ANSWER-SELECTION" class="headerlink" title="LSTM-BASED DEEP LEARNING MODELS FOR NON FACTOID ANSWER SELECTION"></a>LSTM-BASED DEEP LEARNING MODELS FOR NON FACTOID ANSWER SELECTION</h3><p>Ming Tan[4]于2016年发表的论文主要关注答案选择任务，文中提出了四个模型，其中前两个模型QA-LSTM，QA-LSTM/CNN属于Siamese network。QA-LSTM模型较为简单，利用双向LSTM分别处理Question和Answer，然后利用mean/max pooling获得Question和Answer的向量表示，利用两者的余弦相似度预测结果。QA-LSTM模型如下图所示：<br><img src="/images/qalstm.png" alt="图7"></p>
-<p>QA-LSTM/CNN模型为获得Question和Answer更多的组合表示信息，利用CNN对双向LSTM的输出进行处理，同样利用max-1 pooling产生Question和Answer对应的表示，然后利用余弦相似度预测结果，如下图所示：<br><img src="/images/qalstmcnn.png" alt="图7"></p>
-<h3 id="Learning-to-rank-short-text-pairs-with-convolutional-deep-neural-networks"><a href="#Learning-to-rank-short-text-pairs-with-convolutional-deep-neural-networks" class="headerlink" title="Learning to rank short text pairs with convolutional deep neural networks"></a>Learning to rank short text pairs with convolutional deep neural networks</h3><p>Severyn A在对短文本对相似性排序一文[5]中使用了类似网络，与基本Siamese network相比略微有些变化。query和document中的单词首先通过word embedding处理后获得对应的表示矩阵，分别利用CNN网络进行处理获得各自的feature map，pooling后获得query对应的向量表示Xq和document的向量Xd。不同于传统的Siamese网络在这一步利用欧式距离或余弦距离直接对Xq和Xd进行相似性计算后预测结果，作者首先采用了一个相似矩阵来计算Xq和Xd的相似度，然后将Xd，Xq和sim(Xq,Xd)进行连接，并添加了word overlap和IDF word overlap的特征后作为特征向量输入一个神经网络层，神经网络层的输出经过一个全连接层，利用softmax函数得出预测结果。模型结构如下图所示：<br><img src="/images/QAsum1.png" alt="图8"></p>
-<h2 id="改进一-Attention-Network"><a href="#改进一-Attention-Network" class="headerlink" title="改进一 Attention Network"></a>改进一 Attention Network</h2><p>Siamese network单独处理输入的句子对，忽略了句子间的语义信息，通过引入注意力机制捕获句子间关联信息，用于相似性计算。注意力机制最早应用于视觉领域，2014年Bahdanau[4]在机器翻译任务中将翻译和对齐同时进行，在自然语言处理领域引入了注意力机制。</p>
-<h3 id="双向Attention-Network"><a href="#双向Attention-Network" class="headerlink" title="双向Attention Network"></a>双向Attention Network</h3><p>上文中已经提到，dos Santos[2]使用了Siamese网络作为Baseline，随后在Siamese网络的基础上引入了注意力机制，模型如下图所示：<br><img src="/images/apnmodel2.png" alt="图9"><br>模型前期的处理与基本模型-Siamese network部分相同，在获得Question和Candidate answer的特征矩阵Q和A后，计算矩阵G：<span>$G=tanh(Q^TUA)$</span><!-- Has MathJax -->。在矩阵G上应用Column-wise max pooling和Row-wise max pooling，并使用softmax函数处理后可分别获得Query和Candidate answer对应的注意力向量$\sigma ^{q}$和$\sigma ^{a}$，与Query矩阵和Answer矩阵对应相乘后获得Query向量$r_q$和Answer向量$r_a$，后续处理与基本模型Siamese network部分一致。</p>
-<h4 id="Attention-Based-Convolutional-Neural-Network-for-Modeling-Sentence-Pairs"><a href="#Attention-Based-Convolutional-Neural-Network-for-Modeling-Sentence-Pairs" class="headerlink" title="Attention-Based Convolutional Neural Network for Modeling Sentence Pairs"></a>Attention-Based Convolutional Neural Network for Modeling Sentence Pairs</h4><p>Yin W在其提出的ABCNN模型[7]中对Attention机制在CNN模型上的应用进行了更深入的探索，ABCNN模型主要解决句子对匹配问题。文中首先提出了BCNN基本模型，采用Siamese network结构，如下图所示：<br><img src="/images/BCNN.png" alt="图11"></p>
-<p>随后作者提出了ABCNN-1模型，如下图所示：<br><img src="/images/ABCNN1.png" alt="图12"></p>
-<p>首先计算句子$S_0$和$S_1$的attention matrix A：<span>$A_{i,j}=matchScore(F_{0,r}[:,i],F_{1,r}[:,j])$</span><!-- Has MathJax -->。$S_0$和$S_1$对应的representation feature map为$W_0$和$W_1$，将$W_0$和$W_1$与矩阵A相乘后可获得$S_0$和$S_1$对应的attention feature map。representation feature map和attention feature map输入CNN。<br>ABCNN-2模型则先利用CNN对representation feature map进行处理，如下图所示：<br><img src="/images/ABCNN2.png" alt="图14"><br>计算$S_0$和$S_1$经Convolution后的所得feature map的attention matrix A，在对Convolution feature map进行pooling处理时结合矩阵A，图中对应Attention-based average pooling部分。<br>ABCNN-1和ABCNN-2模型在不同粒度的语言单元上应用了Attention机制，ABCNN-3模型则将ABCNN-1和ABCNN-2模型进行了结合，旨在获得多粒度的特征，ABCNN-3模型如下图所示：<br><img src="/images/ABCNN3.png" alt="图15"></p>
-<h4 id="Attention-Based-Multi-Perspective-Convolutional-Neural-Networks-for-Textual-Similarity-Measurement"><a href="#Attention-Based-Multi-Perspective-Convolutional-Neural-Networks-for-Textual-Similarity-Measurement" class="headerlink" title="Attention-Based Multi-Perspective Convolutional Neural Networks for Textual Similarity Measurement"></a>Attention-Based Multi-Perspective Convolutional Neural Networks for Textual Similarity Measurement</h4><p>本篇论文[8]是基本模型部分介绍的MPCNN模型的改进，作者同样是Hua He。在MPCNN模型的基础上添加了Attention层，模型如下图所示：<br><img src="/images/MPCNNattmodel.png" alt="图16"></p>
-<p>设$S^{0}$和$S^{1}$分别表示两个句子，$S^{0}\left[ a\right]$表示$S^{0}$中第a个单词，$S^{1}\left[ b\right]$表示$S^{1}$中第b个单词，首先计算attention matrix D：<span>$D[a][b]=cosine(S^0[a],S^1[b])$</span><!-- Has MathJax -->。获得矩阵D后，对矩阵按行/列求和，然后利用softmax获得句子对应的注意力权重向量，计算公式如下：<br><span>$$\begin{gather*}
-E^0[a]=\sum _{b}D[a][b] \\
-E^1[b]=\sum _{a}D[a][b] \\
-A^i=softmax(E^i) \\
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<p>将单词原始embeddings和attention-reweighted embeddings进行连接后作为单词的表示输入Multi-perspective sentence model。文中并未使用常用的word2vec或GloVe模型，而是使用了PARAGRAM-PHRASE[9]对单词进行向量表示。</p>
-<h3 id="单向Attention-Network"><a href="#单向Attention-Network" class="headerlink" title="单向Attention Network"></a>单向Attention Network</h3><h4 id="LSTM-BASED-DEEP-LEARNING-MODELS-FOR-NON-FACTOID-ANSWER-SELECTION-1"><a href="#LSTM-BASED-DEEP-LEARNING-MODELS-FOR-NON-FACTOID-ANSWER-SELECTION-1" class="headerlink" title="LSTM-BASED DEEP LEARNING MODELS FOR NON- FACTOID ANSWER SELECTION"></a>LSTM-BASED DEEP LEARNING MODELS FOR NON- FACTOID ANSWER SELECTION</h4><p>Ming Tan[4]在基本模型部分介绍的QA-LSTM和QA-LSTM/CNN的基础上引入了Attention机制。ATTENTION-BASED QA-LSTM在QA-LSTM模型基础上进行了改进，如下图所示：<br><img src="/images/qalstmatt.png" alt="图19"></p>
-<p>模型根据以下公式计算Answer的Attention表示：<br><span>$$\begin{gather*}
-m_{a,q}(t) = tanh(W_{am}h_a(t)+W_{qm}o_q) \\
-s_{a,q}(t) \propto exp(w_{ms}^Tm_{a,q}(t)) \\
-\tilde{h_{a}}\left(t\right) = h_a(t)s_{a,q}(t) \\
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<p>其中$\tilde{h_{a}}\left(t\right)$表示经Attention处理后Answer中每个单词的表示。<br>经Attention处理后的Answer通过mean/max pooing获得Answer向量$o_a$，与Question向量$o_q$计算余弦相似度，预测结果。<br>QA-LSTM/CNN WITH ATTENTION对QA-LSTM/CNN的改进类似。</p>
-<h4 id="Inner-Attention-based-Recurrent-Neural-Networks-for-Answer-Selection"><a href="#Inner-Attention-based-Recurrent-Neural-Networks-for-Answer-Selection" class="headerlink" title="Inner Attention based Recurrent Neural Networks for Answer Selection"></a>Inner Attention based Recurrent Neural Networks for Answer Selection</h4><p>Bingning Wang[10]在发表于ACL 2016一文中改进了Attention的计算方式，用于解决QA中的答案选择问题。传统的Attention based RNN模型一般在RNN处理后再添加Attention信息，该文则在计算句子的表示前添加Attention信息，作者称为“Attention before representation”。文中首先给出了传统的attention based RNN模型，与3.3节介绍的ATTENTION-BASED QA-LSTM结构非常类似，可以参考3.3节内容。随后作者提出了四个“Inner Attention based Recurrent Neural Networks”模型，简称为IARNN。<br><strong>IARNN-WORD</strong><br>模型首先计算Question向量<span>$r_q$</span><!-- Has MathJax -->与Candidate answer中各单词的注意力权重，并利用Attention结果更新单词向量，计算公式如下：<br><span>$$\begin{gather*}
-\alpha_t = \sigma(r_q^TM_{qi}x_t) \\
-\tilde {x}_{t} = \alpha_t * x_t \\
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<p>$\tilde {x}_{t}$表示更新后的单词向量，<span>$r_q$</span><!-- Has MathJax -->代表Question向量。利用GRU处理<span>$\tilde {x}_{t}$</span><!-- Has MathJax -->后进行average pooling作为Answer的表示，模型如下图所以：<br><img src="/images/iarnnmodel.png" alt="图22"></p>
-<p><strong>IARNN-CONTEXT</strong><br>IARNN-WORD模型只是单独的处理每个单词，无法获得多个词间的联系，即一些上下文信息。IARNN-CONTEXT模型为了解决这一问题，在计算Attention时将$h_{t-1}$作为上下文信息加入，如下图所示：<br><span>$$\begin{gather*}
-w_C(t) = M_{hc}h_{t-1} + M_{qc}r_q \\
-\alpha_C^t = \sigma(w_C^T(t)x_t) \\
-\tilde {x}_{t} = \alpha_C^t * x_t \\
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<p><strong>IARNN-GATE</strong><br>受到LSTM[]和利用主题信息建立单词表示[]的启发，作者将Attention应用到GRU内部的激活单元，上述IARNN-WORD和IARNN-CONTEXT是在单词原始表示上添加了Attention信息。因为GRU内部的激活单元控制了隐藏状态信息流，通过添加Attention信息可以影响隐藏表示，对原始GRU的改造如下图所示：<br><span>$$\begin{gather*}
-z_t = \sigma(W_{xz}x_t + W_{hz}h_{t-1} + {\color{red} {M_{qz}r_q}}) \\
-f_t = \sigma(W_{xf}x_t + W_{hf}h_{t-1} + {\color{red} {M_{qf}r_q}}) \\
-\tilde {h}_{t} = tanh(W_{xh}x_t + W_{hh}(f_t \odot h_{t-1})) \\
-h_t = (1-z_t) \odot h_{t-1} + z_t \odot \tilde {h}_{t} \\
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<span>$M_{qz}$</span><!-- Has MathJax -->和<span>$M_{hz}$</span><!-- Has MathJax -->表示Attention权重矩阵，IARNN-GATE模型如下图所以：<br><img src="/images/iarnngatepic.png" alt="图25"><br><br><strong>IARNN-OCCAM</strong><br>该模型的思想来源于Occam’s Razor，即：“Among the whole words set, we choose those with fewest number that can represent the sentence”。因为不同的问题对应的答案长度不同，例如When或者Who类型的问题的答案就相对较短，对应的正则数值应该大一点，而Why或How类型的问题答案较长，正则数字应该较小。文中利用下面的公式获得问题对应的正则系数，并加入目标函数$J_i$：<br><span>$$\begin{gather*}
-n_p^i = max\{w_{qp}^Tr_q^i,\lambda_q\} \\
-J_i^* = J_i + n_p^i\sum _{t=1}^{mc}\alpha_t^i \\
-\end{gather*}$$</span><!-- Has MathJax -->
-<p>其中$\gamma _{q}^{i}$代表问题$Q_i$对应的表示，<span>$W_{ap}$</span><!-- Has MathJax -->用于将<span>$\gamma _{q}^{i}$</span><!-- Has MathJax -->映射到一个标量，<span>$\lambda _q$</span><!-- Has MathJax -->表示一个正超参数，<span>$\alpha _{t}^{i}$</span><!-- Has MathJax -->表示注意力权重。</p>
-<h2 id="改进二-Compare-Aggregate-Network"><a href="#改进二-Compare-Aggregate-Network" class="headerlink" title="改进二 Compare-Aggregate Network"></a>改进二 Compare-Aggregate Network</h2><p>引入Attention机制后可以捕获句子间的语义信息用于相似性计算，改进一中的模型在获得句子经Attention处理后的特征后，一般会利用pooling对特征进行降维，这不可避免的会丢失一些信息，COMPARE-AGGREGATE Network为了解决这一问题，最后用于预测的特征不再是句子的表示特征，而是直接利用句子间的匹配特征用于预测，尽可能保留了句子间的相似性信息。</p>
-<h3 id="Pairwise-Word-Interaction-Modeling-with-Deep-Neural-Networks-for-Semantic-Similarity-Measurement"><a href="#Pairwise-Word-Interaction-Modeling-with-Deep-Neural-Networks-for-Semantic-Similarity-Measurement" class="headerlink" title="Pairwise Word Interaction Modeling with Deep Neural Networks for Semantic Similarity Measurement"></a>Pairwise Word Interaction Modeling with Deep Neural Networks for Semantic Similarity Measurement</h3><p>Hua He在ACL 2016一文[11]中提出了一种“Pairwise Word Interaction”模型，旨在解决句子相似性计算问题，模型充分利用了单词级的细粒度信息。模型分为四个部分，分别为：Context Modeling、Pairwise Word Interaction Modeling simCube、Similarity Focus Layer focusCube和19-Layer Deep ConvNet，如下图所示：<br><img src="/images/pwimodel.png" alt="图31"><br><strong>Context Modeling</strong><br>首先对输入的句子单词进行Word embedding处理，然后利用BiLSTM获得句子中各单词包含上下文信息的表示。<br><strong>Pairwise Word Interaction Modeling simCube</strong><br>对句子$S_1$中BiLSTM的隐层状态$\overrightarrow {h_1}$与句子$S_2$的$\overrightarrow {h_2}$，模型使用下面的公式获得两者的匹配结果：<br><span>$$\begin{gather*}
-coU(\overrightarrow {h}_{1},\overrightarrow {h}_{2}) = \{cos(\overrightarrow {h}_{1},\overrightarrow {h}_{2}),L_2Euclid(\overrightarrow {h}_{1},\overrightarrow {h}_{2}),DotProduct(\overrightarrow {h}_{1},\overrightarrow {h}_{2})\}
-\end{gather*}$$</span><!-- Has MathJax --></p>
-<p>其中cos表示余弦距离，Euclid表示欧式距离。对句子$S_1$和句子$S_2$中每个单词进行匹配，获得句子间单词匹配结果simCube。在求取simCude时，作者使用了BiLSTM隐层状态的前向、后向、前后向拼接和前后向相加四种信息。<br><strong>Similarity Focus Layer</strong><br>在衡量句子间相似性时，不同的单词对相似性的影响不一样，本层识别对相对重要的单词对。首先按照simCube中相似性数值由大到小排序，然后使用一种标记算法（参考论文[]中的Algorithm 2）识别重要单词，并记录到mask矩阵。其中重要单词对的权重设为1，不重要单词对的权重设为0.1。最终的“focus-weighted similarity cube”由mask矩阵与simCube进行element-wise相乘后获得，记为focusCube。<br><strong>19-Layer Deep ConvNet</strong><br>focusCube可以看作是一个有13个通道的“图片”，因此相似性计算问题可以转换为识别图片中的“strong pairwise word”，即图片中“pairwise word interactions”越强，对应句子的相似度就越高。模型使用了CNN，配合Max pooling策略，最终由一个全连接层和lonSoftMax函数输出结果，模型比较复杂。</p>
-<h3 id="Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences"><a href="#Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences" class="headerlink" title="Bilateral Multi-Perspective Matching for Natural Language Sentences"></a>Bilateral Multi-Perspective Matching for Natural Language Sentences</h3><p>Zhiguo Wang[12]针对自然语言句子匹配任务提出了bilateral multi-perspective matching (BiMPM) model，关于multi-perspective参见改进四部分，本节主要关注matching部分。设需要匹配的句子为P和Q，作者在P-&gt;Q，Q-&gt;P两个方向上进行了匹配，使用了四种匹配策略，这些策略可以理解为不同的Attention，这里也是Attention机制方面创新一个很好的参考。下面以P-&gt;Q方向为例进行说明，Q-&gt;P方向同理。<br>BiMPM模型如下图所示：<br><img src="/images/bimpm-model.png" alt="图27"></p>
-<p>模型自下而上分为五层，分别为单词表示层、文法表示层、匹配层、聚合层和预测层，其中匹配层为模型的核心。单词表示层对单词进行Word embedding处理。文法表示层与聚合层类似，都是利用BiLSTM对输入序列进行处理。匹配层包含的四种匹配策略示意图：<br><img src="/images/bimpm-match.png" alt="图28"><br><strong>Full-Matching</strong><br>P中每一个前向(反向)文法向量与Q前向(反向)的最后一个时间步的输出进行匹配。<br><strong>Maxpooling-Matching</strong><br>P中每一个前向(反向)文法向量与Q前向(反向)每一个时间步的输出进行匹配，最后仅保留匹配最大的结果向量。<br><strong>Attentive-Matching</strong><br>先计算P中每一个前向(反向)文法向量与Q中每一个前向(反向)文法向量的余弦相似度，然后利用余弦相似度作为权重对Q各个文法向量进行加权求平均作为Q的整体表示，最后P中每一个前向(后向)文法向量与Q对应的整体表示进行匹配。<br><strong>Max-Attentive-Matching</strong><br>与Attentive-Matching类似，不同的是不进行加权求和，而是直接取Q中余弦相似度最高的单词文法向量作为Q整体向量表示，与P中每一个前向(反向)文法向量进行匹配。</p>
-<p>Matching Layer输出的匹配向量经Aggregation Layer双向LSTM处理后作为最后预测层的输入，预测层利用softmax函数输出预测结果。</p>
-<h3 id="A-COMPARE-AGGREGATE-MODEL-FOR-MATCHING-TEXT-SEQUENCES"><a href="#A-COMPARE-AGGREGATE-MODEL-FOR-MATCHING-TEXT-SEQUENCES" class="headerlink" title="A COMPARE-AGGREGATE MODEL FOR MATCHING TEXT SEQUENCES"></a>A COMPARE-AGGREGATE MODEL FOR MATCHING TEXT SEQUENCES</h3><p>本篇论文[13]依然关注自然语言句子匹配任务，模型充分体现了Compare-Aggregate网络的优点，主要在匹配方面进行了改进，使用了六种匹配函数，并对比了效果。上文介绍的BiMPM模型在Aggregation层利用双向LSTM对匹配向量进行处理，只取前（后）向最后的输出作为特征输入预测层。本篇论文没有使用RNN对匹配结果进行序列处理，而是采用CNN进行处理后用于最终的预测，模型如下图所示：<br><img src="/images/camteleft.png" alt="图29"><br>模型分为预处理层、Attention层、匹配层和聚合层，预处理层并未在图中进行说明，模型预处理与通常的模型一致，对Question和Answer进行Word Embedding处理，然后利用LSTM/GRU获得Question和Answer序列表示信息，这里作者进行了一些改变，仅保留了input gates。Attention层应用了单向Attention，对Question进行了Attention表示，具体计算公式如下：<br><span>$$G = softmax((W^g\overline {Q}) + b^g \otimes e_Q)^T \overline {A}) \\
-H = \overline {Q}G$$</span><!-- Has MathJax --><br>G表示注意力权重矩阵，H表示经Attention处理后的Question矩阵。匹配层在最后的“One more thing”部分会单独进行介绍，本节主要关注Compare-Aggregate模型。</p>
-<h2 id="One-more-thing"><a href="#One-more-thing" class="headerlink" title="One more thing"></a>One more thing</h2><p>最后介绍两个在计算自然语言句子相似性时可能遇到的问题：1. 匹配时使用什么函数；2. 当多个句子相似程度较高时，如何利用句子中不相似的部分。 </p>
-<h3 id="选择什么匹配函数"><a href="#选择什么匹配函数" class="headerlink" title="选择什么匹配函数"></a>选择什么匹配函数</h3><p>Wang S[13]在构建自然语言句子匹配模型时使用了六种匹配函数，如下图所示：<br><img src="/images/camttcmp.png" alt="图33"><br>图中左半部分已在4.2节进行了介绍，右半部分属于模型的匹配层，包含了六种匹配函数，公式如下：<br><span>$t_j$</span><!-- Has MathJax -->表示匹配向量，f表示匹配函数，<span>$\overline {a}_{j}$</span><!-- Has MathJax -->表示Answer中一个单词向量，<span>$h_j$</span><!-- Has MathJax -->表示Question中一个单词向量。<br><strong>NEURALNET (NN):</strong><br><span>$$\begin{align}
-t_j = f(\overline {a_j},h_j) = ReLU(W \left[ \begin{matrix} \overline {a}_{i}\\ h_{j}\end{matrix} \right] + b)
-\end{align}$$</span><!-- Has MathJax --><br><strong>NEURALTENSORNET (NTN): </strong><br><span>$$\begin{align}
-t_j = f(\overline {a_j},h_j) = ReLU(\overline {a_{j}}^{T}T^{\left[ 1\ldots l\right]}h_j + b) 
-\end{align}$$</span><!-- Has MathJax --></p>
-<p><strong>Euclidean distance ans Cosine similarity(EUCCOS): </strong><br><span>$$t_j = f(\overline {a_j},h_j) = \begin{bmatrix}
-\left | \left | \bar{a}_j - h_j  \right | \right | _2 \\ 
-cos(\bar{a}_j,h_j) \\
-\end{bmatrix}$$</span><!-- Has MathJax --></p>
-<p><strong>SUBTRACTION (SUB):</strong><br><span>$$\begin{align}
-t_j = f(\overline {a_j},h_j) = (\overline {a}_j - h_j) \odot (\overline {a}_j - h_j)
-\end{align}$$</span><!-- Has MathJax --><br><strong>MULTIPLICATION (MULT):</strong><br><span>$$\begin{align}
-t_j = f(\overline {a_j},h_j) = \overline {a}_j \odot h_j
-\end{align}$$</span><!-- Has MathJax --><br><strong>SUBMULT+NN</strong><br><span>$$\begin{align}
-t_j = f(\overline {a_j},h_j) = ReLU(W \left[ \begin{matrix} \left( \overline {a}_{j}-h_{j}\right) \odot \left( \overline {a}_{j}-h_{j}\right) \\ \overline {a}_{j}\odot h_{j}\end{matrix} \right] + b)
-\end{align}$$</span><!-- Has MathJax --><br>模型在四个数据集上进行了测试，结果如下图所示：<br><img src="/images/camtttest.png" alt="图40"><br>测试结果表明，一般情况下SUBMULT+NN性能较好。另一个值得注意的是一些简单的匹配函数在部分数据集上性能优于NN或NTN这些较为复杂的函数，例如MULT函数在WikiQA数据集上表现最好。</p>
-<p>4.1节中介绍的BiMPM模型[12]中Multi-perspective也是对匹配函数进行了改进，使用了作者定义为“Multi-perspective cosine matching”的函数，公式如下：<span>$m = f_m(v_1,v_2;W)$</span><!-- Has MathJax -->。其中$v_1$和$v_2$表示两个d维向量，W表示一个可训练参数，维度为[l,d]，l表示perspectives数，函数$f_m$返回结果m为一个l维的向量：m=[$m_1$,…$m_k$,…,$m_l$]，其中$m_k$代表第k个perspective的匹配结果：<span>$m_k = cosine(W_k \circ v_1, W_k \circ v_2)$</span><!-- Has MathJax -->。o表示element-wise乘法，$W_k$表示W的第k行。</p>
-<h3 id="如何利用句子不相似的部分"><a href="#如何利用句子不相似的部分" class="headerlink" title="如何利用句子不相似的部分"></a>如何利用句子不相似的部分</h3><p>Zhiguo Wang提出了一种“Lexical Decomposition and Composition”方法[14]用于解决句子相似性计算问题，本文简称为LDC，不同于一般模型主要关注相似的部分，作者通过对句子词法和语义信息进行分解和组合综合考虑了句子间相似和不相似的部分。模型在WikiQA数据集的测试结果达到了state-of-the-art水平，值得说明的一点是主要关注相似性部分的模型[BiMPM]在WikiQA数据集的测试结果要优于LDC模型，个人猜想与具体数据集特点有关，LDC模型更适合句子间相似度较高，需要利用不相似部分进行区分的数据集，例如文章中给出的例子，如下所示：</p>
-<blockquote>
-<p>E1 The research is [irrelevant] to sockeye.<br>E2 The study is [not related] to salmon.<br>E3 The research is relevant to salmon.<br>E4 The study is relevant to sockeye, hinstead of cohoi.<br>E5 The study is relevant to sockeye, hrather than flounderi.</p>
-</blockquote>
-<p>给定一个句子对S和T，模型计算相似度sim(S,T)。模型自下而上分为：Word Representation、Semantic Matching、Decomposition和Composition四个部分。Word Representation即使用预训练的word embeddings表示句子S和T。模型结构如下图所示：<br><img src="/images/LDCMODEL.png" alt="图44"></p>
-<h4 id="Semantic-Matching"><a href="#Semantic-Matching" class="headerlink" title="Semantic Matching"></a>Semantic Matching</h4><p>计算句子S中每个单词<span>$s_i$</span><!-- Has MathJax -->与句子T的匹配向量<span>$\widehat {s}_{i}$</span><!-- Has MathJax -->，同样也需要计算句子T每个单词的匹配向量<span>$\widehat {t}_{i}$</span><!-- Has MathJax -->，公式如下：<br><span>$$\widehat {s}_{i} = f_{match}(s_i,T) \qquad \forall s_i\in S \\
-\widehat {t}_{j} = f_{match}(t_j,S)  \qquad \forall t_j\in T \\$$</span><!-- Has MathJax --><br>对于一个句子对S和T，首先计算相似矩阵A，对于矩阵中的一个元素<span>$a_{i,j}$</span><!-- Has MathJax -->，计算公式如下：<br><span>$a_{i,j}=\dfrac {S_{i}^{T} t_j} {\left| \left| s_i\right| \right| \cdot \left\| t_j\right\| } \qquad \forall s_i\in S,\forall t_j\in T$</span><!-- Has MathJax --><br>获得相似矩阵A后，作者使用了三种匹配函数计算S和T的匹配向量，其中S匹配向量的计算公式如下（T计算公式同理）：<br><span>$$\begin{align}
-f_{match}(s_i,T) = \begin{cases} \dfrac {\Sigma _{j=0}^{n}a_{i,j}t_{j}} {\Sigma _{j=0}^{n}a_{i,j}} \qquad global \\  \dfrac {\Sigma _{j=k-w}^{k+w}a_{i,j}t_{j}} {\Sigma _{j=k-w}^{k+w}a_{i,j}} \qquad local-w\\ t_{k} \qquad max \end{cases}
-\end{align}$$</span><!-- Has MathJax --></p>
-<p>其中<span>$k=\arg \max _{j}a_{i,j}$</span><!-- Has MathJax -->，w表示local-w函数中以k为中心的窗口大小。</p>
-<h4 id="Decomposition"><a href="#Decomposition" class="headerlink" title="Decomposition"></a>Decomposition</h4><p>分解部分将句子S的匹配向量<span>$s_i$</span><!-- Has MathJax -->分解为<span>$s_{i}^{+}$</span><!-- Has MathJax -->和<span>$s_{i}^{-}$</span><!-- Has MathJax -->两个部分，其中<span>$s_{i}^{+}$</span><!-- Has MathJax -->表示相似部分，<span>$s_{i}^{-}$</span><!-- Has MathJax -->表示不相似部分，句子T的分解方式同理，分解公式如下所示：<br><span>$$[s_i^+;s_i^-] = f_{decomp}(s_i,\widehat {s}_{i}) \qquad \forall s_{i}\in S \\
-[t_j^+;t_j^-] = f_{decomp}(t_j,\widehat {t}_{j}) \qquad \forall t_{j}\in T$$</span><!-- Has MathJax --></p>
-<p>作者使用了三种分解函数，分别是：<br><strong>rigid decomposition</strong><br><span>$$[s_i^+ = s_i; s_i^- = 0]  \qquad if s_i = \widehat {s}_{i} \\
-[s_i^+ = 0; s_i^- = s_i]  \qquad otherwise$$</span><!-- Has MathJax --><br><strong>linear decomposition</strong><br><span>$$\alpha =\dfrac {s_{i}^{T}\widehat {s}_{i}} {\left| \left| s_{i}\right| \left| \cdot \right| \left| \widehat {s}_{i}\right| \right| } \\
-s_i^+ = \alpha s_i \\
-s_i^- = (1- \alpha)s_i\\$$</span><!-- Has MathJax --><br><strong>orthogonal decomposition</strong><br><span>$$s_i^+ = \dfrac {s_{i} \cdot \widehat {s}_{i}} {\widehat {s}_{i} \cdot \widehat {s}_{i}} \widehat {s}_{i} \qquad parallel\\
-s_i^- = s_i - s_i^+  \qquad perpendicular \\$$</span><!-- Has MathJax --></p>
-<h4 id="Composition"><a href="#Composition" class="headerlink" title="Composition"></a>Composition</h4><p>组合部分利用CNN将相似部分<span>$s_{i}^{+}$</span><!-- Has MathJax -->和不相似部<span>$s_{i}^{-}$</span><!-- Has MathJax -->组合为最终S的特征向量<span>$\overrightarrow {s}$</span><!-- Has MathJax -->，公式为：<span>$c_{o,i} = f(w_o * S_{[i:i+h]}^+ + w_o * S_{[i:i+h]}^- + b_o)$</span><!-- Has MathJax -->。其中<span>$w_o$</span><!-- Has MathJax -->表示CNN中的一系列filters，<span>$S_{\left[ i:i+h\right] }^{+}$</span><!-- Has MathJax -->和<span>$S_{\left[ i:i+h\right] }^{-}$</span><!-- Has MathJax -->表示<span>$S^+$</span><!-- Has MathJax -->和<span>$S^-$</span><!-- Has MathJax -->中的一部分。一个filter对<span>$S^+$</span><!-- Has MathJax -->和<span>$S^-$</span><!-- Has MathJax -->处理后会产生一系列特征<span>$\overrightarrow {c_{o}}=[c_{o,1},c_{o,2},...,c_{o,O}$</span><!-- Has MathJax -->，利用max-pooling选择最大值，则全部的filters最终输出S和T对应的特征向量<span>$\overrightarrow {S}$</span><!-- Has MathJax -->和<span>$\overrightarrow {T}$</span><!-- Has MathJax -->。</p>
-<h4 id="Similarity-assessing"><a href="#Similarity-assessing" class="headerlink" title="Similarity assessing"></a>Similarity assessing</h4><p>计算S和T特征向量$\overrightarrow {S}$和$\overrightarrow {T}$的相似度：<span>$sim(S,T) = f_{sim}(\overrightarrow {S},\overrightarrow {T})$</span><!-- Has MathJax -->，$f_{sim}$使用sigmod函数。</p>
-<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><h3 id="WikiQA数据集测试结果"><a href="#WikiQA数据集测试结果" class="headerlink" title="WikiQA数据集测试结果"></a>WikiQA数据集测试结果</h3><p>为方便的比较上述各模型，这里对各模型在WikiQA数据集上的实验结果（取最好）进行收集和整理，见下表：</p>
-<table>
-<thead>
-<tr>
-<th>Model</th>
-<th style="text-align:center">MAP</th>
-<th style="text-align:right">MRR</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>CAM[13]</td>
-<td style="text-align:center">0.743</td>
-<td style="text-align:right">0.754</td>
-</tr>
-<tr>
-<td>IARNN[10]</td>
-<td style="text-align:center">0.734</td>
-<td style="text-align:right">0.741</td>
-</tr>
-<tr>
-<td>BiMPM[12]</td>
-<td style="text-align:center">0.718</td>
-<td style="text-align:right">0.731</td>
-</tr>
-<tr>
-<td>PWIM[11]</td>
-<td style="text-align:center">0.709</td>
-<td style="text-align:right">0.723</td>
-</tr>
-<tr>
-<td>LDC[14]</td>
-<td style="text-align:center">0.705</td>
-<td style="text-align:right">0.722</td>
-</tr>
-<tr>
-<td>ABCNN[7]</td>
-<td style="text-align:center">0.692</td>
-<td style="text-align:right">0.712</td>
-</tr>
-<tr>
-<td>APN[2]</td>
-<td style="text-align:center">0.688</td>
-<td style="text-align:right">0.695</td>
-</tr>
-</tbody>
-</table>
-<p>表中ABCNN、APN和LDC模型属于Attention Network，CAM、IARNN、BiMPM和PWIM模型属于Compare-Aggregate Network。WikiQA数据集上的实验结果表明Compare-Aggregate Network优于Attention Network。<br><strong>结果分析</strong><br>基本模型Siamese Network单独的对两个输入句子进行特征提取，Attention Network除了获得两个句子各自特征外，还使用句子间的相关特征。Attention Network依然遵循Siamese Network思想，一般将句子表示为一个特征向量用于预测，最后的降维过程不可避免的损失一些相关性信息，Compare-Aggregate Network则直接利用句子间相关特征进行预测。模型的测试结果表明，在计算句子相似度时，如何有效的利用句子间的相关特征是模型的关键。</p>
-<h3 id="各模型针对的问题及解决方法"><a href="#各模型针对的问题及解决方法" class="headerlink" title="各模型针对的问题及解决方法"></a>各模型针对的问题及解决方法</h3><table>
-<thead>
-<tr>
-<th>Model</th>
-<th style="text-align:center">问题</th>
-<th style="text-align:right">解决方案</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>APN[2]</td>
-<td style="text-align:center">基本模型无法获得两路输入的联合表示</td>
-<td style="text-align:right">双向Attention</td>
-</tr>
-<tr>
-<td>MPCNN[3]</td>
-<td style="text-align:center">语言表达的多样性、歧义</td>
-<td style="text-align:right">利用CNN提取不同粒度特征，配合多种pooling策略，在不同句子区域使用多种函数进行比较</td>
-</tr>
-<tr>
-<td>LBDLM[4]</td>
-<td style="text-align:center">句子在词级别不相似，但在语义级别相似；LSTM输出直接进行pooling可能会损失语言区域信息</td>
-<td style="text-align:right">利用CNN对LSTM输出进行处理，获得问题和答案更多的组合表示信息</td>
-</tr>
-<tr>
-<td>LRCNN[5]</td>
-<td style="text-align:center">传统特征工程需要复杂的工作和额外资源</td>
-<td style="text-align:right">词向量, CNN</td>
-</tr>
-<tr>
-<td>ABCNN[7]</td>
-<td style="text-align:center">基本模型单独处理两个句子，没有充分考虑句子间的联系</td>
-<td style="text-align:right">双向Attention</td>
-</tr>
-<tr>
-<td>ABMPCNN[8]</td>
-<td style="text-align:center">MPCNN无法获得句子间信息</td>
-<td style="text-align:right">改进MPCNN模型，加入Attention层</td>
-</tr>
-<tr>
-<td>IARNN[10]</td>
-<td style="text-align:center">传统的Attention-based RNN模型使用“Attention after represention”，在生成单词表示时存在不足</td>
-<td style="text-align:right">“Attention before represention”，在使用LSTM处理之前进行Attention</td>
-</tr>
-<tr>
-<td>PWIM[11]</td>
-<td style="text-align:center">一般的神经网络模型主要利用句子粗粒度信息，无法捕获细粒度词级别的信息</td>
-<td style="text-align:right">pairwise word interaction modeling，捕获跨句子的词关联信息</td>
-</tr>
-<tr>
-<td>BiMPM[12]</td>
-<td style="text-align:center">传统的模型只在一个方向上应用Attention，匹配时只在词级别或句子级别进行匹配</td>
-<td style="text-align:right">双向Attention，multi-perspective匹配函数，四种匹配策略</td>
-</tr>
-<tr>
-<td>CAM[13]</td>
-<td style="text-align:center">选择什么匹配函数</td>
-<td style="text-align:right">对比六种匹配函数在四个数据集的结果，选择SUBMULT+NN或MULT</td>
-</tr>
-<tr>
-<td>LDC[14]</td>
-<td style="text-align:center">当要比较的句子结构非常相似时，如何利用不相似的部分进行区分</td>
-<td style="text-align:right">Lexical Decomposition and Composition</td>
-</tr>
-</tbody>
-</table>
-<h3 id="各模型损失函数及额外特征选取"><a href="#各模型损失函数及额外特征选取" class="headerlink" title="各模型损失函数及额外特征选取"></a>各模型损失函数及额外特征选取</h3><p>注：部分论文针对不同的数据集使用了相应的损失函数。</p>
-<table>
-<thead>
-<tr>
-<th>Model</th>
-<th style="text-align:center">损失函数</th>
-<th style="text-align:right">额外特征</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>APN[2]</td>
-<td style="text-align:center">hinge loss</td>
-<td style="text-align:right">未使用</td>
-</tr>
-<tr>
-<td>MPCNN[3]</td>
-<td style="text-align:center">hinge loss, KL-divergence loss</td>
-<td style="text-align:right">PARAGRAM vectors, POS tagger</td>
-</tr>
-<tr>
-<td>LBDLM[4]</td>
-<td style="text-align:center">hinge loss</td>
-<td style="text-align:right">未使用</td>
-</tr>
-<tr>
-<td>LRCNN[5]</td>
-<td style="text-align:center">cross-entropy</td>
-<td style="text-align:right">不明确，论文中给出了添加Addition features的方法</td>
-</tr>
-<tr>
-<td>ABCNN[7]</td>
-<td style="text-align:center">不明确</td>
-<td style="text-align:right">sentence lengths, WordCnt and WgtWordCnt</td>
-</tr>
-<tr>
-<td>ABMPCNN[8]</td>
-<td style="text-align:center">不明确</td>
-<td style="text-align:right">PARAGRAM-PHRASE word embeddings</td>
-</tr>
-<tr>
-<td>IARNN[10]</td>
-<td style="text-align:center">max-margin hinge loss</td>
-<td style="text-align:right">未使用</td>
-</tr>
-<tr>
-<td>PWIM[11]</td>
-<td style="text-align:center">hinge loss, KL-divergence</td>
-<td style="text-align:right">未使用</td>
-</tr>
-<tr>
-<td>BiMPM[12]</td>
-<td style="text-align:center">Cross-Entropy</td>
-<td style="text-align:right">未使用，但可扩展使用POS，NER特征</td>
-</tr>
-<tr>
-<td>CAM[13]</td>
-<td style="text-align:center">不明确</td>
-<td style="text-align:right">未使用</td>
-</tr>
-<tr>
-<td>LDC[14]</td>
-<td style="text-align:center">不明确</td>
-<td style="text-align:right">未使用</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>本文中错误和不明确之处欢迎指出，谢谢！</p>
-</blockquote>
-<p>引用：<br>[1] Bromley J, Guyon I, LeCun Y, et al. Signature verification using a” siamese” time delay neural network[C]//Advances in Neural Information Processing Systems. 1994: 737-744.<br>[2] dos Santos C N, Tan M, Xiang B, et al. Attentive pooling networks[J]. CoRR, abs/1602.03609, 2016.<br>[3] He H, Gimpel K, Lin J J. Multi-Perspective Sentence Similarity Modeling with Convolutional Neural Networks[C]//EMNLP. 2015: 1576-1586.<br>[4] Tan M, Santos C, Xiang B, et al. Lstm-based deep learning models for non-factoid answer selection[J]. arXiv preprint arXiv:1511.04108, 2015.<br>[5] Severyn A, Moschitti A. Learning to rank short text pairs with convolutional deep neural networks[C]//Proceedings of the 38th International ACM SIGIR Conference on Research and Development in Information Retrieval. ACM, 2015: 373-382.<br>[6] Bahdanau D, Cho K, Bengio Y. Neural machine translation by jointly learning to align and translate[J]. arXiv preprint arXiv:1409.0473, 2014.<br>[7] Yin W, Schütze H, Xiang B, et al. Abcnn: Attention-based convolutional neural network for modeling sentence pairs[J]. arXiv preprint arXiv:1512.05193, 2015.<br>[8] He H, Wieting J, Gimpel K, et al. UMD-TTIC-UW at SemEval-2016 Task 1: Attention-Based Multi-Perspective Convolutional Neural Networks for Textual Similarity Measurement[C]//SemEval@ NAACL-HLT. 2016: 1103-1108.<br>[9] Wieting J, Bansal M, Gimpel K, et al. Towards universal paraphrastic sentence embeddings[J]. arXiv preprint arXiv:1511.08198, 2015.<br>[10] Wang B, Liu K, Zhao J. Inner Attention based Recurrent Neural Networks for Answer Selection[C]//ACL (1). 2016.<br>[11] He H, Lin J J. Pairwise Word Interaction Modeling with Deep Neural Networks for Semantic Similarity Measurement[C]//HLT-NAACL. 2016: 937-948.<br>[12] Wang Z, Hamza W, Florian R. Bilateral multi-perspective matching for natural language sentences[J]. arXiv preprint arXiv:1702.03814, 2017.<br>[13] Wang S, Jiang J. A Compare-Aggregate Model for Matching Text Sequences[J]. arXiv preprint arXiv:1611.01747, 2016.<br>[14] Wang Z, Mi H, Ittycheriah A. Sentence similarity learning by lexical decomposition and composition[J]. arXiv preprint arXiv:1602.07019, 2016.</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/23/tensorflow-broadcast-details/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/23/tensorflow-broadcast-details/" itemprop="url">TensorFlow-Broadcast details</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-23T17:36:00+08:00">
-                2017-08-23
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>TensorFlow官方网站对Broadcast的解释不够详细，具体要参考Scipy网站的解析。</p>
-<blockquote>
-<p><a href="https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html" target="_blank" rel="external">https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html</a></p>
-</blockquote>
-<p>Broadcasting用于处理不同形状的numpy arrays的算术操作，形状较小的array通过复制自身，”broadcast”到与较大的array匹配的形状。例如：</p>
-<blockquote>
-<p>a = np.array([1.0, 2.0, 3.0])<br>b = 2.0<br>a * b<br>array([ 2.,  4.,  6.])</p>
-</blockquote>
-<p>处理两个array时，NumPy element-wise地比较它们的形状，两个array的dimensions必须满足以下两个条件之一：</p>
-<blockquote>
-<ol>
-<li>they are equal</li>
-<li>one of them is 1</li>
-</ol>
-</blockquote>
-<p>例如：</p>
-<blockquote>
-<p>A      (4d array):  8 x 1 x 6 x 1<br>B      (3d array):      7 x 1 x 5<br>Result (4d array):  8 x 7 x 6 x 5</p>
-</blockquote>
-
-          
+<h3 id="Attentive-pooling-networks"><a href="#Attentive-pooling-networks" class="headerlink" title="Attentive pooling networks"></a>Attentive pooling networks</h3><p>dos Santos在根据Query选择Candidate answer一文[2]中使用了Siamese网络作为Baseline。模型如下图所示：<br><img src="/images/apnmodel.png" alt="图1"><br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/09/04/深度文本匹配模型/#espandi" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>

@@ -102,12 +102,14 @@
 <meta property="og:site_name" content="小菜鸡">
 <meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        业界广泛流传着这样的一句话：数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限。特征体系的设计、优化是取得理想结果的基础，那么对于文本搜索，应该如何设计特征呢？本文讨论常见的文本搜索场景，输入为query，目标是将相关性较高">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/textsearch-tf.jpeg">
+<meta property="og:image" content="http://yoursite.com/images/textsearch-lennorm.jpeg">
 <meta property="og:image" content="http://yoursite.com/images/search-fea-class.png">
-<meta property="og:updated_time" content="2022-01-27T16:43:30.180Z">
+<meta property="og:updated_time" content="2022-02-06T09:51:11.962Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="文本搜索特征体系">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        业界广泛流传着这样的一句话：数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限。特征体系的设计、优化是取得理想结果的基础，那么对于文本搜索，应该如何设计特征呢？本文讨论常见的文本搜索场景，输入为query，目标是将相关性较高">
-<meta name="twitter:image" content="http://yoursite.com/images/search-fea-class.png">
+<meta name="twitter:image" content="http://yoursite.com/images/textsearch-tf.jpeg">
 
 
 
@@ -358,9 +360,10 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>权重特征。用于衡量doc对query需求的满足程度，例如当query为某个学校时（复旦大学）， 查询“招生”和“考研”的需求一般会高于“运动会”和“晚会”。</li>
 <li>语义特征。用于衡量query和doc内容的语义相关性，一般利用词向量和深度学习模型产出，将词语、句子映射到某个向量空间，利用余弦相似度等方法计算特征分数。</li>
 <li>意图特征。用于衡量query意图和doc内容整体的匹配程度，例如当query为百科查询类时，教育、人文历史类的doc更有可能满足要求。</li>
-<li>负面特征。以上特征主要从query和doc相关的角度来设计，可以看做正面特征。而query中重要词语遗漏，紧密pair分散等情况并没有一个特征来体现，设计该特征的目的在于强化负面情况对排序的影响。</li>
+<li>负面特征。以上特征主要从query和doc相关的角度来设计，可以看做正面特征。而query中重要词语遗漏，紧密pair分散等情况并没有一个特征来体现，设计该特征的目的在于强化负面情况对排序的影响。<a id="more"></a>
+<h1 id="具体设计"><a href="#具体设计" class="headerlink" title="具体设计"></a>具体设计</h1></li>
 </ol>
-<h1 id="具体设计"><a href="#具体设计" class="headerlink" title="具体设计"></a>具体设计</h1><p>假设query分词后的序列为<span>$\left\{q_{1}, q_{2}, \ldots q_{n}\right\}$</span><!-- Has MathJax -->，doc标题分词后的序列为<span>$\left\{t_{1}, t_{2} \cdots t_{m}\right\}$</span><!-- Has MathJax -->，正文序列为<span>$\left\{c_{1}, c_{2} \cdots c_{k}\right\}$</span><!-- Has MathJax -->。</p>
+<p>假设query分词后的序列为<span>$\left\{q_{1}, q_{2}, \ldots q_{n}\right\}$</span><!-- Has MathJax -->，doc标题分词后的序列为<span>$\left\{t_{1}, t_{2} \cdots t_{m}\right\}$</span><!-- Has MathJax -->，正文序列为<span>$\left\{c_{1}, c_{2} \cdots c_{k}\right\}$</span><!-- Has MathJax -->。</p>
 <h2 id="覆盖特征"><a href="#覆盖特征" class="headerlink" title="覆盖特征"></a>覆盖特征</h2><p>简单地，可以统计query词在doc中命中个数（去重），假设为<span>$h$</span><!-- Has MathJax -->，则有：</p>
 <span>$$\begin{gather*}
 
@@ -374,7 +377,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 \text { cover_ratio }=\frac{\sum_{t \in{q_ {keywords}}} w_{t}^{d} \text {. is_cover }}{\sum_{t \in q_{k e y w o r d s}} w_{t}^{d}}
 
 \end{gather*}$$</span><!-- Has MathJax -->
-<p>其中<span>$q_{keywords}$</span><!-- Has MathJax -->表示query中的关键词，<span>$is_cover$</span><!-- Has MathJax -->表示doc中是否包含该词，<span>$w_{t}^{d}}$</span><!-- Has MathJax -->表示该词在doc中的权重。这里<span>$cover_ratio$</span><!-- Has MathJax -->的含义是，对于query中所有关键词，对应其在doc中的权重，计算doc对其的覆盖情况。</p>
+<p>其中<span>$q_{keywords}$</span><!-- Has MathJax -->表示query中的关键词，<span>$is{cover}$</span><!-- Has MathJax -->表示doc中是否包含该词，<span>$w_{t}^{d}$</span><!-- Has MathJax -->表示该词在doc中的权重。这里<span>$\text { cover_ratio }$</span><!-- Has MathJax -->的含义是，对于query中所有关键词，对应其在doc中的权重，计算doc对其的覆盖情况。</p>
 <h2 id="命中特征"><a href="#命中特征" class="headerlink" title="命中特征"></a>命中特征</h2><p>考虑query词在doc中命中的次数及权重来设计特征，比较简单的是TF-IDF算法，BM25算法是对TF-IDF算法的改进，应用更为广泛，公式如下：</p>
 <span>$$\begin{gather*}
 
@@ -385,8 +388,8 @@ f(q, d)=\sum_{w \in q \cap d} c(w, q) \frac{(k+1) c(w, d)}{c(w, d)+k\left(1-b+b 
 <ol>
 <li><p>第一项<span>$c(w,q)$</span><!-- Has MathJax -->，表示词语w在query中的词频；</p>
 </li>
-<li><p>第二项实质是对词语w词频的变换，<span>$c(w,d)$</span><!-- Has MathJax -->表示词语w在文档d中的词频，通过公式的约束控制词频因子的上限，其上限为k+1，不会无线增长。例如当一个词语在文档中出现50次或100次时，都能说明该词与文本相关，但其相关性直观来说不应该是线性增长的，如下图所示：</p>
-<p>公式中分母k乘的系数目的是归一化文本长度。b表示[0,1]之间的常数，avdl表示文档的平均长度，对于文档d，如果其长度大于平均值，那么normalizer大于1，反之亦然。如下图所示：</p>
+<li><p>第二项实质是对词语w词频的变换，<span>$c(w,d)$</span><!-- Has MathJax -->表示词语w在文档d中的词频，通过公式的约束控制词频因子的上限，其上限为k+1，不会无线增长。例如当一个词语在文档中出现50次或100次时，都能说明该词与文本相关，但其相关性直观来说不应该是线性增长的，如下图所示：<img width="700" src="/images/textsearch-tf.jpeg"></p>
+<p>公式中分母k乘的系数目的是归一化文本长度。b表示[0,1]之间的常数，avdl表示文档的平均长度，对于文档d，如果其长度大于平均值，那么normalizer大于1，反之亦然。如下图所示：<img width="700" src="/images/textsearch-lennorm.jpeg"></p>
 </li>
 <li><p>第三项表示词的逆文档频率，M表示所有文档数，<span>$df(w)$</span><!-- Has MathJax -->表示包含该词的文档数。</p>
 </li>
