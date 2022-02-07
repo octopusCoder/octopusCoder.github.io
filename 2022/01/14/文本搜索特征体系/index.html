@@ -105,7 +105,7 @@
 <meta property="og:image" content="http://yoursite.com/images/textsearch-tf.jpeg">
 <meta property="og:image" content="http://yoursite.com/images/textsearch-lennorm.jpeg">
 <meta property="og:image" content="http://yoursite.com/images/search-fea-class.png">
-<meta property="og:updated_time" content="2022-02-07T08:49:09.716Z">
+<meta property="og:updated_time" content="2022-02-07T11:08:01.298Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="文本搜索特征体系">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        业界广泛流传着这样的一句话：数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限。特征体系的设计、优化是取得理想结果的基础，那么对于文本搜索，应该如何设计特征呢？本文讨论常见的文本搜索场景，输入为query，目标是将相关性较高">
@@ -396,15 +396,21 @@ f(q, d)=\sum_{w \in q \cap d} c(w, q) \frac{(k+1) c(w, d)}{c(w, d)+k\left(1-b+b 
 </ol>
 <h2 id="紧密特征"><a href="#紧密特征" class="headerlink" title="紧密特征"></a>紧密特征</h2><p>关注query词语在doc中命中位置的分布，例如query=”上海中学”，$doc_1$的标题为“上海中学招生计划”，$doc_2$的标题为“上海有哪些比较好的中学”。query中的“上海”和“中学”紧密度较高，在$doc_1$和$doc_2$中都有命中，但在$doc_2$中分散命中，语义已发生了变化，显然$doc_1$与query更相关。为了进行区分，需要根据query词语的命中位置来设计紧密特征，具体有多种实现方法，这里大致介绍两种：</p>
 <ol>
-<li>统计query词语整体分布情况。利用滑动窗口，统计每个窗口内的紧密度，最后取最大值。参考公式如下：<span>$\begin{gather*}\text { proximity }_{1}=\max _{i \in { windows }}\left(\alpha_{w_i}^{\text {miss_ratio }} * \beta_{w_i}^{\text {reverse_ratio }}\right)\end{gather*}$</span><!-- Has MathJax -->，其中<span>$windows$</span><!-- Has MathJax -->表示所有滑动窗口，<span>$w_i$</span><!-- Has MathJax -->表示第i个窗口，<span>$\alpha, \beta$</span><!-- Has MathJax -->为(0,1)区间的常数，<span>$miss_ratio$</span><!-- Has MathJax -->表示窗口内未命中词语的比例，<span>$reverse_ratio$</span><!-- Has MathJax -->表示窗口内逆序词语pair的比例。</li>
-<li>统计query中紧密词语的命中情况。方法1的计算相对粗糙一些，query中重要性较低的词和非紧密词都可能对结果产生干扰。例如“的”、“啊”这些词语不命中其实无所谓。此外，非紧密词语不在一个窗口命中也可以，例如当query=”EDG、IG在哪年夺冠的”时，其中“EDG”与“IG”并无紧密关系，不能要求doc中两个词要紧密出现，假如某篇文章第一段介绍EDG夺冠，第二段介绍IG夺冠完全可以满足要求。因此进一步优化可以只考虑query中具有紧密关系词语之间的命中情况，参考公式如下：<span>$$\begin{gather*}*\begin{array}{l}
-proximity_2=\frac{1} {total\_tightness}* \sum_{i \neq j} { tightness(t_{i},t_{j})}* \frac{1}{\operatorname{dist}\left(t_{i}, t_{j}\right)} \\
-\operatorname{dist}\left(t_{i}, t_{j}\right)=\min _{i \neq j}\left(\phi\left(t_{i}, o\left(t_{j}\right)\right)\right)\\
-\phi\left(t_{i}, t_{j}\right)=\left\{\begin{array}{l}
-\left|P_{t_{i,d}}-P_{t_{j ,d}}\right|, \text { if } P_{t_{j,d}}-P_{t_{i,d}}&gt;0 \\
-\left|P_{t_{i,d}}-P_{t_{j,d}}\right| * k, \text { if } P_{t_{j,d}}-P_{t_{i, d}}&lt;0
-\end{array}\right.
-\end{array}* \end{gather*}$$</span><!-- Has MathJax -->其中<span>$t_i,t_j$</span><!-- Has MathJax -->表示query中第i和第j个词语，<span>$tightness(t_i,t_j)$</span><!-- Has MathJax -->表示两个词之间的紧密度，<span>$dist(t_i,t_j)$</span><!-- Has MathJax -->表示两个词在doc中的距离，<span>$o\left(t_{j}\right)$</span><!-- Has MathJax -->表示第j个词语在doc命中的集合，<span>$P_{t_{i,d}}, P_{t_{j,d}}$</span><!-- Has MathJax -->表示query中第i个词语和第j个词语在doc的命中位置，<span>$k$</span><!-- Has MathJax -->为某个常数。公式的含义是，对于query中每个紧密词pair，根据其紧密度和在doc中命中位置的距离计算紧密特征，由于词语在doc中可能存在多次命中，简单地，可以取pair命中位置的最短距离。此外，对于逆序命中的情况还要做一些惩罚，相应的增大距离。对于存在紧密pair的query，根据上述公式，如果在doc中命中位置越接近，则相应的分数越高，反之则越低。若query中不存在紧密pair，即total_tightness=0，那么可以给一个默认值，例如0。</li>
+<li><p>统计query词语整体分布情况。利用滑动窗口，统计每个窗口内的紧密度，最后取最大值。参考公式如下：<span>$\begin{gather*}\text { proximity }_{1}=\max _{i \in { windows }}\left(\alpha_{w_i}^{\text {miss_ratio }} * \beta_{w_i}^{\text {reverse_ratio }}\right)\end{gather*}$</span><!-- Has MathJax -->，其中<span>$windows$</span><!-- Has MathJax -->表示所有滑动窗口，<span>$w_i$</span><!-- Has MathJax -->表示第i个窗口，<span>$\alpha, \beta$</span><!-- Has MathJax -->为(0,1)区间的常数，<span>$miss_ratio$</span><!-- Has MathJax -->表示窗口内未命中词语的比例，<span>$reverse_ratio$</span><!-- Has MathJax -->表示窗口内逆序词语pair的比例。</p>
+</li>
+<li><p>统计query中紧密词语的命中情况。方法1的计算相对粗糙一些，query中重要性较低的词和非紧密词都可能对结果产生干扰。例如“的”、“啊”这些词语不命中其实无所谓。此外，非紧密词语不在一个窗口命中也可以，例如当query=”EDG、IG在哪年夺冠的”时，其中“EDG”与“IG”并无紧密关系，不能要求doc中两个词要紧密出现，假如某篇文章第一段介绍EDG夺冠，第二段介绍IG夺冠完全可以满足要求。因此进一步优化可以只考虑query中具有紧密关系词语之间的命中情况，参考公式如下：</p>
+<span>$$\begin{gather*}\begin{array}{l}
+   proximity_2=\frac{1} {total\_tightness}* \sum_{i \neq j} { tightness(t_{i},t_{j})}* \frac{1}
+   {\operatorname{dist}\left(t_{i}, t_{j}\right)} \\
+   \operatorname{dist}\left(t_{i}, t_{j}\right)=\min _{i \neq j}\left(\phi\left(t_{i}, o\left(t_{j}\right)\right)\right)\\
+   
+   \phi\left(t_{i}, t_{j}\right)=\left\{\begin{array}{l}
+   \left|P_{t_{i,d}}-P_{t_{j ,d}}\right|, \text { if } P_{t_{j,d}}-P_{t_{i,d}}&gt;0 \\
+   \left|P_{t_{i,d}}-P_{t_{j,d}}\right| * k, \text { if } P_{t_{j,d}}-P_{t_{i, d}}&lt;0
+   \end{array}\right.
+   \end{array} \end{gather*}$$</span><!-- Has MathJax -->
+<p>其中<span>$t_i,t_j$</span><!-- Has MathJax -->表示query中第i和第j个词语，<span>$tightness(t_i,t_j)$</span><!-- Has MathJax -->表示两个词之间的紧密度，<span>$dist(t_i,t_j)$</span><!-- Has MathJax -->表示两个词在doc中的距离，<span>$o\left(t_{j}\right)$</span><!-- Has MathJax -->表示第j个词语在doc命中的集合，<span>$P_{t_{i,d}}, P_{t_{j,d}}$</span><!-- Has MathJax -->表示query中第i个词语和第j个词语在doc的命中位置，<span>$k$</span><!-- Has MathJax -->为某个常数。公式的含义是，对于query中每个紧密词pair，根据其紧密度和在doc中命中位置的距离计算紧密特征，由于词语在doc中可能存在多次命中，简单地，可以取pair命中位置的最短距离。此外，对于逆序命中的情况还要做一些惩罚，相应的增大距离。对于存在紧密pair的query，根据上述公式，如果在doc中命中位置越接近，则相应的分数越高，反之则越低。若query中不存在紧密pair，即total_tightness=0，那么可以给一个默认值，例如0。</p>
+</li>
 </ol>
 <h2 id="权重特征"><a href="#权重特征" class="headerlink" title="权重特征"></a>权重特征</h2><p>以key-value形式组织数据，例如对于学校、医院等实体名词，可根据经验、用户点击数据等离线计算好相应的权重，供在线生成特征。举个例子，当query=“北京大学”时，<span>$doc_i$</span><!-- Has MathJax -->和<span>$doc_j$</span><!-- Has MathJax -->中均命中了“北京大学”，但<span>$doc_i$</span><!-- Has MathJax -->的内容是关于北京大学的招生简章，而<span>$doc_j$</span><!-- Has MathJax -->则是关于北京大学财务处的信息，显然招生简章相比财务处是更为主要的需求。通过离线计算好的权重，我们可以给予<span>$doc_i$</span><!-- Has MathJax -->更高的分数，使其排序更靠前。</p>
 <h2 id="语义特征"><a href="#语义特征" class="headerlink" title="语义特征"></a>语义特征</h2><p>上述的覆盖、命中等特征属于传统的词法特征，会存在一些问题，例如：</p>
