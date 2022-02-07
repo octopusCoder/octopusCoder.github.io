@@ -95,12 +95,12 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  【待进一步整理】 Lambda关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking F">
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  Lambda关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking Function，并">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LambdaMART从放弃到入门">
 <meta property="og:url" content="http://yoursite.com/2020/03/27/LambdaMART从放弃到入门/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  【待进一步整理】 Lambda关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking F">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  Lambda关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking Function，并">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/letfly.png">
 <meta property="og:image" content="http://yoursite.com/images/boostingTree.png">
@@ -108,10 +108,10 @@
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
 <meta property="og:image" content="http://yoursite.com/images/lambdamart-pfuc.png">
-<meta property="og:updated_time" content="2022-02-06T09:54:09.870Z">
+<meta property="og:updated_time" content="2022-02-07T08:50:51.790Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LambdaMART从放弃到入门">
-<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  【待进一步整理】 Lambda关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking F">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  Lambda关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking Function，并">
 <meta name="twitter:image" content="http://yoursite.com/images/letfly.png">
 
 
@@ -359,7 +359,6 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>理解MART；</li>
 <li>理解LambdaMART。</li>
 </ol>
-<p><strong>【待进一步整理】</strong></p>
 <h1 id="Lambda"><a href="#Lambda" class="headerlink" title="Lambda"></a>Lambda</h1><p>关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking Function，并应用Ranking Function对文档进行排序。LambdaRank在RankNet的基础上引入评价指标Z （如NDCG、ERR等），其损失函数的梯度代表了文档下一次迭代优化的方向和强度，由于引入了IR评价指标，Lambda梯度更关注位置靠前的优质文档的排序位置的提升，有效的避免了下调位置靠前优质文档的位置这种情况的发生。LambdaRank相比RankNet的优势在于分解因式后训练速度变快，同时考虑了评价指标，直接对问题求解，效果更明显。 详细内容可以参考<a href="https://octopuscoder.github.io/2020/01/19/搜索排序算法/" target="_blank" rel="external">搜索排序算法</a>。</p>
 <h1 id="MART"><a href="#MART" class="headerlink" title="MART"></a>MART</h1><p>MART(Multiple Additive Regression Tree)的另一个名字叫GBDT(Gradient Boosting Decision Tree)，理解GBDT要从BT开始。<br><a id="more"></a></p>
 <h2 id="提升树"><a href="#提升树" class="headerlink" title="提升树"></a>提升树</h2><p>BT(Boosting Tree)提升树是以<strong>决策树</strong>为基本学习器的提升方法，它被认为是统计学习中性能最好的方法之一。对于分类问题，提升树的决策树是二叉决策树，对于回归问题，提升树中的决策是二叉回归树。</p>
@@ -625,6 +624,7 @@ n d c g(swap(1,4))=\frac{d c g(swap(1,4))}{ideal_{-} dcg}=\frac{2.036}{2.562}=0.
 \end{gather*}$$</span><!-- Has MathJax -->
 <p>我们可以像上面那样遍历所有feature的不同值，尝试分裂，计算Cost，最终选择所有可能分裂中最小Cost的那一个作为分裂点。然后将𝑠𝐿和𝑠𝑅 分别作为左右子节点的属性存储起来，并把分裂的样本也分别存储到左右子节点中，然后维护一个队列，始终按平方误差和s降序插入新分裂出的节点，每次从该队列头部拿出一个节点（并基于这个节点上的样本）进行分裂（即最大均方差优先分裂），直到树的分裂次数达到参数设定（训练时传入的leaf值，叶子节点的个数与分裂次数等价）。这样就完成了一棵Regression Tree的训练。</p>
 <p>上面讲述了一棵树的标准分裂过程，此外，树的分裂还包含了其他参数设定，例如叶子节点上的最少样本数，比如我们设定为3，则在feature(1)处，0.001和0.003两个值都不能作为分裂点，因为用它们做分裂点，左子树的样本数分别是1和2，均&lt;3。叶子节点的最少样本数越小，模型则拟合得越好，当然也容易过拟合（over-fitting）；反之如果设置得越大，模型则可能欠拟合（under-fitting），实践中可以使用cross validation的办法来寻找最佳的参数设定。</p>
+<p><strong>【待进一步整理】</strong></p>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://zhuanlan.zhihu.com/p/57814935" target="_blank" rel="external">GBT、GBDT、GBRT与Xgboost</a></p>
 <p><a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/MSR-TR-2010-82.pdf" target="_blank" rel="external">From RankNet to LambdaRank to LambdaMART: An Overview</a></p>
 <p><a href="https://www.cnblogs.com/wowarsenal/p/3900359.html" target="_blank" rel="external">LambdaMART简介——基于Ranklib源码</a></p>

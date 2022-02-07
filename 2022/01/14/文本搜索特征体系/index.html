@@ -105,7 +105,7 @@
 <meta property="og:image" content="http://yoursite.com/images/textsearch-tf.jpeg">
 <meta property="og:image" content="http://yoursite.com/images/textsearch-lennorm.jpeg">
 <meta property="og:image" content="http://yoursite.com/images/search-fea-class.png">
-<meta property="og:updated_time" content="2022-02-06T09:51:11.962Z">
+<meta property="og:updated_time" content="2022-02-07T08:49:09.716Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="文本搜索特征体系">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        业界广泛流传着这样的一句话：数据和特征决定了机器学习的上限，而模型和算法只是逼近这个上限。特征体系的设计、优化是取得理想结果的基础，那么对于文本搜索，应该如何设计特征呢？本文讨论常见的文本搜索场景，输入为query，目标是将相关性较高">
@@ -360,10 +360,10 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>权重特征。用于衡量doc对query需求的满足程度，例如当query为某个学校时（复旦大学）， 查询“招生”和“考研”的需求一般会高于“运动会”和“晚会”。</li>
 <li>语义特征。用于衡量query和doc内容的语义相关性，一般利用词向量和深度学习模型产出，将词语、句子映射到某个向量空间，利用余弦相似度等方法计算特征分数。</li>
 <li>意图特征。用于衡量query意图和doc内容整体的匹配程度，例如当query为百科查询类时，教育、人文历史类的doc更有可能满足要求。</li>
-<li>负面特征。以上特征主要从query和doc相关的角度来设计，可以看做正面特征。而query中重要词语遗漏，紧密pair分散等情况并没有一个特征来体现，设计该特征的目的在于强化负面情况对排序的影响。<a id="more"></a>
-<h1 id="具体设计"><a href="#具体设计" class="headerlink" title="具体设计"></a>具体设计</h1></li>
+<li>负面特征。以上特征主要从query和doc相关的角度来设计，可以看做正面特征。而query中重要词语遗漏，紧密pair分散等情况并没有一个特征来体现，设计该特征的目的在于强化负面情况对排序的影响。</li>
 </ol>
-<p>假设query分词后的序列为<span>$\left\{q_{1}, q_{2}, \ldots q_{n}\right\}$</span><!-- Has MathJax -->，doc标题分词后的序列为<span>$\left\{t_{1}, t_{2} \cdots t_{m}\right\}$</span><!-- Has MathJax -->，正文序列为<span>$\left\{c_{1}, c_{2} \cdots c_{k}\right\}$</span><!-- Has MathJax -->。</p>
+<a id="more"></a>
+<h1 id="具体设计"><a href="#具体设计" class="headerlink" title="具体设计"></a>具体设计</h1><p>假设query分词后的序列为<span>$\left\{q_{1}, q_{2}, \ldots q_{n}\right\}$</span><!-- Has MathJax -->，doc标题分词后的序列为<span>$\left\{t_{1}, t_{2} \cdots t_{m}\right\}$</span><!-- Has MathJax -->，正文序列为<span>$\left\{c_{1}, c_{2} \cdots c_{k}\right\}$</span><!-- Has MathJax -->。</p>
 <h2 id="覆盖特征"><a href="#覆盖特征" class="headerlink" title="覆盖特征"></a>覆盖特征</h2><p>简单地，可以统计query词在doc中命中个数（去重），假设为<span>$h$</span><!-- Has MathJax -->，则有：</p>
 <span>$$\begin{gather*}
 

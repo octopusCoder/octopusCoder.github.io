@@ -267,7 +267,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/31/BERT二阶段fine-tune代码分析/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/23/tensorflow-broadcast-details/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jeb">
@@ -286,7 +286,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/31/BERT二阶段fine-tune代码分析/" itemprop="url">BERT二阶段fine tune代码分析</a></h1>
+                <a class="post-title-link" href="/2017/08/23/tensorflow-broadcast-details/" itemprop="url">TensorFlow-Broadcast details</a></h1>
         
 
         <div class="post-meta">
@@ -298,8 +298,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-31T16:56:20+08:00">
-                2019-05-31
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-23T17:36:00+08:00">
+                2017-08-23
               </time>
             
 
@@ -339,299 +339,150 @@
 
       
         
-          <p>BERT除预训练代码run_pretraining.py外，还提供了run_classifier.py用于文本分类和run_squad.py用于阅读理解，下面通过对比三个代码总结出如何快速基于BERT做二阶段fine tune的方法。此外，如果TF Hub中有对应任务可使用的预训练模型，也可直接使用，例如同样用于分类的run_classifier_with_tfhub.py。</p>
-<h2 id="代码整体结构"><a href="#代码整体结构" class="headerlink" title="代码整体结构"></a>代码整体结构</h2><p>代码的整体流程如下图所示：<br><img src="/images/BERT.png" alt=""></p>
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>在bert_config_file文件中配置各个参数，例如attention_probs_dropout_prob和directionality等，config文件在BERT提供的预训练模型中。</p>
-<h3 id="输入处理"><a href="#输入处理" class="headerlink" title="输入处理"></a>输入处理</h3><p>结构图中以get input files表示整个的输入数据处理部分，不同于早期版本的数据处理过程，当前的TF版本将数据转化为features用于训练。所以需要建立相应的结构体承接数据，并建立对应的数据处理方法，最后转化为features，下表中convert_exps_to_features为convert_examples_to_features简写。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/05/31/BERT二阶段fine-tune代码分析/#espandi" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/15/文本查重-SimHash和MinHash算法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/15/文本查重-SimHash和MinHash算法/" itemprop="url">文本查重-SimHash和MinHash算法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-15T15:16:45+08:00">
-                2019-05-15
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
           
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-<p>SimHash和MinHash算法主要应用于海量文本查重，两者都属于<a href="https://www.cnblogs.com/wt869054461/p/8148940.html" target="_blank" rel="external">局部敏感哈希</a>（Locality-Sensitive Hashing, LSH）算法，而LSH又是<a href="http://www.cnblogs.com/ljygoodgoodstudydaydayup/p/10519253.html" target="_blank" rel="external">近似最近邻查找</a>（Approximate Nearest  Neighbor, ANN）中的一类算法，其主要思想是利用降维和索引，加快查找过程。</p>
-<h2 id="SimHash"><a href="#SimHash" class="headerlink" title="SimHash"></a>SimHash</h2><p>算法的过程如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437426/baf42378-e625-35d2-9a89-471524a355d8.jpg" alt=""><br>具体过程为：</p>
+            <p>TensorFlow官方网站对Broadcast的解释不够详细，具体要参考Scipy网站的解析。</p>
+<blockquote>
+<p><a href="https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html" target="_blank" rel="external">https://docs.scipy.org/doc/numpy/user/basics.broadcasting.html</a></p>
+</blockquote>
+<p>Broadcasting用于处理不同形状的numpy arrays的算术操作，形状较小的array通过复制自身，”broadcast”到与较大的array匹配的形状。例如：</p>
+<blockquote>
+<p>a = np.array([1.0, 2.0, 3.0])<br>b = 2.0<br>a * b<br>array([ 2.,  4.,  6.])</p>
+</blockquote>
+<p>处理两个array时，NumPy element-wise地比较它们的形状，两个array的dimensions必须满足以下两个条件之一：</p>
+<blockquote>
 <ol>
-<li>确定文本Doc中各个词语（中文需分词）的权重，方法可以有多种，例如TfIdf和TextRank算法，则文档可表示为(feature, weight)组成的向量；</li>
-<li>初始化一个长度为64位（可综合空间和时间复杂度考虑具体数值）的Doc特征向量，各元素初始化为0；</li>
-<li>对Doc中每个词语利用hash函数计算一个长度为64位的特征向量；</li>
-<li>遍历词语特征向量，如果第i位为1，则Doc特征向量对应位+w，否则-w；</li>
-<li>所有词语处理完毕后，判断Doc特征向量的每一位，如果大于0，则置1，否则置0；</li>
-<li>获得各Doc的特征向量后，可利用海明距离判断两篇文档的相似性，一般地，距离&lt;=3时认为两者是相似的。
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/05/15/文本查重-SimHash和MinHash算法/#espandi" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/14/TextRank算法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/14/TextRank算法/" itemprop="url">TextRank算法</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-14T15:25:17+08:00">
-                2019-05-14
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-<p>TextRank算法可以用于提取文本关键词和生成摘要，其思想来源于PageRank算法。Google的两位创始人在斯坦福大学读研期间从事网页排序研究时，受到学术界对学术论文重要性的评估方法（论文引用次数）启发，提出了PageRank算法。PageRank算法的核心思想比较直观：</p>
-<ol>
-<li>如果一个网页被很多其他网页链接到，说明这个网页很重要，对应的PR(PageRank)值也越高；</li>
-<li>如果一个PR值较高的网页链接了某个网页，则该网页的PR值也会相应提高。</li>
+<li>they are equal</li>
+<li>one of them is 1</li>
 </ol>
-<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><h3 id="PageRank"><a href="#PageRank" class="headerlink" title="PageRank"></a>PageRank</h3><p>将网页之间的链接抽象为一张有向图，如下图所示：<br><img width="500" src="/images/dgraph.png"></p>
-<p><center><strong><em><a href="https://www.cnblogs.com/mcomco/p/10304383.html" target="_blank" rel="external">图片来源</a></em></strong></center><br>图结构构造完成后，可使用以下公式计算网页的PR值：<br><span>$$\begin{gather*}
-S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|O u t\left(V_{j}\right)\right|} S\left(V_{j}\right)
-\end{gather*}$$</span><!-- Has MathJax --><br><span>$S\left(V_{i}\right)$</span><!-- Has MathJax -->表示网页i的PR值，即网页的重要性指标。d是阻尼系数，一般取0.85。<span>$I n\left(V_{i}\right)$</span><!-- Has MathJax -->表示指向网页i的网页集合。<span>$|O u t\left(V_{j}\right)|$</span><!-- Has MathJax -->表示网页j指向的网页总数，<span>$S\left(V_{j}\right)$</span><!-- Has MathJax -->表示网页j的PR值。可将各网页PR值设置为1，经过多次迭代，满足收敛条件后获得各个网页的PR值。<br>
+</blockquote>
+<p>例如：</p>
+<blockquote>
+<p>A      (4d array):  8 x 1 x 6 x 1<br>B      (3d array):      7 x 1 x 5<br>Result (4d array):  8 x 7 x 6 x 5</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/08/论文简读-Attention-over-Attention-Neural-Networks-for-Reading-Comprehension/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/08/论文简读-Attention-over-Attention-Neural-Networks-for-Reading-Comprehension/" itemprop="url">论文简读-Attention-over-Attention Neural Networks for Reading Comprehension</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-08T10:29:28+08:00">
+                2017-08-08
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>科大讯飞与哈工大联合实验室最近(截止2017.8.9)在SQuAD数据集上的准确率夺得全球第一名，力压微软亚洲研究院。本篇论文是该实验室在2016年发布的，是模型的早期版本。印象中当时在SQuAD榜单上single model准确率第二名，整体排名大概是第7名，F1 score约为79+，此处信息有待核实。准确率第一名的模型为“Interactive AoA Reader”，基于交互式层叠注意力。主要思想是根据给定的问题对篇章进行多次过滤，同时根据已经被过滤的文章进一步筛选出问题中的关键提问点，交互式地精确划定答案的范围。个人猜想其思想与斯坦福大学CS224n公开课Lecture 16中提出的Dynamic Memory Network基本一致。由于新模型的论文可能暂时没有发表，这里先对早期模型进行一下总结。<br>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/05/14/TextRank算法/#espandi" rel="contents">
+            <a class="btn" href="/2017/08/08/论文简读-Attention-over-Attention-Neural-Networks-for-Reading-Comprehension/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -682,7 +533,7 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/使用TensorFlow-Serving快速部署模型/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/06/论文简读-Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jeb">
@@ -701,7 +552,7 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/07/使用TensorFlow-Serving快速部署模型/" itemprop="url">使用TensorFlow Serving快速部署模型</a></h1>
+                <a class="post-title-link" href="/2017/08/06/论文简读-Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences/" itemprop="url">论文简读-Bilateral Multi-Perspective Matching for Natural Language Sentences</a></h1>
         
 
         <div class="post-meta">
@@ -713,8 +564,8 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T11:41:42+08:00">
-                2019-05-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-06T11:30:16+08:00">
+                2017-08-06
               </time>
             
 
@@ -754,19 +605,284 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
 
       
         
-          <h1 id="工业产品中TensorFlow使用方法"><a href="#工业产品中TensorFlow使用方法" class="headerlink" title="工业产品中TensorFlow使用方法"></a>工业产品中TensorFlow使用方法</h1><ol>
-<li>用TensorFlow的C++/Java/Nodejs API直接使用保存的TensorFlow模型：类似Caffe，适合做桌面软件。</li>
-<li>直接将使用TensorFlow的Python代码放到Flask等Web程序中，提供Restful接口：实现和调试方便，但效率不太高，不大适合高负荷场景，且没有版本管理、模型热更新等功能。</li>
-<li>将TensorFlow模型托管到TensorFlow Serving中，提供RPC或Restful服务：实现方便，高效，自带版本管理、模型热更新等，很适合大规模线上业务。</li>
+          <p>论文发表于2017.7.14，作者为Zhiguo Wang等人，属于IBM Watson实验中心，截止2017.8.6，在TREC QA数据集上测试准确率排名第一。论文的主要目标是解决自然语言句子匹配的问题，在释义识别、自然语言推断和答案选择三个方面均取得了state-of-the-art水平。</p>
+<h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p><img src="/images/bimpm-model.png" alt="模型结构图"></p>
+<p>模型自下而上分为五层，分别为单词表示层、文法表示层、匹配层、聚合层和预测层，其中匹配层为模型的核心，文中共提出了四种匹配策略，这里的匹配也就是Attention机制。<br>假设要匹配的句子分别为P和Q。下面以P-&gt;Q方向为例进行说明，Q-&gt;P方向同理。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/06/论文简读-Bilateral-Multi-Perspective-Matching-for-Natural-Language-Sentences/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/27/论文简读-Reading-Wikipedia-to-Answer-Open-Domain-Questions/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/07/27/论文简读-Reading-Wikipedia-to-Answer-Open-Domain-Questions/" itemprop="url">论文简读-Reading Wikipedia to Answer Open-Domain Questions</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-27T16:30:19+08:00">
+                2017-07-27
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<p>ACL 2017入选论文，作者为来自斯坦福的Danqi Chen(cs224n助教)。Facebook于2017.7.27日开放源码，项目名为DrQA。</p>
+<blockquote>
+<p>GitHub地址：<a href="https://github.com/facebookresearch/DrQA" target="_blank" rel="external">https://github.com/facebookresearch/DrQA</a></p>
+</blockquote>
+<p>DrQA的主要任务是大规模机器阅读（MRS）。DrQA会在一个非常庞大的非结构化文档语料库中寻找问题的答案。这个系统最大的挑战是文档检索与文本的机器理解如何更好的结合。</p>
+<p><img src="/images/rwaodq-model.png" alt="模型结构图"></p>
+<h2 id="文档检索"><a href="#文档检索" class="headerlink" title="文档检索"></a>文档检索</h2><p>采用基于二元语法哈希（bigram hashing）和TF-IDF匹配的搜索方法。</p>
+<h2 id="文档阅读理解"><a href="#文档阅读理解" class="headerlink" title="文档阅读理解"></a>文档阅读理解</h2><p>篇章和问题均采用三层双向LSTM，128个hidden units进行编码。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/07/27/论文简读-Reading-Wikipedia-to-Answer-Open-Domain-Questions/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/09/03/LeetCode-279-Perfect-Squares/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Jeb">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小菜鸡">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/09/03/LeetCode-279-Perfect-Squares/" itemprop="url">LeetCode-279.Perfect Squares</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-09-03T10:34:15+08:00">
+                2016-09-03
+              </time>
+            
+
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <blockquote>
+<p>Given a positive integer n, find the least number of perfect square numbers<br>(for example, 1, 4, 9, 16, …) which sum to n.<br>For example, given n = 12, return 3 because 12 = 4 + 4 + 4; given n = 13, return 2 because 13 = 4 + 9.</p>
+</blockquote>
+<h1 id="算法思想"><a href="#算法思想" class="headerlink" title="算法思想"></a>算法思想</h1><ol>
+<li>动态规划。当然我们会首先尝试贪心，例如12，贪心的结果是12=9+1+1+1，可见贪心不能得到最优解，所以只能上动规了。关于动规，思想和编码都不难，不过我想结合编码讨论一下设计模式的东西，也就是在面向对象编程中如何设计一个函数，使函数调用更加高效，其中也涉及一些内存使用优化的问题，开另一篇文章讨论。</li>
+<li>数学方法。一个会数学的程序猿可以变身金刚…数学对于效率的提升不能更酷，运行时间先卖个关子，最后再给出。</li>
+<li>广度优先搜索。最少个数，对应空间搜索树的最小深度，很多类似的最小问题都可以用广度优先搜索解决，不过这题BFS并不适合，效率不高，代码较长，且有很多细节容易出错，不建议使用。</li>
 </ol>
-<blockquote>
-<p>参考链接：<a href="https://cloud.tencent.com/developer/article/1375668" target="_blank" rel="external">https://cloud.tencent.com/developer/article/1375668</a> </p>
+<h1 id="编码与解释"><a href="#编码与解释" class="headerlink" title="编码与解释"></a>编码与解释</h1><h5 id="1-动态规划：见另一篇文章。"><a href="#1-动态规划：见另一篇文章。" class="headerlink" title="1. 动态规划：见另一篇文章。"></a>1. 动态规划：见另一篇文章。</h5><h5 id="2-数学方法。"><a href="#2-数学方法。" class="headerlink" title="2. 数学方法。"></a>2. 数学方法。</h5><blockquote>
+<p>四平方定理：每个正整数均可表示为4个整数的平方和。<br>更多：<a href="https://zh.wikipedia.org/wiki/四平方和定理" target="_blank" rel="external">https://zh.wikipedia.org/wiki/四平方和定理</a><br>三平方定理：每个自然数均可表示为3个整数的平方和，当且仅当该数不能表示为n=pow(4,a)*(8b+7),a,b是整数。<br>更多<a href="https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem" target="_blank" rel="external">https://en.wikipedia.org/wiki/Legendre%27s_three-square_theorem</a></p>
 </blockquote>
-<h1 id="TensorFlow-Serving简介"><a href="#TensorFlow-Serving简介" class="headerlink" title="TensorFlow Serving简介"></a>TensorFlow Serving简介</h1><p><a href="https://github.com/tensorflow/serving" target="_blank" rel="external">Tensorflow Serving</a>是Google官方提供的模型部署方式，正确导出模型后，可一分钟完成部署（官方广告）。TF1.8后，Tensorflow Serving支持RESTfull API和grpc的请求方式，模型部署完成后可很方便的利用post请求进行测试。</p>
-<h1 id="TensorFlow-Serving服务框架"><a href="#TensorFlow-Serving服务框架" class="headerlink" title="TensorFlow Serving服务框架"></a>TensorFlow Serving服务框架</h1><p>框架分为模型训练、模型上线和服务使用三部分。模型训练与正常的训练过程一致，只是导出时需要按照TF Serving的标准定义输入、输出和签名。模型上线时指定端口号和模型路径后，通过tensorflow_model_server命令启动服务。服务使用可通过grpc和RESTfull方式请求。<br><img width="724" src="https://ss.csdn.net/p?http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtzxrqiba6BicbqCjDDQ313ohCZJQ5u0LTnK5okv89ibHbf2pI6YWMq05UNjjoiaxxibxd6pqk6l07T04rA/640?wx_fmt=jpeg&wxfrom=5&wx_lazy=1"><br>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/05/07/使用TensorFlow-Serving快速部署模型/#espandi" rel="contents">
+            <a class="btn" href="/2016/09/03/LeetCode-279-Perfect-Squares/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -817,7 +933,7 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/07/基于Tensorflow-Hub进行迁移学习完成人脸BMI指数预测/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/23/LeetCode-134-Gas-Station/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jeb">
@@ -836,7 +952,7 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/05/07/基于Tensorflow-Hub进行迁移学习完成人脸BMI指数预测/" itemprop="url">基于Tensorflow Hub进行迁移学习完成人脸BMI指数预测</a></h1>
+                <a class="post-title-link" href="/2016/08/23/LeetCode-134-Gas-Station/" itemprop="url">LeetCode-Gas Station</a></h1>
         
 
         <div class="post-meta">
@@ -848,8 +964,8 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-07T11:23:00+08:00">
-                2019-05-07
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-23T10:19:49+08:00">
+                2016-08-23
               </time>
             
 
@@ -889,22 +1005,27 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
 
       
         
-          <h1 id="Tensorflow-Hub"><a href="#Tensorflow-Hub" class="headerlink" title="Tensorflow Hub"></a>Tensorflow Hub</h1><p>TF Hub是一个通过复用Tensorflow models来完成迁移学习的模型库，目前有自然语言、图像和视频三大类，具体可参考下面链接（部分页面需要翻墙）：</p>
-<blockquote>
-<p><a href="https://www.tensorflow.org/hub" target="_blank" rel="external">https://www.tensorflow.org/hub</a></p>
+          
+            <blockquote>
+<p>There are N gas stations along a circular route, where the amount of gas at station i is gas[i].<br>You have a car with an unlimited gas tank and it costs cost[i] of gas to travel from station i to its next station (i+1). You begin the journey with an empty tank at one of the gas stations.<br>Return the starting gas station’s index if you can travel around the circuit once, otherwise return -1.<br>Note:<br>The solution is guaranteed to be unique.</p>
 </blockquote>
-<h1 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h1><p>首先对人物图片进行人脸识别，然后利用tfhub中inception v3模型提取feature vector，最后使用SVR模型完成基于人脸的BMI指数预测。<br><img src="/images/face2bmimodel.png" alt=""></p>
-<blockquote>
-<p>参考论文链接：<a href="https://arxiv.org/abs/1703.03156" target="_blank" rel="external">https://arxiv.org/abs/1703.03156</a></p>
-</blockquote>
-<h2 id="人脸识别"><a href="#人脸识别" class="headerlink" title="人脸识别"></a>人脸识别</h2><p>这里介绍golang版本解决方案，python的资源丰富，例如<a href="https://github.com/ageitgey/face_recognition" target="_blank" rel="external">face_recognition</a>等。<a href="https://github.com/Kagami/go-face" target="_blank" rel="external">go-face</a>提供了纯go版本的人脸识别功能，不需要安装opencv等复杂的环境依赖，相关的依赖也可以通过apt-get方式快速安装，值得注意的是其需要人脸识别的模型文件shape_predictor和dlib_face_recognition，具体介绍可以参考其github主页。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/05/07/基于Tensorflow-Hub进行迁移学习完成人脸BMI指数预测/#espandi" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+<h1 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h1><p>如果gas总和大于cost总和，那么一定有一种解法。<br>在知道这个假设的前提下解题并不难，一次遍历，当油量无法达到时更新可能的起始点，最后比较有油和缺油的量即可，关键是如何证明？<br>当然，可以用严谨的数学公式去推导，不过理解起来总是需要点时间。不妨做个类比，假设你去买东西，手里有3，5，7等不同面值的钞票，商品的价格有4，4，1等等，我们都知道，如果手里钱的总数大于商品价格总数，那自然可以将所有商品都买到(走完)，这与本题是不是一个道理？只是提供个想法，正确性可以讨论和验证。</p>
+<h1 id="AC代码"><a href="#AC代码" class="headerlink" title="AC代码"></a>AC代码</h1><pre><code>//c++
+class Solution {
+public:
+    int canCompleteCircuit(vector&lt;int&gt;&amp; gas, vector&lt;int&gt;&amp; cost) {
+        int start=0,tank=0,lack=0;
+        for(int i=0;i&lt;gas.size();++i)
+        {
+            if((tank=tank+gas[i]-cost[i])&lt;0){
+               start=i+1;lack+=tank;tank=0;  
+            }
+        }
+        return tank+lack&lt;0?-1:start;
+    }
+};
+</code></pre>
+          
         
       
     </div>
@@ -951,7 +1072,7 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/25/基于BERT的语言模型/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/22/数据传输中/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jeb">
@@ -970,7 +1091,7 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/03/25/基于BERT的语言模型/" itemprop="url">Language Model based on BERT</a></h1>
+                <a class="post-title-link" href="/2016/08/22/数据传输中/" itemprop="url">数据传输中...</a></h1>
         
 
         <div class="post-meta">
@@ -982,8 +1103,8 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-25T19:22:22+08:00">
-                2019-03-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-22T16:27:51+08:00">
+                2016-08-22
               </time>
             
 
@@ -1023,17 +1144,10 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
 
       
         
-          <h2 id="BERT"><a href="#BERT" class="headerlink" title="BERT"></a>BERT</h2><p>2018年10月谷歌AI团队发布BERT模型，在11种NLP任务测试中刷新了最佳成绩，一时风头无两。自然语言处理领域近两年最受关注，并且进展迅速的当属机器阅读理解，其中斯坦福大学于2016年提出的SQuAD数据集对于推动Machine Comprehension的发展起到了巨大的作用。SQuAD 1.0发布时，Google一直没有出手，微软曾长期占据榜首位置，阿里巴巴也曾短暂登顶。2018年1月3日微软亚洲研究院提交的R-NET模型在EM值（Exact Match表示预测答案和真实答案完全匹配）上以82.650的最高分领先，并率先超越人类分数82.304。而当谷歌一出手，便知有没有，目前SQuAD排行榜上已经被BERT霸屏，排行前列的模型几乎全部基于BERT。关于通用语言模型的介绍，可以参考另一篇翻译的博客，以及张俊林老师的介绍，参考链接附在本文末尾。</p>
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>谷歌已开放源码：</p>
-<blockquote>
-<p><a href="https://github.com/google-research/bert" target="_blank" rel="external">https://github.com/google-research/bert</a><br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/03/25/基于BERT的语言模型/#espandi" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <p>博客重新整理了一番，换了主题，内容清空，增加新的内容的同时，原来那些破铜烂铁，有空也会慢慢搬过来…</p>
+
+          
         
       
     </div>
@@ -1080,7 +1194,7 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/20/论文简读-Get-To-The-Point-Summarization-with-Pointer-Generator-Networks/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/08/20/思想经济与知乎/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Jeb">
@@ -1099,7 +1213,7 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/02/20/论文简读-Get-To-The-Point-Summarization-with-Pointer-Generator-Networks/" itemprop="url">论文简读-Get To The Point: Summarization with Pointer-Generator Networks</a></h1>
+                <a class="post-title-link" href="/2016/08/20/思想经济与知乎/" itemprop="url">思想经济与知乎</a></h1>
         
 
         <div class="post-meta">
@@ -1111,8 +1225,8 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-20T17:00:19+08:00">
-                2019-02-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-20T15:52:55+08:00">
+                2016-08-20
               </time>
             
 
@@ -1152,448 +1266,17 @@ S\left(V_{i}\right)=(1-d)+d * \sum_{j \in I n\left(V_{i}\right)} \frac{1}{\left|
 
       
         
-          <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-<p>摘要生成主要有extractive和abstractive两种方式，抽取式直接从原文中抽取整个句子进行组合，生成摘要。而抽象式则类似人类书写摘要的方式，可产生文中不存在的词语。抽取式更为简单，并且在语法和准确性方面可以保证基本的效果。但如果希望拥有神奇的能力，例如 “paraphrasing, generalization, or the incorporation of real-world knowledge”，就需要抽象式模型了。本文的工作对2016年提出的copyNet进行了许多改进，关于copyNet的介绍可以参考：</p>
+          <p><img src="/images/zhihu.jpeg"></p>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近整理U盘以前的东西时发现了一篇两年前写的文章，大多是在地铁13号线上用Evernote码的，感谢印象笔记！当时还年轻，对喜欢和经常用的产品的进行了一些简单的思考，加上最近搞出了个“值乎”，决定趁机把这些文字发出来，再放着就发霉了。作为一名Too young, Too naive的学生，文中许多观点可能都有讨论的空间，欢迎各位不吝赐教。另外，文章中图片和部分名词引用自网络。 </p>
+<h3 id="关于知乎"><a href="#关于知乎" class="headerlink" title="关于知乎"></a>关于知乎</h3><p>在最近提了2个问题，获得0个回答。回答一个问题，获得0个赞后来思考知乎。 </p>
 <blockquote>
-<p><a href="http://octopuscoder.github.io/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/" target="_blank" rel="external">http://octopuscoder.github.io/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/</a></p>
+<p>知乎是神马?从宣传片中得到这样的信息:<br>世界的细节，认知的精度，博儒邂逅专家，隐士挑战权威，认真收获认同，专业赢得掌声。崇尚真诚，回避浮夸，精于专业，友善有趣，好好的说话，认真的沟通。<br>在知乎，总有一个领域，你比别人更专业。分享知识，经验和见解。让好奇不再孤单。知乎，认真你就赢了！ </p>
 </blockquote>
-<p>copyNet在解码阶段会出现多次重复的情况，Pointer-Generator Networks使用Coverage mechanism来解决这个问题，下面具体介绍模型实现细节。<br>
+<h1 id="思想经济"><a href="#思想经济" class="headerlink" title="思想经济"></a>思想经济</h1><p>周源说做知乎的初衷来自于这样的需求:一个人脑子里的想法，见识很有可能是另一个人需要的。 理想状态就是超级连接不同人，思想的交流碰撞变得有趣。 从原始社会到现在 ，物质盈余导致了交换，进而形成商业。随着社会的发展，思想开始盈余，交换的需求自然产生。思想盈余早已开始，但当时没有足够的产品承载。当时新浪新闻下的评论可以反映思想盈余的盛况了，百度贴吧也于此时横空出世，飞速发展。还有一件不得不提的产品就是博客，它极大的满足了用户产出内容的需求，但最终没落了。为什么?不能很好的承载思想交换;社会节奏趋于快速化，移动互联网使内容和时间碎片化。现在突然想提出一个问题。神马东东来承载思想交换?先看一下商品交换的发展史，从原始的物物直接交换，到货币中介的产生，发展到如今的商品经济。一种直觉，思想经济必然与商品经济有诸多相似之处。需要一个”市场”，也就是周源所说的连接，传统的市场正是连接了消费者与生产者。 </p>
+<h1 id="思想经济交换市场"><a href="#思想经济交换市场" class="headerlink" title="思想经济交换市场"></a>思想经济交换市场</h1><p>我们来思考这种思想上的连接，可以理解为思想经济的交换市场。结合一些产品：博客是一对多的形式，博主在输出思想，用户进行评论，这很难称为思想交换。微博更符合互联网的快节奏，碎片化的特点，降低了输出思想的门槛，用户交流也更加频繁。输出思想门槛的降低使更多人成为思想的生产者，这意味着思想市场”商品”的极大丰富，但是由于微博整体偏娱乐化，就思想经济市场价值标准来衡量，这里的商品价值偏低，更像是小商品市场，当然微博里面不乏有思想沉淀的文章，不过不占据主题。社交网站的思想商品并不开放，而且价值标准是封闭的，与开放思想市场的价值标准并不一致，这一点很好理解。比如女神发的内容关注人就更多一点，相对价值就更高。而广大屌丝费力写了篇精美的文章也很难引起大家注意。这个价值标准其实对应这样一句话，成也微博，败也微博。微博越来越中心化，思想的输出集中到部分人。越来越像媒体。思想经济，大交换，超连接的宏大蓝图中，微博难以承载交换市场这个任务，这是由微博自身结构，特点决定的。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/02/20/论文简读-Get-To-The-Point-Summarization-with-Pointer-Generator-Networks/#espandi" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/" itemprop="url">论文简读-Incorporating Copying Mechanism in Sequence-to-Sequence Learning</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-30T17:30:51+08:00">
-                2019-01-30
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-<p>Seq2Seq模型在自然语言处理领域应用广泛，例如机器翻译、句子生成和单轮对话。从更为广泛的角度看，其属于Encoder-Decoder网络，但Seq2Seq模型对于实体名字、谚语和成语在decoder时往往表现欠佳，例如：</p>
-<blockquote>
-<p>原文：第76届金球奖，布莱德利·库珀、LadyGaga主演的《一个明星的诞生》歌曲《Shallow》获得最佳原创歌曲。</p>
-<p>翻译：在第76届金球奖上，布莱德利·库珀和LadyGaga主演的歌曲《浅滩》获得了最佳原创歌曲奖。（zh-en-zh）</p>
-</blockquote>
-<p>在对于歌曲名字的翻译上出现了错误，而在人工翻译中一般会将这些词语“照抄”，也就是本文主要说明的copy机制。</p>
-<h2 id="RNN-Encoder-Decoder"><a href="#RNN-Encoder-Decoder" class="headerlink" title="RNN Encoder-Decoder"></a>RNN Encoder-Decoder</h2><p>传统的RNN Encoder-Decoder模型编码过程为：<br><img src="/images/rnnencoder.png" alt="rnn-encoder"><br>解码过程为：<br><img src="/images/rnndecoder.png" alt="rnn-encoder"></p>
-<h2 id="CopyNet"><a href="#CopyNet" class="headerlink" title="CopyNet"></a>CopyNet</h2><p>模型整体结构图：<br><img src="/images/copymode.png" alt="rnn-encoder"><br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/01/30/论文简读-Incorporating-Copying-Mechanism-in-Sequence-to-Sequence-Learning/#espandi" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/04/知识图谱问答总结/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/04/知识图谱问答总结/" itemprop="url">知识图谱问答总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-04T15:52:55+08:00">
-                2018-02-04
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-<p>目前知识图谱问答主流方法有基于语义解析、信息抽取和向量建模三种，近些年来流行的深度学习技术主要在向量建模方面进行改进。截止2016年，在公开数据集WebQuestion上表现最好的模型主要是对语义解析进行了改进，将问题转换为查询图，并利用CNN进行特征提取和相似性计算。</p>
-<blockquote>
-<p>注：本文中的图片均引用自相关论文和资料。</p>
-</blockquote>
-<h2 id="语义解析"><a href="#语义解析" class="headerlink" title="语义解析"></a>语义解析</h2><p>语义解析的主要方法是将自然语言句子转化为逻辑语句，然后通过数据库查询得到答案，Jonathan Berant[1]发表于EMNLP 2014的文章是一个典型例子。下面以一个具体问题为例子，简述一下整体过程。给定一个自然语言的问题：</p>
-<blockquote>
-<p>“Where was Obama born?”</p>
-</blockquote>
-<h3 id="语义解析树"><a href="#语义解析树" class="headerlink" title="语义解析树"></a>语义解析树</h3><p>首先利用语义解析工具对问题进行解析，如下图所示：<br><img src="/images/smtr.png" alt="语义解析"><br>图中红色部分为逻辑形式，绿色部分为原始问题，蓝色部分表示词汇映射和构建对应的操作，语义解析树根节点即为解析结果。<br>模型的训练主要是针对每一种语义解析结果的分类概率，对于训练数据问题-答案对，通过最大化log-likelihood损失函数，利用随机梯度下降对参数进行更新。<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/02/04/知识图谱问答总结/#espandi" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/04/深度文本匹配模型/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Jeb">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="小菜鸡">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/04/深度文本匹配模型/" itemprop="url">问答系统模型总结</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-04T15:52:55+08:00">
-                2017-09-04
-              </time>
-            
-
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>机器问答是自然语言处理领域的核心任务，一个典型的开放式问答系统分为三个部分：(1) 问题分析和候选篇章检索；(2) 候选篇章排序；（3）答案选择。本文主要关注答案选择部分，传统的模型大多基于特征工程实现，使用词法、句法和语法等特征，需要额外的资源，一旦外部工具出错，模型性能会受到影响，并且外部资源的获得也需要付出一些成本。深度学习模型可以自动学习这些特征，通过将句子映射到一个向量空间，然后在隐藏空间对问题和候选答案匹配完成答案选择，在众多数据集的测试结果均优于传统模型。本文从基本模型Siamese Network开始、逐个介绍了模型的改进版本Attention Network和Compare-Aggregate Network，随后对匹配函数选择和如何利用句子不相似部分两个点进行了说明。此外为方便对各模型进行比较，文章最后收集了各模型在WikiQA数据集上的实验结果并进行了展示。 </p>
-<blockquote>
-<p>注：本文所使用的图片均来自对应论文。</p>
-</blockquote>
-<h2 id="基本模型Siamese-Network"><a href="#基本模型Siamese-Network" class="headerlink" title="基本模型Siamese Network"></a>基本模型Siamese Network</h2><p>Siamese网络[1]的特点是包含两路结构非常相似的网络，网络之间的参数共享，在最后进行连接，适用于计算两路输入信息的相似性。</p>
-<h3 id="Attentive-pooling-networks"><a href="#Attentive-pooling-networks" class="headerlink" title="Attentive pooling networks"></a>Attentive pooling networks</h3><p>dos Santos在根据Query选择Candidate answer一文[2]中使用了Siamese网络作为Baseline。模型如下图所示：<br><img src="/images/apnmodel.png" alt="图1"><br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/09/04/深度文本匹配模型/#espandi" rel="contents">
+            <a class="btn" href="/2016/08/20/思想经济与知乎/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1635,7 +1318,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
   </nav>
 
 

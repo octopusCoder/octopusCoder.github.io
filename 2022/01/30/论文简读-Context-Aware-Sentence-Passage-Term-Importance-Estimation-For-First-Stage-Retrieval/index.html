@@ -104,7 +104,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/deepct-tfcase.png">
 <meta property="og:image" content="http://yoursite.com/images/deepct-expt2.png">
-<meta property="og:updated_time" content="2022-02-06T09:27:56.717Z">
+<meta property="og:updated_time" content="2022-02-07T08:52:24.221Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文简读-Context-Aware Sentence&#x2F;Passage Term Importance Estimation For First Stage Retrieval">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });         论文地址：https://arxiv.org/pdf/1910.10687.pdf  背景知识文本搜索中，词权重的信息可用于关键词提取、关键段落识别和相关分数计算等，常用的方法是TF-IDF，TF表示词频，IDF表示逆文档频率，两者">
@@ -368,10 +368,10 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p>总结一下，传统的方法主要存在以下问题：</p>
 <ol>
 <li>没有利用词的上下文信息；</li>
-<li>权重的衡量方法不合理。<a id="more"></a>
-<h1 id="DeepCT"><a href="#DeepCT" class="headerlink" title="DeepCT"></a>DeepCT</h1></li>
+<li>权重的衡量方法不合理。</li>
 </ol>
-<p>针对以上两个问题，论文提出了DeepCT框架，主要包含两部分：</p>
+<a id="more"></a>
+<h1 id="DeepCT"><a href="#DeepCT" class="headerlink" title="DeepCT"></a>DeepCT</h1><p>针对以上两个问题，论文提出了DeepCT框架，主要包含两部分：</p>
 <ol>
 <li>利用预训练语言模型BERT获得词的向下文表示；</li>
 <li>通过有监督的学习来计算词权重。</li>

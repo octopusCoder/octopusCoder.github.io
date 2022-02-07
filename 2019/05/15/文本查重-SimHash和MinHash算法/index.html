@@ -109,7 +109,7 @@
 <meta property="og:image" content="http://dl.iteye.com/upload/attachment/437586/b72b8dc2-9139-3078-ad24-b689f64fd71a.jpg">
 <meta property="og:image" content="http://yoursite.com/images/bucket.png">
 <meta property="og:image" content="http://yoursite.com/images/bucket5.png">
-<meta property="og:updated_time" content="2022-02-06T09:50:50.855Z">
+<meta property="og:updated_time" content="2022-02-07T08:51:15.452Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="文本查重-SimHash和MinHash算法">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      SimHash和MinHash算法主要应用于海量文本查重，两者都属于局部敏感哈希（Locality-Sensitive Hashing, LSH）算法，而LSH又是近似最近邻查找（Approximate Nearest  Neighbor">
@@ -361,9 +361,10 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>对Doc中每个词语利用hash函数计算一个长度为64位的特征向量；</li>
 <li>遍历词语特征向量，如果第i位为1，则Doc特征向量对应位+w，否则-w；</li>
 <li>所有词语处理完毕后，判断Doc特征向量的每一位，如果大于0，则置1，否则置0；</li>
-<li>获得各Doc的特征向量后，可利用海明距离判断两篇文档的相似性，一般地，距离&lt;=3时认为两者是相似的。<a id="more"></a>
-上述过程可以理解为Doc的特征降维过程，我们将降维后的特征向量称为fingerprints。完成降维后，我们需要思考如何设计索引来加快查找过程。<br>第一种方案是对查询向量Q进行变化，查找64位所有3位以内的变化的组合，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/438114/ae5a47cb-068c-32b6-a4d5-6a5b808b0b26.jpg" alt=""><br>单一内容Q需要进行四万多次查询，时间复杂度太高。<br>第二种方案是对已生成Doc的fingerprints进行3位以内的组合变化，但需要多占据四万多倍的原始空间，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437527/d31f3880-d43e-33ac-89c3-3e11a3f4f95e.jpg" alt=""><br>如何找到一种空间和时间的平衡呢？假设海明距离在3以内的两个文档是相似的，那么只要将64位的二进制串分为4块，根据鸽巢原理，两个文档的fingerprints中至少有一块是完全相同的，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437559/689719df-54b7-318c-bc90-e289f84344b9.jpg" alt=""><br>由于查询时无法预知是哪一块区域相同，因此需要对四块中的每一块都建立索引，假设样本库中有<span>$2^{32}$</span><!-- Has MathJax -->个，约43亿的fingerprints，那么每个table中包含<span>$2^{32-16}$</span><!-- Has MathJax -->=65536个候选结果，大大减少了海明距离的计算成本。上图所示的索引结构在MongoDB中实现非常简单。此外，索引块数k和table中候选结果数量m也是一个平衡抉择的过程，k越大，m越小，空间复杂度升高；k越小，m越大，时间复杂度升高。下图是k=4时索引示意图：<br><img src="http://dl.iteye.com/upload/attachment/437586/b72b8dc2-9139-3078-ad24-b689f64fd71a.jpg" alt=""></li>
+<li>获得各Doc的特征向量后，可利用海明距离判断两篇文档的相似性，一般地，距离&lt;=3时认为两者是相似的。</li>
 </ol>
+<a id="more"></a>
+<p>上述过程可以理解为Doc的特征降维过程，我们将降维后的特征向量称为fingerprints。完成降维后，我们需要思考如何设计索引来加快查找过程。<br>第一种方案是对查询向量Q进行变化，查找64位所有3位以内的变化的组合，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/438114/ae5a47cb-068c-32b6-a4d5-6a5b808b0b26.jpg" alt=""><br>单一内容Q需要进行四万多次查询，时间复杂度太高。<br>第二种方案是对已生成Doc的fingerprints进行3位以内的组合变化，但需要多占据四万多倍的原始空间，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437527/d31f3880-d43e-33ac-89c3-3e11a3f4f95e.jpg" alt=""><br>如何找到一种空间和时间的平衡呢？假设海明距离在3以内的两个文档是相似的，那么只要将64位的二进制串分为4块，根据鸽巢原理，两个文档的fingerprints中至少有一块是完全相同的，如下图所示：<br><img src="http://dl.iteye.com/upload/attachment/437559/689719df-54b7-318c-bc90-e289f84344b9.jpg" alt=""><br>由于查询时无法预知是哪一块区域相同，因此需要对四块中的每一块都建立索引，假设样本库中有<span>$2^{32}$</span><!-- Has MathJax -->个，约43亿的fingerprints，那么每个table中包含<span>$2^{32-16}$</span><!-- Has MathJax -->=65536个候选结果，大大减少了海明距离的计算成本。上图所示的索引结构在MongoDB中实现非常简单。此外，索引块数k和table中候选结果数量m也是一个平衡抉择的过程，k越大，m越小，空间复杂度升高；k越小，m越大，时间复杂度升高。下图是k=4时索引示意图：<br><img src="http://dl.iteye.com/upload/attachment/437586/b72b8dc2-9139-3078-ad24-b689f64fd71a.jpg" alt=""></p>
 <h2 id="MinHash"><a href="#MinHash" class="headerlink" title="MinHash"></a>MinHash</h2><p>与SimHash不同，MinHash要从衡量两个文档的相似度说起。Jaccard相似度用于描述两个集合的相似程度，假设有两个集合A和B，相似度=A与B交集的元素个数／A与B并集的元素个数，公式为：<br><span>$$\begin{gather*}
 J(A, B)=\frac{|A \cap B|}{|A \cup B|}
 \end{gather*}$$</span><!-- Has MathJax --><br>海量文本直接求Jaccard相似度复杂度太高，两个文档需要逐个词比较，为降低复杂度，我们使用两个文档的最小哈希值相等的概率来等价于两个文档的Jaccard相似度，并可以证明两者是相等的。首先说明一下如何求一个集合的最小哈希值，假设现在有4个集合，分别为S1，S2，S3，S4；其中，S1={a,d}, S2={c}, S3={b,d,e}, S4={a,c,d}，所以全集U={a,b,c,d,e}。我们可以构造如下0-1矩阵：</p>

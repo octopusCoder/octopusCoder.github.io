@@ -95,12 +95,12 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包">
+<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包括展现日志、点击日志和">
 <meta property="og:type" content="article">
 <meta property="og:title" content="搜索排序算法">
 <meta property="og:url" content="http://yoursite.com/2020/01/19/搜索排序算法/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包">
+<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包括展现日志、点击日志和">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/search_structure.png">
 <meta property="og:image" content="http://yoursite.com/images/search_kinds.png">
@@ -129,10 +129,10 @@
 <meta property="og:image" content="http://yoursite.com/images/search_dbn.png">
 <meta property="og:image" content="http://yoursite.com/images/search_irgan.png">
 <meta property="og:image" content="http://yoursite.com/images/search_model_compare.png">
-<meta property="og:updated_time" content="2022-02-06T09:50:04.034Z">
+<meta property="og:updated_time" content="2022-02-07T08:39:52.144Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搜索排序算法">
-<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        [待进一步整理] 算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包">
+<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包括展现日志、点击日志和">
 <meta name="twitter:image" content="http://yoursite.com/images/search_structure.png">
 
 
@@ -373,9 +373,6 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
 
-
-
-<p><strong><em>[待进一步整理]</em></strong></p>
 <h1 id="算法框架"><a href="#算法框架" class="headerlink" title="算法框架"></a>算法框架</h1><p>典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包括展现日志、点击日志和Query日志。<br><img width="700" src="/images/search_structure.png"></p>
 <h1 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h1><h2 id="泛特征"><a href="#泛特征" class="headerlink" title="泛特征"></a>泛特征</h2><p>Query特征：意图分类、关键词、词权重等。<br>Doc特征：文章分类、长度、点赞数等。<br>User特征：年龄、性别等。<br>Query-Doc匹配特征：类别匹配、BM25。<br>点击特征：CTR、首次点击等。</p>
 <h1 id="日志设计"><a href="#日志设计" class="headerlink" title="日志设计"></a>日志设计</h1><p>展现日志：理论上可根据经验进行人工标注打分，并且作为模型的启动训练数据。<br>点击日志：用户的点击行为日志，可以用于Query日志挖掘，进行查询扩展等，例如多个query搜索结果用户都点击了同一篇文档，则可认为这些query相似。<br>Query日志：用于和点击／转化数据做联合分析。</p>
@@ -384,7 +381,8 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <li>按照样本生成方法和Loss Function不同分为point wise、pair wise和list wise三种，参考<a href="https://wesure.lexiangla.com/teams/dm/docs/1665fb8a09d111ea81c20a58ac131706?company_from=wesure" target="_blank" rel="external">L2R算法介绍</a>。2019年Google提出的group wise模型 TF Ranking。</li>
 <li>按照模型结构划分，可分为线性排序模型、树模型、深度学习模型，以及组合模型（GBDT+LR，Deep&amp;Wide）。</li>
 </ol>
-<p>时效性模型：[待补充]。<br>个性化模型：逻辑回归(Logistic Regression）。<br>点击模型：深度置信网络(DeepBeliefNetworks)。<br><a id="more"></a></p>
+<p>时效性模型：[待补充]。<br>个性化模型：逻辑回归(Logistic Regression）。<br>点击模型：深度置信网络(Deep Belief Networks)。</p>
+<a id="more"></a>
 <h2 id="相关性模型"><a href="#相关性模型" class="headerlink" title="相关性模型"></a>相关性模型</h2><h3 id="模型分类"><a href="#模型分类" class="headerlink" title="模型分类"></a>模型分类</h3><p><img width="700" src="/images/search_kinds.png"></p>
 <p>图中Rank Creation指给定查询Query和文档Docs，得到Docs排序结果；Rank Aggregation指综合多个不同的Ranking System的排序结果，得出最终排序结果。</p>
 <h3 id="迭代过程"><a href="#迭代过程" class="headerlink" title="迭代过程"></a>迭代过程</h3><p><img width="700" src="/images/search_process.png"></p>
@@ -541,6 +539,7 @@ f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 <li>LambdaMART，基于LightGBM实现，参考：<a href="https://github.com/jiangnanboy/learning_to_rank" target="_blank" rel="external">https://github.com/jiangnanboy/learning_to_rank</a></li>
 <li>Wide&amp;Deep基于TensorFlow实现，参考：<a href="https://github.com/tensorflow/ranking" target="_blank" rel="external">https://github.com/tensorflow/ranking</a></li>
 </ol>
+<p><strong><em>[待进一步整理]</em></strong></p>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://mp.weixin.qq.com/s/NqVP0ksfLiRLSGkuWxiz5A" target="_blank" rel="external">浅谈微视推荐系统中的特征工程</a><br><a href="https://cloud.tencent.com/developer/news/184638" target="_blank" rel="external">回顾·搜索引擎算法体系简介——排序和意图篇</a><br><a href="https://tech.meituan.com/2017/07/28/dl.html" target="_blank" rel="external">深度学习在美团推荐平台排序中的运用</a><br><a href="https://www.cnblogs.com/bentuwuying/p/6684585.html" target="_blank" rel="external">Learning to Rank算法介绍：GBRank</a><br><a href="https://www.cnblogs.com/bentuwuying/p/6683832.html" target="_blank" rel="external">Learning to Rank算法介绍：RankSVM 和 IR SVM</a><br><a href="https://tech.meituan.com/2019/01/17/dianping-search-deeplearning.html" target="_blank" rel="external">大众点评搜索基于知识图谱的深度学习排序实践</a><br><a href="https://www.cnblogs.com/bentuwuying/p/6690836.html" target="_blank" rel="external">Learning to Rank算法介绍：RankNet，LambdaRank，LambdaMart</a><br><a href="https://cloud.tencent.com/developer/article/1500313" target="_blank" rel="external">「回顾」爱奇艺搜索排序模型迭代之路</a><br><a href="https://blog.csdn.net/v_JULY_v/article/details/81410574" target="_blank" rel="external">通俗理解kaggle比赛大杀器xgboost</a></p>
 
       
