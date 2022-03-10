@@ -115,7 +115,7 @@
 <meta property="og:image" content="http://yoursite.com/images/ldoc-longformer4att.png">
 <meta property="og:image" content="http://yoursite.com/images/ldoc-oriconv.gif">
 <meta property="og:image" content="http://yoursite.com/images/ldoc-dilaconv.gif">
-<meta property="og:updated_time" content="2022-03-10T13:40:01.374Z">
+<meta property="og:updated_time" content="2022-03-10T13:48:47.153Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="长文本模型">
 <meta name="twitter:description" content="NLP领域最基础但也最重要的问题是如何表示词语、句子和篇章，word2vec的出现是一个很大的进步，可以将词语编码为包含语义信息的向量，通过向量之间的距离可以在一定程度上衡量词语的相似度。得益于深度学习技术的发展，在获得词语向量表示后，可以利用CNN、LSTM和Transformer等模型对句子和篇章进行表示。但是深度学习模型需要大量数据来学习文本的表示，训练数据的质量和数量常常制约了模型的">
@@ -364,7 +364,7 @@
 <blockquote>
 <p>Transformer论文地址：<a href="https://arxiv.org/pdf/1706.03762.pdf" target="_blank" rel="external">https://arxiv.org/pdf/1706.03762.pdf</a></p>
 </blockquote>
-<p>Transformer中的self-attention机制相比LSTM能捕获更长距离的文本信息，而且可以并行计算。但是当文本序列过长时，self-attention的计算复杂度会相当大，假设文本长度为n，self-attention的计算复杂度是<span>$o(n^2)$</span><!-- Has MathJax -->。此外，Transformer对文本序列中位置信息的感知依赖position encoding方法，base版本中的编码方式效果一般。</p>
+<p>Transformer中的self-attention机制相比LSTM能捕获更长距离的文本信息，而且可以并行计算。但是当文本序列过长时，self-attention的计算复杂度会相当大，假设文本长度为n，self-attention的计算复杂度是$o(n^2)$。此外，Transformer对文本序列中位置信息的感知依赖position encoding方法，base版本中的编码方式效果一般。</p>
 <p>传统的RNN模型由于反向传播算法带来的梯度衰减和梯度爆炸问题，只能处理较短的文本。LSTM、GRU模型利用门机制进行改进，将梯度计算中的连乘改为连加，一定程度上提升了模型长距离获取信息的能力，但梯度衰减的问题并没有根本解决，其能处理的文本最大长度一般是400。如果没有内存和算力的限制，理论上Transformer可以处理任意长度的文本，实际应用时一般将长度设置为512。那么对于长度超过512的文本，改如何处理呢？</p>
 <p>一个很自然的想法是将文章切分为多个长度为512的片段，分别利用BERT处理，最后合并为整体的编码，当然各个BERT的输出结果也可以利用CNN和LSTM进一步处理，如下图所示：</p>
 <p><img width="700" src="/images/ldoc-bertcnn.jpg"></p>
