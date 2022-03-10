@@ -95,12 +95,12 @@
 
 
 
-<meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      NLP领域最基础但也最重要的问题是如何表示词语、句子和篇章，word2vec的出现是一个很大的进步，可以将词语编码为包含语义信息的向量，通过向量之间的距离可以在一定程度上衡量词语的相似度。得益于深度学习技术的发展，在获得词语向量表示后，可">
+<meta name="description" content="NLP领域最基础但也最重要的问题是如何表示词语、句子和篇章，word2vec的出现是一个很大的进步，可以将词语编码为包含语义信息的向量，通过向量之间的距离可以在一定程度上衡量词语的相似度。得益于深度学习技术的发展，在获得词语向量表示后，可以利用CNN、LSTM和Transformer等模型对句子和篇章进行表示。但是深度学习模型需要大量数据来学习文本的表示，训练数据的质量和数量常常制约了模型的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="长文本模型">
 <meta property="og:url" content="http://yoursite.com/2022/02/04/长文本模型/index.html">
 <meta property="og:site_name" content="小菜鸡">
-<meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      NLP领域最基础但也最重要的问题是如何表示词语、句子和篇章，word2vec的出现是一个很大的进步，可以将词语编码为包含语义信息的向量，通过向量之间的距离可以在一定程度上衡量词语的相似度。得益于深度学习技术的发展，在获得词语向量表示后，可">
+<meta property="og:description" content="NLP领域最基础但也最重要的问题是如何表示词语、句子和篇章，word2vec的出现是一个很大的进步，可以将词语编码为包含语义信息的向量，通过向量之间的距离可以在一定程度上衡量词语的相似度。得益于深度学习技术的发展，在获得词语向量表示后，可以利用CNN、LSTM和Transformer等模型对句子和篇章进行表示。但是深度学习模型需要大量数据来学习文本的表示，训练数据的质量和数量常常制约了模型的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/images/ldoc-bert.png">
 <meta property="og:image" content="http://yoursite.com/images/ldoc-bertcnn.jpg">
@@ -115,10 +115,10 @@
 <meta property="og:image" content="http://yoursite.com/images/ldoc-longformer4att.png">
 <meta property="og:image" content="http://yoursite.com/images/ldoc-oriconv.gif">
 <meta property="og:image" content="http://yoursite.com/images/ldoc-dilaconv.gif">
-<meta property="og:updated_time" content="2022-03-10T05:51:04.357Z">
+<meta property="og:updated_time" content="2022-03-10T13:40:01.374Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="长文本模型">
-<meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      NLP领域最基础但也最重要的问题是如何表示词语、句子和篇章，word2vec的出现是一个很大的进步，可以将词语编码为包含语义信息的向量，通过向量之间的距离可以在一定程度上衡量词语的相似度。得益于深度学习技术的发展，在获得词语向量表示后，可">
+<meta name="twitter:description" content="NLP领域最基础但也最重要的问题是如何表示词语、句子和篇章，word2vec的出现是一个很大的进步，可以将词语编码为包含语义信息的向量，通过向量之间的距离可以在一定程度上衡量词语的相似度。得益于深度学习技术的发展，在获得词语向量表示后，可以利用CNN、LSTM和Transformer等模型对句子和篇章进行表示。但是深度学习模型需要大量数据来学习文本的表示，训练数据的质量和数量常常制约了模型的">
 <meta name="twitter:image" content="http://yoursite.com/images/ldoc-bert.png">
 
 
@@ -350,13 +350,7 @@
       
 
       
-        <script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-
-<script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+        <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
 
 <p>NLP领域最基础但也最重要的问题是如何表示词语、句子和篇章，word2vec的出现是一个很大的进步，可以将词语编码为包含语义信息的向量，通过向量之间的距离可以在一定程度上衡量词语的相似度。得益于深度学习技术的发展，在获得词语向量表示后，可以利用CNN、LSTM和Transformer等模型对句子和篇章进行表示。但是深度学习模型需要大量数据来学习文本的表示，训练数据的质量和数量常常制约了模型的效果，以BERT为开端，大规模预训练语言模型开始得到广泛应用。</p>
