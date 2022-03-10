@@ -129,7 +129,7 @@
 <meta property="og:image" content="http://yoursite.com/images/search_dbn.png">
 <meta property="og:image" content="http://yoursite.com/images/search_irgan.png">
 <meta property="og:image" content="http://yoursite.com/images/search_model_compare.png">
-<meta property="og:updated_time" content="2022-03-10T05:43:13.698Z">
+<meta property="og:updated_time" content="2022-03-10T06:03:14.444Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="搜索排序算法">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      算法框架典型的搜索排序算法框架如下图所示，分为线下训练和线上排序两个部分。模型包括相关性模型、时效性模型、个性化模型和点击模型等。特征包括Query特征、Doc特征、User特征和Query-Doc匹配特征等。日志包括展现日志、点击日志和">
@@ -393,7 +393,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 P_{i j}=P\left(U_{i}&gt;U_{j}\right)=\frac{1}{1+e^{-\sigma\left(s_{i}-s_{j}\right)}}
 \end{gather*}$$</span><!-- Has MathJax --><br><strong><em>RankNet证明了如果知道一个待排序文档的排列中相邻两个文档之间的排序概率，则通过推导可以算出每两个文档之间的排序概率。因此对于一个待排序文档序列，只需计算相邻文档之间的排序概率，不需要计算所有pair，减少计算量。</em></strong><br>对于训练数据中的Ui和Uj，它们都包含有一个与Query相关性的真实label，比如Ui与Query的相关性label为good，Uj与Query的相关性label为bad，那么显然Ui比Uj更相关。我们定义Ui比Uj更相关的真实概率为Sij：<br><span>$$\begin{gather*}
 \bar{P}_{i j}=\frac{1}{2}\left(1+S_{i j}\right)
-\end{gather*}$$</span><!-- Has MathJax --><br>如果$U_i$比$U_j$更相关，那么Sij=1；如果Ui不如Uj相关，那么Sij=−1；如果$U_i$、$U_j$与Query的相关程度相同，那么Sij=0。通常，两个doc的相关度可由人工标注或者从搜索日志中得到。<br>对于一个排序，RankNet从各个doc的相对关系来评价排序结果的好坏，排序的效果越好，那么有错误相对关系的doc pair就越少。所谓错误的相对关系即如果根据模型输出Ui排在Uj前面，但真实label为Ui的相关性小于Uj，那么就记一个错误pair，RankNet本质上就是以错误的pair最少为优化目标。而在抽象成cost function时，RankNet实际上是引入了概率的思想：不是直接判断Ui排在Uj前面，而是说Ui以一定的概率P排在Uj前面，即是以预测概率与真实概率的差距最小作为优化目标。最后，RankNet使用Cross Entropy作为cost function，来衡量预测相关性概率对真实相关性概率的拟合程度：<br><span>$$\begin{gather*}
+\end{gather*}$$</span><!-- Has MathJax --><br>如果<span>$U_i$</span><!-- Has MathJax -->比<span>$U_j$</span><!-- Has MathJax -->更相关，那么Sij=1；如果<span>$U_i$</span><!-- Has MathJax -->不如<span>$U_j$</span><!-- Has MathJax -->相关，那么Sij=−1；如果<span>$U_i$</span><!-- Has MathJax -->、<span>$U_j$</span><!-- Has MathJax -->与Query的相关程度相同，那么Sij=0。通常，两个doc的相关度可由人工标注或者从搜索日志中得到。<br>对于一个排序，RankNet从各个doc的相对关系来评价排序结果的好坏，排序的效果越好，那么有错误相对关系的doc pair就越少。所谓错误的相对关系即如果根据模型输出Ui排在Uj前面，但真实label为Ui的相关性小于Uj，那么就记一个错误pair，RankNet本质上就是以错误的pair最少为优化目标。而在抽象成cost function时，RankNet实际上是引入了概率的思想：不是直接判断Ui排在Uj前面，而是说Ui以一定的概率P排在Uj前面，即是以预测概率与真实概率的差距最小作为优化目标。最后，RankNet使用Cross Entropy作为cost function，来衡量预测相关性概率对真实相关性概率的拟合程度：<br><span>$$\begin{gather*}
 C=-\bar{P}_{i j} \log P_{i j}-\left(1-\bar{P}_{i j}\right) \log \left(1-P_{i j}\right)
 \end{gather*}$$</span><!-- Has MathJax --><br>该损失函数有以下两个特点：<br>进一步化简后有：<br><span>$$\begin{gather*}
 \begin{aligned}
