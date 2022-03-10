@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
 <meta property="og:image" content="http://yoursite.com/images/LambdaMART2.png">
 <meta property="og:image" content="http://yoursite.com/images/lambdamart-pfuc.png">
-<meta property="og:updated_time" content="2022-03-10T05:51:35.410Z">
+<meta property="og:updated_time" content="2022-03-10T08:10:26.853Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LambdaMART从放弃到入门">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });        这篇文章希望站着把三件事办了：  理解Lambda； 理解MART； 理解LambdaMART。  Lambda关于Lambda梯度要从RankNet说起，RankNet提出了一种概率损失函数来学习Ranking Function，并">
@@ -366,12 +366,12 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <span>$$\begin{gather*}
 f(\overrightarrow{\mathbf{x}})=f_{M}(\overrightarrow{\mathbf{x}})=\sum_{m=1}^{M} h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)
 \end{gather*}$$</span><!-- Has MathJax -->
-<p>其中<span>$h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)$</span><!-- Has MathJax -->表示第m个决策树，<span>$\Theta_{m}$</span><!-- Has MathJax -->为第m个决策树的参数，M为决策树的数量。</p>
+<p>其中<span>$h_{m}\left(\overrightarrow{\mathbf{x}} \Theta_{m}\right)$</span><!-- Has MathJax -->表示第m个决策树，<span>$\Theta_{m}$</span><!-- Has MathJax -->为第m个决策树的参数，M为决策树的数量。</p>
 <p><strong>提升树</strong>采用<strong>前向分步算法</strong>:</p>
 <ul>
 <li>首先确定初始提升树<span>$f_{0}(\overrightarrow{\mathbf{x}})=0$</span><!-- Has MathJax -->。</li>
 <li>第m步模型为：<span>$f_{m}(\overrightarrow{\mathbf{x}})=f_{m-1}(\overrightarrow{\mathbf{x}})+h_{m}\left(\overrightarrow{\mathbf{x}} ; \Theta_{m}\right)$</span><!-- Has MathJax -->，其中<span>$h_{m}(\cdot)$</span><!-- Has MathJax -->为待求的第m棵决策树。</li>
-<li>通过经验风险极小化确定第m棵决策树的参数<span>$\Theta_{m}$: $\hat{\Theta}_{m}=\arg \min _{\Theta_{m}} \sum_{i=1}^{N} L\left(\bar{y}_{i}, f_{m}\left(\overrightarrow{\mathbf{x}}_{i}\right)\right)$</span><!-- Has MathJax -->。这里没有引入正则项，而XGBoost中引入了正则项。</li>
+<li>通过经验风险极小化确定第m棵决策树的参数<span>$\Theta_{m}: \hat{\Theta}_{m}=\arg \min _{\Theta_{m}} \sum_{i=1}^{N} L\left(\bar{y}_{i}, f_{m}\left(\overrightarrow{\mathbf{x}}_{i}\right)\right)$</span><!-- Has MathJax -->。这里没有引入正则项，而XGBoost中引入了正则项。</li>
 </ul>
 <p>不同问题的提升树学习算法主要区别在于使用的损失函数不同，（设预测值为<span>$\tilde{y}$</span><!-- Has MathJax --> ，真实值为<span>$\hat{y}$</span><!-- Has MathJax -->):</p>
 <ul>
