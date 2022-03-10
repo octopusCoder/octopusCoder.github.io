@@ -97,7 +97,7 @@
 
 <meta name="description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      简介机器问答是自然语言处理领域的核心任务，一个典型的开放式问答系统分为三个部分：(1) 问题分析和候选篇章检索；(2) 候选篇章排序；（3）答案选择。本文主要关注答案选择部分，传统的模型大多基于特征工程实现，使用词法、句法和语法等特征，需">
 <meta property="og:type" content="article">
-<meta property="og:title" content="问答系统模型总结">
+<meta property="og:title" content="深度文本匹配模型">
 <meta property="og:url" content="http://yoursite.com/2017/09/04/深度文本匹配模型/index.html">
 <meta property="og:site_name" content="小菜鸡">
 <meta property="og:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      简介机器问答是自然语言处理领域的核心任务，一个典型的开放式问答系统分为三个部分：(1) 问题分析和候选篇章检索；(2) 候选篇章排序；（3）答案选择。本文主要关注答案选择部分，传统的模型大多基于特征工程实现，使用词法、句法和语法等特征，需">
@@ -126,9 +126,9 @@
 <meta property="og:image" content="http://yoursite.com/images/camttcmp.png">
 <meta property="og:image" content="http://yoursite.com/images/camtttest.png">
 <meta property="og:image" content="http://yoursite.com/images/LDCMODEL.png">
-<meta property="og:updated_time" content="2022-02-06T09:51:51.763Z">
+<meta property="og:updated_time" content="2022-03-10T05:50:17.958Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="问答系统模型总结">
+<meta name="twitter:title" content="深度文本匹配模型">
 <meta name="twitter:description" content="MathJax.Hub.Config({ tex2jax: {inlineMath: [[&apos;$&apos;,&apos;$&apos;], [&apos;\\(&apos;,&apos;\\)&apos;]]} });      简介机器问答是自然语言处理领域的核心任务，一个典型的开放式问答系统分为三个部分：(1) 问题分析和候选篇章检索；(2) 候选篇章排序；（3）答案选择。本文主要关注答案选择部分，传统的模型大多基于特征工程实现，使用词法、句法和语法等特征，需">
 <meta name="twitter:image" content="http://yoursite.com/images/apnmodel.png">
 
@@ -166,7 +166,7 @@
 
 
 
-  <title>问答系统模型总结 | 小菜鸡</title>
+  <title>深度文本匹配模型 | 小菜鸡</title>
   
 
 
@@ -309,7 +309,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">问答系统模型总结</h1>
+          <h1 class="post-title" itemprop="name headline">深度文本匹配模型</h1>
         
 
         <div class="post-meta">
@@ -367,7 +367,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 });
 </script>
 
-<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+<script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
 
 <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>机器问答是自然语言处理领域的核心任务，一个典型的开放式问答系统分为三个部分：(1) 问题分析和候选篇章检索；(2) 候选篇章排序；（3）答案选择。本文主要关注答案选择部分，传统的模型大多基于特征工程实现，使用词法、句法和语法等特征，需要额外的资源，一旦外部工具出错，模型性能会受到影响，并且外部资源的获得也需要付出一些成本。深度学习模型可以自动学习这些特征，通过将句子映射到一个向量空间，然后在隐藏空间对问题和候选答案匹配完成答案选择，在众多数据集的测试结果均优于传统模型。本文从基本模型Siamese Network开始、逐个介绍了模型的改进版本Attention Network和Compare-Aggregate Network，随后对匹配函数选择和如何利用句子不相似部分两个点进行了说明。此外为方便对各模型进行比较，文章最后收集了各模型在WikiQA数据集上的实验结果并进行了展示。 </p>
