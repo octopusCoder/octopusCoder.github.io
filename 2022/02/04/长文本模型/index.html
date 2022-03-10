@@ -451,7 +451,7 @@ tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
 <p>具体的改动有：</p>
 <ol>
 <li>将(b)和(d)中的绝对位置编码<span>$U_j$</span><!-- Has MathJax -->替换为相对位置编码<span>$R_{i-j}$</span><!-- Has MathJax -->，注意这里的<span>$R$</span><!-- Has MathJax -->并不是可学习的，而是采用了类似原始Transformer中的三角函数编码矩阵，只需要把公式中的pos替换为<span>$i-j$</span><!-- Has MathJax -->即可。</li>
-<li>使用可训练参数<span>$u \in \mathbb{R}^{d}$</span><!-- Has MathJax -->替代原来(c)中的<span>$\mathbf{U}_{i}^{\top} \mathbf{W}_{q}^{\top}$</span><!-- Has MathJax -->。对于query中的词语，其对应的位置向量是相同的，因此在计算attention score时受到的关注也是相同的。类似地，使用<span>$v \in \mathbb{R}^{d}$</span><!-- Has MathJax -->代替(d)中的\mathbf{U}<em>{i}^{\top} \mathbf{W}</em>{q}^{\top}。</li>
+<li>使用可训练参数<span>$u \in \mathbb{R}^{d}$</span><!-- Has MathJax -->替代原来(c)中的<span>$\mathbf{U}_{i}^{\top} \mathbf{W}_{q}^{\top}$</span><!-- Has MathJax -->。对于query中的词语，其对应的位置向量是相同的，因此在计算attention score时受到的关注也是相同的。类似地，使用<span>$v \in \mathbb{R}^{d}$</span><!-- Has MathJax -->代替(d)中的\mathbf{U}_{i}^{\top} \mathbf{W}_{q}^{\top}。</li>
 <li>将原来的<span>$W_k$</span><!-- Has MathJax -->矩阵分为两个权重矩阵<span>$\mathbf{W}_{k, E}, \mathbf{W}_{k, R}$</span><!-- Has MathJax -->，分别用来生成基于内容和基于位置的健值向量。</li>
 </ol>
 <p>公式中的四个部分：</p>

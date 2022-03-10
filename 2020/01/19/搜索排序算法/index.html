@@ -451,7 +451,7 @@ L(f)=\frac{1}{2} \sum_{i=1}^{N}\left(\max \left\{0, \tau-\left(f\left(x_{i}^{(1)
 f\left(x_{i}^{(1)}\right), \quad f\left(x_{i}^{(2)}\right), \quad i=1, \cdots, N
 \end{gather*}$$</span><!-- Has MathJax --><br>然后求解loss function对这两个未知变量的梯度（分别对两个未知变量求导），如下：<br><span>$$\begin{gather*}
 -\max \left\{0, f\left(x_{i}^{(2)}\right)-f\left(x_{i}^{(1)}\right)+\tau\right\}, \quad \max \left\{0, f\left(x_{i}^{(2)}\right)-f\left(x_{i}^{(1)}\right)+\tau\right\}, \quad i=1, \cdots, N
-\end{gather*}$$</span><!-- Has MathJax --><br>如果<span>$f\left(x_{i}^{(1)}\right)-f\left(x_{i}^{(2)}\right) \geq \tau$</span><!-- Has MathJax -->，则此时对应的loss为0，我们无需对f(x)进行迭代更新；如果f\left(x<em>{i}^{(1)}\right)-f\left(x</em>{i}^{(2)}\right)&lt;\tauloss不为0，我们需要对f(x)进行迭代更新，即使得新的f(x)在这个instance上的两个点的预测值能够更接近真实值。f(x)更新类似于梯度下降方法中参数的更新：<br><span>$$\begin{gather*}
+\end{gather*}$$</span><!-- Has MathJax --><br>如果<span>$f\left(x_{i}^{(1)}\right)-f\left(x_{i}^{(2)}\right) \geq \tau$</span><!-- Has MathJax -->，则此时对应的loss为0，我们无需对f(x)进行迭代更新；如果f\left(x_{i}^{(1)}\right)-f\left(x_{i}^{(2)}\right)&lt;\tauloss不为0，我们需要对f(x)进行迭代更新，即使得新的f(x)在这个instance上的两个点的预测值能够更接近真实值。f(x)更新类似于梯度下降方法中参数的更新：<br><span>$$\begin{gather*}
 f_{k}(x)=f_{k-1}(x)-\eta \nabla L\left(f_{k}(x)\right)
 \end{gather*}$$</span><!-- Has MathJax --><br>pairwise方法中，具体为：<br><span>$$\begin{gather*}
 \begin{aligned}
